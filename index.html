@@ -1,0 +1,76 @@
+﻿<!DOCTYPE html>
+<html lang="en" >
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <title>MOXF Editor</title>
+
+  <link href="css/style.css" rel="stylesheet" />
+
+</head>
+
+<body>
+
+    <div>
+        <h2>MOXF Daw Control Editor</h2>
+
+        <p>Plug in your MIDI controller and see the data logged here</p>
+
+        <section id="midi-data">
+            <ul></ul>
+        </section>
+    </div>
+
+    <label>Preset</label>
+    <input type="number" oninput="getData()" min="1" max="50" placeholder="No" />
+    <input type="text" placeholder="Preset Name" />
+
+    <select onchange="changeType(this.value)">
+        <option value="cc()">CC</option>
+        <option value="remote()">Remote</option>
+    </select>
+
+    <div class="CC">
+        <input type="text" name="KnobName1" placeholder="Label" />
+        <input type="number" name="CC1" min="1" max="95" placeholder="CC" />
+        <input type="text" name="KnobName2" placeholder="Label" />
+        <input type="number" name="CC2" min="1" max="95" placeholder="CC" />
+        <input type="text" name="KnobName3" placeholder="Label" />
+        <input type="number" name="CC3" min="1" max="95" placeholder="CC" />
+        <input type="text" name="KnobName4" placeholder="Label" />
+        <input type="number" name="CC4" min="1" max="95" placeholder="CC" />
+    </div>
+    <div class="CC">
+        <input type="text" name="KnobName5" placeholder="Label" />
+        <input type="number" name="CC5" min="1" max="95" placeholder="CC" />
+        <input type="text" name="KnobName6" placeholder="Label" />
+        <input type="number" name="CC6" min="1" max="95" placeholder="CC" />
+        <input type="text" name="KnobName7" placeholder="Label" />
+        <input type="number" name="CC7" min="1" max="95" placeholder="CC" />
+        <input type="text" name="KnobName8" placeholder="Label" />
+        <input type="number" name="CC8" min="1" max="95" placeholder="CC" />
+    </div>
+    <div class="CC">
+        <input type="text" name="KnobName9" placeholder="Label" />
+        <input type="number" name="CC9" min="1" max="95" placeholder="CC" />
+        <input type="text" name="KnobName10" placeholder="Label" />
+        <input type="number" name="CC10" min="1" max="95" placeholder="CC" />
+        <input type="text" name="KnobName11" placeholder="Label" />
+        <input type="number" name="CC11" min="1" max="95" placeholder="CC" />
+        <input type="text" name="KnobName12" placeholder="Label" />
+        <input type="number" name="CC12" min="1" max="95" placeholder="CC" />
+    </div>
+
+    <button onclick="setData()">Send</button>
+
+    <p id="demo"></p>
+
+    <script src="https://cdn.jsdelivr.net/npm/webmidi"></script>
+    <script src="js/index.js"></script>
+
+</body>
+
+</html>
+
