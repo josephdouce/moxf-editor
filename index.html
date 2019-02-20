@@ -10,7 +10,7 @@
 
 </head>
 
-<body>
+<body onload="getMidiDevices()">
 
     <div class="wrapper">
         <div class="view">
@@ -20,6 +20,15 @@
                 <section id="midi-data">
                     <ul></ul>
                 </section>
+            </div>
+
+            <div class="row">
+                <select id="midiIn" onchange="inputDeviceSelected(this.value)" ">
+                    <option>Input</option>
+                </select>
+                <select id="midiOut">
+                    <option>Output</option>
+                </select>
             </div>
 
             <div class="row">
