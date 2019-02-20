@@ -27,15 +27,16 @@ function setData() {
 }
 
 function remote() {
-    console.log("to do: change to remote mode")
-    for (let el of document.querySelectorAll('.CC')) el.style.visibility = 'hidden';
+    for (let el of document.querySelectorAll('.cc')) el.style.display = 'none';
+    for (let el of document.querySelectorAll('.remote')) el.style.display = 'block';
 }
 
 function cc() {
-    console.log("to do: change to cc mode")
-    for (let el of document.querySelectorAll('.CC')) el.style.visibility = 'visible';
+    for (let el of document.querySelectorAll('.remote')) el.style.display = 'none';
+    for (let el of document.querySelectorAll('.cc')) el.style.display = 'block';
 }
 
 function changeType(value) {
     eval(value);
 }
+

@@ -1,74 +1,128 @@
 ﻿<!DOCTYPE html>
-<html lang="en" >
+<html lang="en">
 
 <head>
+    <meta charset="utf-8">
 
-  <meta charset="UTF-8">
+    <link href="css/style.css" rel="stylesheet" />
 
-  <title>MOXF Editor</title>
-
-  <link href="css/style.css" rel="stylesheet" />
+    <title>MOXF Editor</title>
 
 </head>
 
 <body>
 
-    <div>
-        <h2>MOXF Daw Control Editor</h2>
+    <div class="wrapper">
+        <div class="view">
+            <div class="row header">
+                <h2>MOXF Daw Control Editor</h2>
 
-        <p>Plug in your MIDI controller and see the data logged here</p>
+                <section id="midi-data">
+                    <ul></ul>
+                </section>
+            </div>
 
-        <section id="midi-data">
-            <ul></ul>
-        </section>
+            <div class="row">
+                <input type="number" oninput="getData()" min="1" max="50" placeholder="No" />
+                <input type="text" placeholder="Preset Name" />
+                <button onclick="getData()">Get Data</button>
+
+                <select onchange="changeType(this.value)">
+                    <option value="cc()">CC</option>
+                    <option value="remote()">Remote</option>
+                </select>
+            </div>
+
+            <div class="row cc">
+                <div class="row">
+                    <p class="item1">
+                        In "CC" mode CC values of 1-127 are transmitted on the selected channels.
+                    </p>
+                </div>
+                <div class="row">
+                    <input class="textInput" type="text" name="KnobName1" placeholder="Label" />
+                    <input class="numberInput" type="number" name="CC1" min="1" max="95" placeholder="CC" />
+                    <input class="textInput" type="text" name="KnobName2" placeholder="Label" />
+                    <input class="numberInput" type="number" name="CC2" min="1" max="95" placeholder="CC" />
+                    <input class="textInput" type="text" name="KnobName3" placeholder="Label" />
+                    <input class="numberInput" type="number" name="CC3" min="1" max="95" placeholder="CC" />
+                    <input class="textInput" type="text" name="KnobName4" placeholder="Label" />
+                    <input class="numberInput" type="number" name="CC4" min="1" max="95" placeholder="CC" />
+                </div>
+                <div class="row">
+                    <input class="textInput" type="text" name="KnobName5" placeholder="Label" />
+                    <input class="numberInput" type="number" name="CC5" min="1" max="95" placeholder="CC" />
+                    <input class="textInput" type="text" name="KnobName6" placeholder="Label" />
+                    <input class="numberInput" type="number" name="CC6" min="1" max="95" placeholder="CC" />
+                    <input class="textInput" type="text" name="KnobName7" placeholder="Label" />
+                    <input class="numberInput" type="number" name="CC7" min="1" max="95" placeholder="CC" />
+                    <input class="textInput" type="text" name="KnobName8" placeholder="Label" />
+                    <input class="numberInput" type="number" name="CC8" min="1" max="95" placeholder="CC" />
+                </div>
+                <div class="row">
+                    <input class="textInput" type="text" name="KnobName9" placeholder="Label" />
+                    <input class="numberInput" type="number" name="CC9" min="1" max="95" placeholder="CC" />
+                    <input class="textInput" type="text" name="KnobName10" placeholder="Label" />
+                    <input class="numberInput" type="number" name="CC10" min="1" max="95" placeholder="CC" />
+                    <input class="textInput" type="text" name="KnobName11" placeholder="Label" />
+                    <input class="numberInput" type="number" name="CC11" min="1" max="95" placeholder="CC" />
+                    <input class="textInput" type="text" name="KnobName12" placeholder="Label" />
+                    <input class="numberInput" type="number" name="CC12" min="1" max="95" placeholder="CC" />
+                </div>
+            </div>
+
+            <div class="row remote">
+                <div class="row"
+                    <p>
+                        In "Remote" mode the CC channels are static and cannot be changed from the
+                        belows values. They transmit relative CC values, e.g. clockwise will transmit 1,2,3
+                        anti-clockwise will transmit 65,66,67 you can set this up in your DAW
+                    </p>
+                </div>
+                <div class="row">
+                    <input class="textInput" type="text" value="Cutoff" readonly />
+                    <input class="numberInput" type="number" value="16" readonly />
+                    <input class="textInput" type="text" value="Rosonance" readonly />
+                    <input class="numberInput" type="number" value="17" readonly />
+                    <input class="textInput" type="text" value="FEG Depth" readonly />
+                    <input class="numberInput" type="number" value="18" readonly />
+                    <input class="textInput" type="text" value="Portamento" readonly />
+                    <input class="numberInput" type="number" value="19" readonly />
+                </div>
+                <div class="row">
+                    <input class="textInput" type="text" value="Attack" readonly />
+                    <input class="numberInput" type="number" value="20" readonly />
+                    <input class="textInput" type="text" value="Decay" readonly />
+                    <input class="numberInput" type="number" value="21" readonly />
+                    <input class="textInput" type="text" value="Sustain" readonly />
+                    <input class="numberInput" type="number" value="22" readonly />
+                    <input class="textInput" type="text" value="Release" readonly />
+                    <input class="numberInput" type="number" value="23" readonly />
+                </div>
+                <div class="row">
+                    <input class="textInput" type="text" value="Vol" readonly />
+                    <input class="numberInput" type="number" value="24" readonly />
+                    <input class="textInput" type="text" value="Pan" readonly />
+                    <input class="numberInput" type="number" value="25" readonly />
+                    <input class="textInput" type="text" value="Assign 1" readonly />
+                    <input class="numberInput" type="number" value="26" readonly />
+                    <input class="textInput" type="text" value="Assign 2" readonly />
+                    <input class="numberInput" type="number" value="27" readonly />
+                </div>
+            </div>
+
+            <div class="row">
+                <button onclick="setData()">Send Data</button>
+            </div>
+
+            <div class="row">
+                <p id="demo">Debugging Data</p>
+            </div>
+
+            <script src="https://cdn.jsdelivr.net/npm/webmidi"></script>
+            <script src="js/index.js"></script>
+        </div>
     </div>
-
-    <label>Preset</label>
-    <input type="number" oninput="getData()" min="1" max="50" placeholder="No" />
-    <input type="text" placeholder="Preset Name" />
-
-    <select onchange="changeType(this.value)">
-        <option value="cc()">CC</option>
-        <option value="remote()">Remote</option>
-    </select>
-
-    <div class="CC">
-        <input type="text" name="KnobName1" placeholder="Label" />
-        <input type="number" name="CC1" min="1" max="95" placeholder="CC" />
-        <input type="text" name="KnobName2" placeholder="Label" />
-        <input type="number" name="CC2" min="1" max="95" placeholder="CC" />
-        <input type="text" name="KnobName3" placeholder="Label" />
-        <input type="number" name="CC3" min="1" max="95" placeholder="CC" />
-        <input type="text" name="KnobName4" placeholder="Label" />
-        <input type="number" name="CC4" min="1" max="95" placeholder="CC" />
-    </div>
-    <div class="CC">
-        <input type="text" name="KnobName5" placeholder="Label" />
-        <input type="number" name="CC5" min="1" max="95" placeholder="CC" />
-        <input type="text" name="KnobName6" placeholder="Label" />
-        <input type="number" name="CC6" min="1" max="95" placeholder="CC" />
-        <input type="text" name="KnobName7" placeholder="Label" />
-        <input type="number" name="CC7" min="1" max="95" placeholder="CC" />
-        <input type="text" name="KnobName8" placeholder="Label" />
-        <input type="number" name="CC8" min="1" max="95" placeholder="CC" />
-    </div>
-    <div class="CC">
-        <input type="text" name="KnobName9" placeholder="Label" />
-        <input type="number" name="CC9" min="1" max="95" placeholder="CC" />
-        <input type="text" name="KnobName10" placeholder="Label" />
-        <input type="number" name="CC10" min="1" max="95" placeholder="CC" />
-        <input type="text" name="KnobName11" placeholder="Label" />
-        <input type="number" name="CC11" min="1" max="95" placeholder="CC" />
-        <input type="text" name="KnobName12" placeholder="Label" />
-        <input type="number" name="CC12" min="1" max="95" placeholder="CC" />
-    </div>
-
-    <button onclick="setData()">Send</button>
-
-    <p id="demo"></p>
-
-    <script src="https://cdn.jsdelivr.net/npm/webmidi"></script>
-    <script src="js/index.js"></script>
 
 </body>
 
