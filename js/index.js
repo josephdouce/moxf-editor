@@ -44,7 +44,7 @@ function setData() {
     //yamaha manufacturer and model codes
     yamahaSysex = [67, 16, 127, 28]
     //send some test data
-    output.sendSysex(yamahaSysex, [119, 127, 1, 1, 0, 1, 1, 5, 71, 69, 78, 79, 83, 123]);
+    //output.sendSysex(yamahaSysex, [119, 127, 1, 1, 0, 1, 1, 5, 71, 69, 78, 79, 83, 123]);
 }
 
 // remote mode selected
