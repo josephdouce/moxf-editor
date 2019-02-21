@@ -103,26 +103,14 @@ div.remote {
   display: none;
 }
 
-div.w3-content {
+*.w3-row {
+  padding: 5px 5px 5px 5px;
 }
 
-div.w3-row {
-  padding: 10px 0px 10px 0px;
+*.w3-col {
+  padding: 5px 5px 5px 5px;
 }
 
-  div.w3-row .numberInput {
-    width: 50px;
-  }
-
-  div.w3-row .textInput {
-    width: 120px;
-  }
-
-* select {
-  padding: 1px 1px 1px 1px;
-  border: 2px;
-  height: 26px;
-}
 
 
 
