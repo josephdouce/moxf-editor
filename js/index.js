@@ -1,40 +1,33 @@
 // add listeners on selected input device
-function inputDeviceSelected(val) {
-    alert("The input value has changed. The new value is: " + val);
-
-    console.log("Inputs : " + WebMidi.inputs);
-
-    var input = WebMidi.getInputByName(val);
+function inputDeviceSelected() {
+    intputSelected = document.getElementById("midiIn").value;
+    var input = WebMidi.getInputByName(intputSelected);
 
     // Listen for a 'note on' message on all channels
     input.addListener('noteon', "all",
         function (e) {
-            console.log("Received 'noteon' message (" + e.note.name + e.note.octave + ").");
-            document.getElementById("demo").innerHTML = e.note.name + e.note.octave;
+            gotMIDImessage(e.note.name + e.note.octave); 
         }
     );
 
     // Listen to pitch bend message on channel all channels
     input.addListener('pitchbend', 'all',
         function (e) {
-            console.log("Received 'pitchbend' message.", e);
-            document.getElementById("demo").innerHTML = e;
+            gotMIDImessage(e);
         }
     );
 
     // Listen to control change message on all channels
     input.addListener('controlchange', "all",
         function (e) {
-            console.log("Received 'controlchange' message.", e);
-            document.getElementById("demo").innerHTML = e;
+            gotMIDImessage(e);
         }
     );
 
     // Listen to csysex message on all channels
     input.addListener('sysex', "all",
         function (e) {
-            console.log("Received 'sysex' message.", e);
-            document.getElementById("demo").innerHTML = e;
+            gotMIDImessage(e.data)
         }
     );
 }
@@ -46,30 +39,12 @@ function getData() {
 
 // to be used for sending sysex, currently prints data 
 function setData() {
-    console.log(document.getElementById("knobName1").value);
-    console.log(document.getElementById("cc1").value);
-    console.log(document.getElementById("knobName2").value);
-    console.log(document.getElementById("cc2").value);
-    console.log(document.getElementById("knobName3").value);
-    console.log(document.getElementById("cc3").value);
-    console.log(document.getElementById("knobName4").value);
-    console.log(document.getElementById("cc4").value);
-    console.log(document.getElementById("knobName5").value);
-    console.log(document.getElementById("cc5").value);
-    console.log(document.getElementById("knobName6").value);
-    console.log(document.getElementById("cc6").value);
-    console.log(document.getElementById("knobName7").value);
-    console.log(document.getElementById("cc7").value);
-    console.log(document.getElementById("knobName8").value);
-    console.log(document.getElementById("cc8").value);
-    console.log(document.getElementById("knobName9").value);
-    console.log(document.getElementById("cc9").value);
-    console.log(document.getElementById("knobName10").value);
-    console.log(document.getElementById("cc10").value);
-    console.log(document.getElementById("knobName11").value);
-    console.log(document.getElementById("cc11").value);
-    console.log(document.getElementById("knobName12").value);
-    console.log(document.getElementById("cc12").value);
+    outputSelected = document.getElementById("midiOut").value;
+    var output = WebMidi.getOutputByName(outputSelected);
+    //yamaha manufacturer and model codes
+    yamahaSysex = [67, 16, 127, 28]
+    //send some test data
+    output.sendSysex(yamahaSysex, [119, 127, 1, 1, 0, 1, 1, 5, 71, 69, 78, 79, 83, 123]);
 }
 
 // remote mode selected
@@ -95,8 +70,7 @@ function getMidiDevices() {
         if (err) {
             console.log("WebMidi could not be enabled.", err);
         } else {
-            console.log("Inputs : " + WebMidi.inputs);
-            console.log("Outputs : " + WebMidi.outputs);
+            console.log("WebMidi enabled");
 
             var inputs = WebMidi.inputs;
             var outputs = WebMidi.outputs;
@@ -111,13 +85,14 @@ function getMidiDevices() {
             var select = document.getElementById("midiOut");
             for (var i in WebMidi.inputs) {
                 var option = document.createElement('option');
-                option.text = option.value = WebMidi.inputs[i].name;
+                option.text = option.value = WebMidi.outputs[i].name;
                 select.add(option, 0);
             }
         }
     }, true);
 }
 
+// change tab
 function openTab(tabName) {
     var i;
     var x = document.getElementsByClassName("tabPage");
@@ -127,8 +102,19 @@ function openTab(tabName) {
     document.getElementById(tabName).style.display = "block";
 }
 
+
+
+function gotMIDImessage(messageData) {
+    var dataList = document.querySelector('#midi-data ul')
+    var newItem = document.createElement('li');
+    newItem.appendChild(document.createTextNode(messageData));
+    dataList.appendChild(newItem);
+}
+
+// on load function
 function onLoadFunction() {
     getMidiDevices();
 }
 
+// call onload function
 window.onload = onLoadFunction();
