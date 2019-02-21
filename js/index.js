@@ -1,3 +1,4 @@
+// add listeners on selected input device
 function inputDeviceSelected(val) {
     alert("The input value has changed. The new value is: " + val);
 
@@ -38,29 +39,57 @@ function inputDeviceSelected(val) {
     );
 }
 
+// to be used for getting current data via sysex
 function getData() {
     console.log("to do: get data and set all values")
 }
 
+// to be used for sending sysex, currently prints data 
 function setData() {
-    console.log("to do: set data")
-    //var output = WebMidi.getOutputByName();
+    console.log(document.getElementById("knobName1").value);
+    console.log(document.getElementById("cc1").value);
+    console.log(document.getElementById("knobName2").value);
+    console.log(document.getElementById("cc2").value);
+    console.log(document.getElementById("knobName3").value);
+    console.log(document.getElementById("cc3").value);
+    console.log(document.getElementById("knobName4").value);
+    console.log(document.getElementById("cc4").value);
+    console.log(document.getElementById("knobName5").value);
+    console.log(document.getElementById("cc5").value);
+    console.log(document.getElementById("knobName6").value);
+    console.log(document.getElementById("cc6").value);
+    console.log(document.getElementById("knobName7").value);
+    console.log(document.getElementById("cc7").value);
+    console.log(document.getElementById("knobName8").value);
+    console.log(document.getElementById("cc8").value);
+    console.log(document.getElementById("knobName9").value);
+    console.log(document.getElementById("cc9").value);
+    console.log(document.getElementById("knobName10").value);
+    console.log(document.getElementById("cc10").value);
+    console.log(document.getElementById("knobName11").value);
+    console.log(document.getElementById("cc11").value);
+    console.log(document.getElementById("knobName12").value);
+    console.log(document.getElementById("cc12").value);
 }
 
+// remote mode selected
 function remote() {
     for (let el of document.querySelectorAll('.cc')) el.style.display = 'none';
     for (let el of document.querySelectorAll('.remote')) el.style.display = 'block';
 }
 
+// cc mode selected
 function cc() {
     for (let el of document.querySelectorAll('.remote')) el.style.display = 'none';
     for (let el of document.querySelectorAll('.cc')) el.style.display = 'block';
 }
 
+// action for change of mode dropdown
 function changeType(value) {
     eval(value);
 }
 
+// get a list of the available midi devices and set dropdown options
 function getMidiDevices() {
     WebMidi.enable(function (err) {
         if (err) {
