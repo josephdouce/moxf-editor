@@ -4,19 +4,19 @@ div.remote {
 
 div.wrapper {
     text-align: center;
-    border: 1px solid red;
+    border: 1px dashed red;
 }
 
 div.view {
     display: inline-block;
     background-color: lightgrey;
-    border: 1px solid red;
+    border: 1px dashed yellow;
     width: 80%;
 }
 
 .row {
     padding: 10px 10px 10px 10px;
-    border: 1px solid red;
+    border: 1px dashed green;
 }
 
 .row .numberInput {
