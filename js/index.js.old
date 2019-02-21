@@ -102,8 +102,6 @@ function openTab(tabName) {
     document.getElementById(tabName).style.display = "block";
 }
 
-
-
 function gotMIDImessage(messageData) {
     var dataList = document.querySelector('#midi-data ul')
     var newItem = document.createElement('li');

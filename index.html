@@ -1,177 +1,200 @@
-﻿<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html class="no-js" lang="">
 
 <head>
-    <meta charset="utf-8">
+  <meta charset="utf-8">
+  <title>MOXF Tools</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="manifest" href="site.webmanifest">
+  <link rel="apple-touch-icon" href="icon.png">
+  <!-- Place favicon.ico in the root directory -->
 
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-    <link rel="stylesheet" href="https://www.w3schools.com/lib/w3-theme-blue.css">
-    <link href="css/style.css" rel="stylesheet" />
+  <link rel="stylesheet" href="css/normalize.css">
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <link rel="stylesheet" href="https://www.w3schools.com/lib/w3-theme-blue.css">
+  <link rel="stylesheet" href="css/main.css">
 
-    <title>MOXF Editor</title>
-
+  <meta name="theme-color" content="#fafafa">
 </head>
 
 <body>
+  <!--[if lte IE 9]>
+    <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
+  <![endif]-->
 
-    <div class="w3-content w3-theme-l4" style="max-width:960px">
-        <div class="w3-bar w3-theme">
-            <button class="w3-bar-item w3-button w3-theme" onclick="openTab('DAW')">DAW</button>
-            <button class="w3-bar-item w3-button w3-theme" onclick="openTab('Master')">Master</button>
-            <button class="w3-bar-item w3-button w3-theme" onclick="openTab('Voice')">Voice</button>
-            <button class="w3-bar-item w3-button w3-theme" onclick="openTab('Performance')">Performance</button>
-            <button class="w3-bar-item w3-button w3-theme" onclick="openTab('Mix')">Mix</button>
-            <button class="w3-bar-item w3-button w3-theme" onclick="openTab('Drum')">Drum</button>
-            <button class="w3-bar-item w3-button w3-theme" onclick="openTab('Master')">Master</button>
-            <button class="w3-bar-item w3-button w3-theme" onclick="openTab('MIDI')">MIDI</button>
+  <!-- Add your site or application content here -->
+  <div class="w3-content w3-theme-l4" style="max-width:960px">
+    <div class="w3-bar w3-theme">
+      <button class="w3-bar-item w3-button w3-theme" onclick="openTab('DAW')">DAW</button>
+      <button class="w3-bar-item w3-button w3-theme" onclick="openTab('Master')">Master</button>
+      <button class="w3-bar-item w3-button w3-theme" onclick="openTab('Voice')">Voice</button>
+      <button class="w3-bar-item w3-button w3-theme" onclick="openTab('Performance')">Performance</button>
+      <button class="w3-bar-item w3-button w3-theme" onclick="openTab('Mix')">Mix</button>
+      <button class="w3-bar-item w3-button w3-theme" onclick="openTab('Drum')">Drum</button>
+      <button class="w3-bar-item w3-button w3-theme" onclick="openTab('Master')">Master</button>
+      <button class="w3-bar-item w3-button w3-theme" onclick="openTab('MIDI')">MIDI</button>
+    </div>
+
+    <div class="w3-container w3-theme-l3">
+      <div class="w3-row">
+        <select id="midiIn" onchange="inputDeviceSelected()">
+          <option>Input</option>
+        </select>
+        <select id="midiOut">
+          <option>Output</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="DAW" class="w3-container tabPage">
+      <div class="w3-row">
+        <h2>DAW Editor</h2>
+      </div>
+
+      <div class="w3-row ">
+        <input type="number" oninput="getData()" min="1" max="50" placeholder="No" />
+        <input type="text" placeholder="Preset Name" />
+        <select onchange="changeType(this.value)">
+          <option value="cc()">CC</option>
+          <option value="remote()">Remote</option>
+        </select>
+
+      </div>
+
+      <div class="w3-row  cc">
+        <div class="w3-row  description">
+          <p>
+            In "CC" mode CC values of 1-127 are transmitted on the selected channels.
+          </p>
         </div>
-
-        <div class="w3-container w3-theme-l3">
-            <div class="w3-row">
-                <select id="midiIn" onchange="inputDeviceSelected()">
-                    <option>Input</option>
-                </select>
-                <select id="midiOut">
-                    <option>Output</option>
-                </select>
-            </div>
+        <div class="w3-row ">
+          <input class="textInput" type="text" id="knobName1" placeholder="Display Name" />
+          <input class="numberInput" type="number" id="cc1" min="1" max="95" placeholder="CC" />
+          <input class="textInput" type="text" id="knobName2" placeholder="Display Name" />
+          <input class="numberInput" type="number" id="cc2" min="1" max="95" placeholder="CC" />
+          <input class="textInput" type="text" id="knobName3" placeholder="Display Name" />
+          <input class="numberInput" type="number" id="cc3" min="1" max="95" placeholder="CC" />
+          <input class="textInput" type="text" id="knobName4" placeholder="Display Name" />
+          <input class="numberInput" type="number" id="cc4" min="1" max="95" placeholder="CC" />
         </div>
+        <div class="w3-row ">
+          <input class="textInput" type="text" id="knobName5" placeholder="Display Name" />
+          <input class="numberInput" type="number" id="cc5" min="1" max="95" placeholder="CC" />
+          <input class="textInput" type="text" id="knobName6" placeholder="Display Name" />
+          <input class="numberInput" type="number" id="cc6" min="1" max="95" placeholder="CC" />
+          <input class="textInput" type="text" id="knobName7" placeholder="Display Name" />
+          <input class="numberInput" type="number" id="cc7" min="1" max="95" placeholder="CC" />
+          <input class="textInput" type="text" id="knobName8" placeholder="Display Name" />
+          <input class="numberInput" type="number" id="cc8" min="1" max="95" placeholder="CC" />
+        </div>
+        <div class="w3-row ">
+          <input class="textInput" type="text" id="knobName9" placeholder="Display Name" />
+          <input class="numberInput" type="number" id="cc9" min="1" max="95" placeholder="CC" />
+          <input class="textInput" type="text" id="knobName10" placeholder="Display Name" />
+          <input class="numberInput" type="number" id="cc10" min="1" max="95" placeholder="CC" />
+          <input class="textInput" type="text" id="knobName11" placeholder="Display Name" />
+          <input class="numberInput" type="number" id="cc11" min="1" max="95" placeholder="CC" />
+          <input class="textInput" type="text" id="knobName12" placeholder="Display Name" />
+          <input class="numberInput" type="number" id="cc12" min="1" max="95" placeholder="CC" />
+        </div>
+      </div>
 
-        <div id="DAW" class="w3-container tabPage">
-            <div class="w3-row">
-                <h2>DAW Editor</h2>
-            </div>
-
-            <div class="w3-row ">
-                <input type="number" oninput="getData()" min="1" max="50" placeholder="No" />
-                <input type="text" placeholder="Preset Name" />
-                <select onchange="changeType(this.value)">
-                    <option value="cc()">CC</option>
-                    <option value="remote()">Remote</option>
-                </select>
-
-            </div>
-
-            <div class="w3-row  cc">
-                <div class="w3-row  description">
-                    <p>
-                        In "CC" mode CC values of 1-127 are transmitted on the selected channels.
-                    </p>
-                </div>
-                <div class="w3-row ">
-                    <input class="textInput" type="text" id="knobName1" placeholder="Display Name" />
-                    <input class="numberInput" type="number" id="cc1" min="1" max="95" placeholder="CC" />
-                    <input class="textInput" type="text" id="knobName2" placeholder="Display Name" />
-                    <input class="numberInput" type="number" id="cc2" min="1" max="95" placeholder="CC" />
-                    <input class="textInput" type="text" id="knobName3" placeholder="Display Name" />
-                    <input class="numberInput" type="number" id="cc3" min="1" max="95" placeholder="CC" />
-                    <input class="textInput" type="text" id="knobName4" placeholder="Display Name" />
-                    <input class="numberInput" type="number" id="cc4" min="1" max="95" placeholder="CC" />
-                </div>
-                <div class="w3-row ">
-                    <input class="textInput" type="text" id="knobName5" placeholder="Display Name" />
-                    <input class="numberInput" type="number" id="cc5" min="1" max="95" placeholder="CC" />
-                    <input class="textInput" type="text" id="knobName6" placeholder="Display Name" />
-                    <input class="numberInput" type="number" id="cc6" min="1" max="95" placeholder="CC" />
-                    <input class="textInput" type="text" id="knobName7" placeholder="Display Name" />
-                    <input class="numberInput" type="number" id="cc7" min="1" max="95" placeholder="CC" />
-                    <input class="textInput" type="text" id="knobName8" placeholder="Display Name" />
-                    <input class="numberInput" type="number" id="cc8" min="1" max="95" placeholder="CC" />
-                </div>
-                <div class="w3-row ">
-                    <input class="textInput" type="text" id="knobName9" placeholder="Display Name" />
-                    <input class="numberInput" type="number" id="cc9" min="1" max="95" placeholder="CC" />
-                    <input class="textInput" type="text" id="knobName10" placeholder="Display Name" />
-                    <input class="numberInput" type="number" id="cc10" min="1" max="95" placeholder="CC" />
-                    <input class="textInput" type="text" id="knobName11" placeholder="Display Name" />
-                    <input class="numberInput" type="number" id="cc11" min="1" max="95" placeholder="CC" />
-                    <input class="textInput" type="text" id="knobName12" placeholder="Display Name" />
-                    <input class="numberInput" type="number" id="cc12" min="1" max="95" placeholder="CC" />
-                </div>
-            </div>
-
-            <div class="w3-row  remote">
-                <div class="w3-row  description"
+      <div class="w3-row  remote">
+        <div class="w3-row  description"
                     <p>
                         In "Remote" mode the CC channels are static and cannot be changed.
                         They transmit relative CC values, clockwise to increase, anti-clockwise to decreace on the channels below.
                     </p>
                 </div>
-                <div class="w3-row ">
-                    <input class="textInput" type="text" value="Cutoff" readonly />
-                    <input class="numberInput" type="number" value="16" readonly />
-                    <input class="textInput" type="text" value="Rosonance" readonly />
-                    <input class="numberInput" type="number" value="17" readonly />
-                    <input class="textInput" type="text" value="FEG Depth" readonly />
-                    <input class="numberInput" type="number" value="18" readonly />
-                    <input class="textInput" type="text" value="Portamento" readonly />
-                    <input class="numberInput" type="number" value="19" readonly />
-                </div>
-                <div class="w3-row ">
-                    <input class="textInput" type="text" value="Attack" readonly />
-                    <input class="numberInput" type="number" value="20" readonly />
-                    <input class="textInput" type="text" value="Decay" readonly />
-                    <input class="numberInput" type="number" value="21" readonly />
-                    <input class="textInput" type="text" value="Sustain" readonly />
-                    <input class="numberInput" type="number" value="22" readonly />
-                    <input class="textInput" type="text" value="Release" readonly />
-                    <input class="numberInput" type="number" value="23" readonly />
-                </div>
-                <div class="w3-row ">
-                    <input class="textInput" type="text" value="Vol" readonly />
-                    <input class="numberInput" type="number" value="24" readonly />
-                    <input class="textInput" type="text" value="Pan" readonly />
-                    <input class="numberInput" type="number" value="25" readonly />
-                    <input class="textInput" type="text" value="Assign 1" readonly />
-                    <input class="numberInput" type="number" value="26" readonly />
-                    <input class="textInput" type="text" value="Assign 2" readonly />
-                    <input class="numberInput" type="number" value="27" readonly />
-                </div>
-            </div>
-
-            <div class="w3-row ">
-                <button class="w3-button w3-theme" onclick="getData()">Get Data</button>
-                <button class="w3-button w3-theme" onclick="setData()">Send Data</button>
-            </div>
-
+        <div class="w3-row ">
+          <input class="textInput" type="text" value="Cutoff" readonly />
+          <input class="numberInput" type="number" value="16" readonly />
+          <input class="textInput" type="text" value="Rosonance" readonly />
+          <input class="numberInput" type="number" value="17" readonly />
+          <input class="textInput" type="text" value="FEG Depth" readonly />
+          <input class="numberInput" type="number" value="18" readonly />
+          <input class="textInput" type="text" value="Portamento" readonly />
+          <input class="numberInput" type="number" value="19" readonly />
         </div>
-
-        <div id="Master" class="w3-container tabPage" style="display:none">
-            <h2>Master Editor</h2>
+        <div class="w3-row ">
+          <input class="textInput" type="text" value="Attack" readonly />
+          <input class="numberInput" type="number" value="20" readonly />
+          <input class="textInput" type="text" value="Decay" readonly />
+          <input class="numberInput" type="number" value="21" readonly />
+          <input class="textInput" type="text" value="Sustain" readonly />
+          <input class="numberInput" type="number" value="22" readonly />
+          <input class="textInput" type="text" value="Release" readonly />
+          <input class="numberInput" type="number" value="23" readonly />
         </div>
-
-        <div id="Voice" class="w3-container tabPage" style="display:none">
-            <h2>Voice Editor</h2>
+        <div class="w3-row ">
+          <input class="textInput" type="text" value="Vol" readonly />
+          <input class="numberInput" type="number" value="24" readonly />
+          <input class="textInput" type="text" value="Pan" readonly />
+          <input class="numberInput" type="number" value="25" readonly />
+          <input class="textInput" type="text" value="Assign 1" readonly />
+          <input class="numberInput" type="number" value="26" readonly />
+          <input class="textInput" type="text" value="Assign 2" readonly />
+          <input class="numberInput" type="number" value="27" readonly />
         </div>
+      </div>
 
-        <div id="Performance" class="w3-container tabPage" style="display:none">
-            <h2>Performance Editor</h2>
-        </div>
+      <div class="w3-row ">
+        <button class="w3-button w3-theme" onclick="getData()">Get Data</button>
+        <button class="w3-button w3-theme" onclick="setData()">Send Data</button>
+      </div>
 
-        <div id="Mix" class="w3-container tabPage" style="display:none">
-            <h2>Mix Editor</h2>
-        </div>
+    </div>
 
-        <div id="Drum" class="w3-container tabPage" style="display:none">
-            <h2>Drum Editor</h2>
-        </div>
+    <div id="Master" class="w3-container tabPage" style="display:none">
+      <h2>Master Editor</h2>
+    </div>
 
-        <div id="Master" class="w3-container tabPage" style="display:none">
-            <h2>Master Editor</h2>
-        </div>
+    <div id="Voice" class="w3-container tabPage" style="display:none">
+      <h2>Voice Editor</h2>
+    </div>
 
-        <div id="MIDI" class="w3-container tabPage" style="display:none">
-            <h2>Debugging Data</h2>
-            <section id="midi-data">
-                <ul style="list-style: none;"></ul>
-            </section>
+    <div id="Performance" class="w3-container tabPage" style="display:none">
+      <h2>Performance Editor</h2>
+    </div>
 
-        </div>
+    <div id="Mix" class="w3-container tabPage" style="display:none">
+      <h2>Mix Editor</h2>
+    </div>
 
-        <script src="https://cdn.jsdelivr.net/npm/webmidi"></script>
-        <script src="js/index.js"></script>
+    <div id="Drum" class="w3-container tabPage" style="display:none">
+      <h2>Drum Editor</h2>
+    </div>
+
+    <div id="Master" class="w3-container tabPage" style="display:none">
+      <h2>Master Editor</h2>
+    </div>
+
+    <div id="MIDI" class="w3-container tabPage" style="display:none">
+      <h2>Debugging Data</h2>
+      <section id="midi-data">
+        <ul style="list-style: none;"></ul>
+      </section>
+
+    </div>
+
+    <!-- Boilerplate Scripts -->
+    <script src="js/vendor/modernizr-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script>window.jQuery || document.write('<script src="js/vendor/jquery-3.3.1.min.js"><\/script>')</script>
+    <script src="js/plugins.js"></script>
+    <script src="js/main.js"></script>
+
+    <!-- WebMIDI -->
+    <script src="https://cdn.jsdelivr.net/npm/webmidi"></script>
+
+    <!-- Google Analytics: change UA-XXXXX-Y to be your site's ID. -->
+    <script>
+      window.ga = function () { ga.q.push(arguments) }; ga.q = []; ga.l = +new Date;
+      ga('create', 'UA-XXXXX-Y', 'auto'); ga('send', 'pageview')
+    </script>
+    <script src="https://www.google-analytics.com/analytics.js" async defer></script>
+
 </body>
 
 </html>
-
