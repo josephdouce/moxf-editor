@@ -6,6 +6,7 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://www.w3schools.com/lib/w3-theme-blue.css">
     <link href="css/style.css" rel="stylesheet" />
 
     <title>MOXF Editor</title>
@@ -14,22 +15,20 @@
 
 <body>
 
-    <div class="wrapper">
-        <div class="view">
-
-            <div class="w3-bar w3-black">
-                <button class="w3-bar-item w3-button" onclick="openTab('DAW')">DAW</button>
-                <button class="w3-bar-item w3-button" onclick="openTab('Master')">Master</button>
-                <button class="w3-bar-item w3-button" onclick="openTab('Voice')">Voice</button>
-                <button class="w3-bar-item w3-button" onclick="openTab('Performance')">Performance</button>
-                <button class="w3-bar-item w3-button" onclick="openTab('Mix')">Mix</button>
-                <button class="w3-bar-item w3-button" onclick="openTab('Drum')">Drum</button>
-                <button class="w3-bar-item w3-button" onclick="openTab('Master')">Master</button>
-                <button class="w3-bar-item w3-button" onclick="openTab('MIDI')">MIDI</button>
+    <div class="w3-content w3-theme-l4" style="max-width:960px">
+            <div class="w3-bar w3-theme">
+                <button class="w3-bar-item w3-button w3-theme" onclick="openTab('DAW')">DAW</button>
+                <button class="w3-bar-item w3-button w3-theme" onclick="openTab('Master')">Master</button>
+                <button class="w3-bar-item w3-button w3-theme" onclick="openTab('Voice')">Voice</button>
+                <button class="w3-bar-item w3-button w3-theme" onclick="openTab('Performance')">Performance</button>
+                <button class="w3-bar-item w3-button w3-theme" onclick="openTab('Mix')">Mix</button>
+                <button class="w3-bar-item w3-button w3-theme" onclick="openTab('Drum')">Drum</button>
+                <button class="w3-bar-item w3-button w3-theme" onclick="openTab('Master')">Master</button>
+                <button class="w3-bar-item w3-button w3-theme" onclick="openTab('MIDI')">MIDI</button>
             </div>
 
             <div id="DAW" class="w3-container tabPage">
-                <div class="row header">
+                <div class="w3-row  header">
                     <h2>DAW Editor</h2>
 
                     <section id="midi-data">
@@ -37,23 +36,23 @@
                     </section>
                 </div>
 
-                <div class="row">
+                <div class="w3-row ">
                     <input type="number" oninput="getData()" min="1" max="50" placeholder="No" />
                     <input type="text" placeholder="Preset Name" />
                     <select onchange="changeType(this.value)">
                         <option value="cc()">CC</option>
                         <option value="remote()">Remote</option>
                     </select>
-                    <button onclick="getData()">Get Data</button>
+                
                 </div>
 
-                <div class="row cc">
-                    <div class="row description">
+                <div class="w3-row  cc">
+                    <div class="w3-row  description">
                         <p>
                             In "CC" mode CC values of 1-127 are transmitted on the selected channels.
                         </p>
                     </div>
-                    <div class="row">
+                    <div class="w3-row ">
                         <input class="textInput" type="text" id="knobName1" placeholder="Display Name" />
                         <input class="numberInput" type="number" id="cc1" min="1" max="95" placeholder="CC" />
                         <input class="textInput" type="text" id="knobName2" placeholder="Display Name" />
@@ -63,7 +62,7 @@
                         <input class="textInput" type="text" id="knobName4" placeholder="Display Name" />
                         <input class="numberInput" type="number" id="cc4" min="1" max="95" placeholder="CC" />
                     </div>
-                    <div class="row">
+                    <div class="w3-row ">
                         <input class="textInput" type="text" id="knobName5" placeholder="Display Name" />
                         <input class="numberInput" type="number" id="cc5" min="1" max="95" placeholder="CC" />
                         <input class="textInput" type="text" id="knobName6" placeholder="Display Name" />
@@ -73,7 +72,7 @@
                         <input class="textInput" type="text" id="knobName8" placeholder="Display Name" />
                         <input class="numberInput" type="number" id="cc8" min="1" max="95" placeholder="CC" />
                     </div>
-                    <div class="row">
+                    <div class="w3-row ">
                         <input class="textInput" type="text" id="knobName9" placeholder="Display Name" />
                         <input class="numberInput" type="number" id="cc9" min="1" max="95" placeholder="CC" />
                         <input class="textInput" type="text" id="knobName10" placeholder="Display Name" />
@@ -85,14 +84,14 @@
                     </div>
                 </div>
 
-                <div class="row remote">
-                    <div class="row description"
+                <div class="w3-row  remote">
+                    <div class="w3-row  description"
                     <p>
                         In "Remote" mode the CC channels are static and cannot be changed.
                         They transmit relative CC values, clockwise to increase, anti-clockwise to decreace on the channels below.
                     </p>
                 </div>
-                    <div class="row">
+                    <div class="w3-row ">
                         <input class="textInput" type="text" value="Cutoff" readonly />
                         <input class="numberInput" type="number" value="16" readonly />
                         <input class="textInput" type="text" value="Rosonance" readonly />
@@ -102,7 +101,7 @@
                         <input class="textInput" type="text" value="Portamento" readonly />
                         <input class="numberInput" type="number" value="19" readonly />
                     </div>
-                    <div class="row">
+                    <div class="w3-row ">
                         <input class="textInput" type="text" value="Attack" readonly />
                         <input class="numberInput" type="number" value="20" readonly />
                         <input class="textInput" type="text" value="Decay" readonly />
@@ -112,7 +111,7 @@
                         <input class="textInput" type="text" value="Release" readonly />
                         <input class="numberInput" type="number" value="23" readonly />
                     </div>
-                    <div class="row">
+                    <div class="w3-row ">
                         <input class="textInput" type="text" value="Vol" readonly />
                         <input class="numberInput" type="number" value="24" readonly />
                         <input class="textInput" type="text" value="Pan" readonly />
@@ -124,8 +123,9 @@
                     </div>
                 </div>
 
-                <div class="row">
-                    <button onclick="setData()">Send Data</button>
+                <div class="w3-row ">
+                    <button class="w3-button w3-theme" onclick="getData()">Get Data</button>
+                    <button class="w3-button w3-theme" onclick="setData()">Send Data</button>
                 </div>
 
             </div>
@@ -156,7 +156,7 @@
 
             <div id="MIDI" class="w3-container tabPage" style="display:none">
                 <h2>MIDI</h2>
-                <div class="row">
+                <div class="w3-row ">
                     <select id="midiIn" onchange="inputDeviceSelected(this.value)" ">
                         <option>Input</option>
                     </select>
@@ -164,7 +164,7 @@
                         <option>Output</option>
                     </select>
                 </div>
-                <div class="row">
+                <div class="w3-row ">
                     <p id="demo">Debugging Data</p>
                 </div>
             </div>
@@ -172,8 +172,6 @@
             <script src="https://cdn.jsdelivr.net/npm/webmidi"></script>
             <script src="js/index.js"></script>
         </div>
-    </div>
-
 </body>
 
 </html>

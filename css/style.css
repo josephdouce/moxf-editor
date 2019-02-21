@@ -2,27 +2,23 @@ div.remote {
     display: none;
 }
 
-div.wrapper {
-    text-align: center;
-    border: 1px dashed red;
+div.w3-content {
 }
 
-div.view {
-    display: inline-block;
-    background-color: lightgrey;
-    border: 1px dashed yellow;
-    width: 80%;
+div.w3-row {
+    padding: 10px 0px 10px 0px;
 }
 
-.row {
-    padding: 10px 10px 10px 10px;
-    border: 1px dashed green;
+div.w3-row .numberInput {
+    width: 50px;
 }
 
-.row .numberInput {
-    width: 40px;
+div.w3-row .textInput {
+    width: 120px;
 }
 
-.row .textInput {
-    width: 150px;
+* select {
+    padding: 1px 1px 1px 1px;
+    border: 2px;
+    height: 26px;
 }
