@@ -94,6 +94,7 @@ function presetSelected() {
   var preset = document.getElementById("preset").value - 1;
   // set preset
   output.sendSysex([0x43, 0x10, 0x7F, 0x1C], [0x00, 0x01, 0x20, 0x00, preset]);
+  // get data
   requestData();
 }
 
@@ -190,6 +191,13 @@ function cc12() {
 function requestData() {
   var outputSelected = document.getElementById("midiOut").value;
   var output = WebMidi.getOutputByName(outputSelected);
+  // get preset number
+  output.sendSysex([0x43, 0x30, 0x7F, 0x1C], [0x00, 0x01, 0x20, 0x00]);
+  // get preset name
+  for (i = 0x00; i < 0x0D; i++) {
+    output.sendSysex([0x43, 0x30, 0x7F, 0x1C], [0x00, 0x01, 0x00, i]);
+  }
+  // get preset data
   for (i = 0x10; i < 0x1C; i++) {
     for (j = 0x09; j < 0x1A; j++) {
       output.sendSysex([0x43, 0x30, 0x7F, 0x1C], [0x00, 0x01, i, j]);
@@ -203,9 +211,58 @@ function processSysex(messageData) {
   newItem.appendChild(document.createTextNode(messageData));
   dataList.appendChild(newItem);
 
-   switch (messageData[6]) {
+  switch (messageData[6]) {
     case 0x01:
       switch (messageData[7]) {
+        case 0x20:
+          document.getElementById("preset").value = messageData[9] + 1; 
+          break;
+        case 0x00:
+          switch (messageData[8]) {
+            case 0x00:
+              document.getElementById("presetName").value = String.fromCharCode(messageData[9]);
+              break;
+            case 0x00:
+              document.getElementById("presetName").value += String.fromCharCode(messageData[9]);
+              break;
+            case 0x01:
+              document.getElementById("presetName").value += String.fromCharCode(messageData[9]);
+              break;
+            case 0x02:
+              document.getElementById("presetName").value += String.fromCharCode(messageData[9]);
+              break;
+            case 0x03:
+              document.getElementById("presetName").value += String.fromCharCode(messageData[9]);
+              break;
+            case 0x04:
+              document.getElementById("presetName").value += String.fromCharCode(messageData[9]);
+              break;
+            case 0x05:
+              document.getElementById("presetName").value += String.fromCharCode(messageData[9]);
+              break;
+            case 0x06:
+              document.getElementById("presetName").value += String.fromCharCode(messageData[9]);
+              break;
+            case 0x07:
+              document.getElementById("presetName").value += String.fromCharCode(messageData[9]);
+              break;
+            case 0x08:
+              document.getElementById("presetName").value += String.fromCharCode(messageData[9]);
+              break;
+            case 0x09:
+              document.getElementById("presetName").value += String.fromCharCode(messageData[9]);
+              break;
+            case 0x0A:
+              document.getElementById("presetName").value += String.fromCharCode(messageData[9]);
+              break;
+            case 0x0B:
+              document.getElementById("presetName").value += String.fromCharCode(messageData[9]);
+              break;
+            case 0x0C:
+              document.getElementById("presetName").value += String.fromCharCode(messageData[9]);
+              break;
+          }
+          break;
         case 0x10:
           switch (messageData[8]) {
             case 0x09:
