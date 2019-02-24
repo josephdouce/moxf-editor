@@ -83,7 +83,7 @@ function gotMIDImessage(messageData) {
   var dataList = document.querySelector('#midi-data ul')
   var newItem = document.createElement('li');
   newItem.appendChild(document.createTextNode(messageData));
-  dataList.appendChild(newItem);
+  dataList.insertBefore(newItem, dataList.firstChild);
 }
 
 // on load function
@@ -288,7 +288,7 @@ function processSysex(messageData) {
   var dataList = document.querySelector('#midi-data ul')
   var newItem = document.createElement('li');
   newItem.appendChild(document.createTextNode(messageData));
-  dataList.appendChild(newItem);
+  dataList.insertBefore(newItem, dataList.firstChild);
 
   switch (messageData[6]) {
     case 0x01:
