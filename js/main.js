@@ -104,6 +104,79 @@ function presetSelected() {
   requestData();
 }
 
+
+function presetNameChange(data) {
+  var outputSelected = document.getElementById("midiOut").value;
+  var output = WebMidi.getOutputByName(outputSelected);
+  // set preset name
+  for (i = 0x00; i < 0x0C; i++) {
+    if (data.value[i] == undefined) {
+      output.sendSysex([0x43, 0x10, 0x7F, 0x1C], [0x00, 0x01, 0x00, i, 0x20]);
+    } else {
+      output.sendSysex([0x43, 0x10, 0x7F, 0x1C], [0x00, 0x01, 0x00, i, String(data.value[i]).charCodeAt(0)]);
+    }
+  }
+  for (i = 0x0D; i < 0x19; i++) {
+    if (data.value[i] == undefined) {
+      output.sendSysex([0x43, 0x10, 0x7F, 0x1C], [0x00, 0x01, 0x00, i, 0x20]);
+    } else {
+      output.sendSysex([0x43, 0x10, 0x7F, 0x1C], [0x00, 0x01, 0x00, i, String(data.value[i]).charCodeAt(0)]);
+    }
+  }
+}
+
+function knobNameChange(data) {
+  var outputSelected = document.getElementById("midiOut").value;
+  var output = WebMidi.getOutputByName(outputSelected);
+  var knob = undefined;
+  switch (data.id) {
+    case "knobName1":
+      knob = 16;
+      break;
+    case "knobName2":
+      knob = 17;
+      break;
+    case "knobName3":
+      knob = 18;
+      break;
+    case "knobName4":
+      knob = 19;
+      break;
+    case "knobName5":
+      knob = 20;
+      break;
+    case "knobName6":
+      knob = 21;
+      break;
+    case "knobName7":
+      knob = 22;
+      break;
+    case "knobName8":
+      knob = 23;
+      break;
+    case "knobName9":
+      knob = 24;
+      break;
+    case "knobName10":
+      knob = 25;
+      break;
+    case "knobName11":
+      knob = 26;
+      break;
+    case "knobName12":
+      knob = 27;
+      break;
+  }
+  console.log(knob);
+  for (i = 0x09; i < 0x18; i++) {
+    if (data.value[i-9] == undefined) {
+      output.sendSysex([0x43, 0x10, 0x7F, 0x1C], [0x00, 0x01, knob, i, 0x20]);
+    } else {
+      output.sendSysex([0x43, 0x10, 0x7F, 0x1C], [0x00, 0x01, knob, i, String(data.value[i-9]).charCodeAt(0)]);
+    }
+  }
+}
+
 function store() {
   var outputSelected = document.getElementById("midiOut").value;
   var output = WebMidi.getOutputByName(outputSelected);
