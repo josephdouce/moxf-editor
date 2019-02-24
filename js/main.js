@@ -294,7 +294,13 @@ function processSysex(messageData) {
     case 0x01:
       switch (messageData[7]) {
         case 0x20:
-          document.getElementById("preset").value = messageData[9] + 1; 
+          if (document.getElementById("preset").value == messageData[9] + 1) {
+            console.log("no change in preset");
+          } else {
+            console.log("preset changed updating data");
+            document.getElementById("preset").value = messageData[9] + 1;
+            requestData();
+          }
           break;
         case 0x00:
           switch (messageData[8]) {
