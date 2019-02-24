@@ -205,7 +205,7 @@ function requestData() {
   }
   // get preset data
   for (i = 0x10; i < 0x1C; i++) {
-    for (j = 0x09; j < 0x1A; j++) {
+    for (j = 0x09; j < 0x1B; j++) {
       output.sendSysex([0x43, 0x30, 0x7F, 0x1C], [0x00, 0x01, i, j]);
     }
   }
