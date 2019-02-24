@@ -59,7 +59,7 @@
       <div class="w3-row ">
         <input type="number" id="preset" oninput="presetSelected()" min="1" max="50" placeholder="No" />
         <input type="text" id="presetName" placeholder="Preset Name" />
-        <select onchange="changeType(this.value)">
+        <select id="ccRemote" onchange="changeType(this.value)">
           <option value="cc()">CC</option>
           <option value="remote()">Remote</option>
         </select>

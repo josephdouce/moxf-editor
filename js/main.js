@@ -22,12 +22,18 @@ function inputDeviceSelected() {
 function remote() {
   for (let el of document.querySelectorAll('.cc')) el.style.display = 'none';
   for (let el of document.querySelectorAll('.remote')) el.style.display = 'block';
+  var outputSelected = document.getElementById("midiOut").value;
+  var output = WebMidi.getOutputByName(outputSelected);
+  output.sendSysex([0x43, 0x10, 0x7F, 0x1C], [0x00, 0x01, 0x00, 0x19, 0x00]);
 }
 
 // cc mode selected
 function cc() {
   for (let el of document.querySelectorAll('.remote')) el.style.display = 'none';
   for (let el of document.querySelectorAll('.cc')) el.style.display = 'block';
+  var outputSelected = document.getElementById("midiOut").value;
+  var output = WebMidi.getOutputByName(outputSelected);
+  output.sendSysex([0x43, 0x10, 0x7F, 0x1C], [0x00, 0x01, 0x00, 0x19, 0x01]);
 }
 
 // action for change of mode dropdown
@@ -194,7 +200,7 @@ function requestData() {
   // get preset number
   output.sendSysex([0x43, 0x30, 0x7F, 0x1C], [0x00, 0x01, 0x20, 0x00]);
   // get preset name
-  for (i = 0x00; i < 0x0D; i++) {
+  for (i = 0x00; i < 0x1B; i++) {
     output.sendSysex([0x43, 0x30, 0x7F, 0x1C], [0x00, 0x01, 0x00, i]);
   }
   // get preset data
@@ -221,9 +227,6 @@ function processSysex(messageData) {
           switch (messageData[8]) {
             case 0x00:
               document.getElementById("presetName").value = String.fromCharCode(messageData[9]);
-              break;
-            case 0x00:
-              document.getElementById("presetName").value += String.fromCharCode(messageData[9]);
               break;
             case 0x01:
               document.getElementById("presetName").value += String.fromCharCode(messageData[9]);
@@ -260,6 +263,13 @@ function processSysex(messageData) {
               break;
             case 0x0C:
               document.getElementById("presetName").value += String.fromCharCode(messageData[9]);
+              break;
+            case 0x19:
+              if (messageData[9] == 1) {
+                document.getElementById("ccRemote").value = "cc()";
+              } else {
+                document.getElementById("ccRemote").value = "remote()";
+              }
               break;
           }
           break;
