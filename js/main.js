@@ -25,7 +25,7 @@ function inputDeviceSelected() {
 }
 
 // remote mode selected
-function remote() {
+function remoteSelected() {
   for (let el of document.querySelectorAll('.cc')) el.style.display = 'none';
   for (let el of document.querySelectorAll('.remote')) el.style.display = 'block';
   var outputSelected = document.getElementById("midiOut").value;
@@ -34,7 +34,7 @@ function remote() {
 }
 
 // cc mode selected
-function cc() {
+function ccSelected() {
   for (let el of document.querySelectorAll('.remote')) el.style.display = 'none';
   for (let el of document.querySelectorAll('.cc')) el.style.display = 'block';
   var outputSelected = document.getElementById("midiOut").value;
@@ -47,7 +47,6 @@ function changeType(value) {
   eval(value);
 }
 
-// get a list of the available midi devices and set dropdown options
 function getMidiDevices() {
   WebMidi.enable(function(err) {
     if (err) {
@@ -75,7 +74,6 @@ function getMidiDevices() {
   }, true);
 }
 
-// change tab
 function openTab(tabName) {
   var i;
   var x = document.getElementsByClassName("tabPage");
@@ -92,14 +90,6 @@ function gotMIDImessage(messageData) {
   dataList.insertBefore(newItem, dataList.firstChild);
 }
 
-// on load function
-function onLoadFunction() {
-  getMidiDevices();
-}
-
-// call onload function
-window.onload = onLoadFunction();
-
 function presetSelected() {
   var outputSelected = document.getElementById("midiOut").value;
   var output = WebMidi.getOutputByName(outputSelected);
@@ -109,7 +99,6 @@ function presetSelected() {
   // get data
   requestData();
 }
-
 
 function presetNameChange(data) {
   var outputSelected = document.getElementById("midiOut").value;
@@ -183,18 +172,18 @@ function knobNameChange(data) {
   }
 }
 
-function store() {
-  var outputSelected = document.getElementById("midiOut").value;
-  var output = WebMidi.getOutputByName(outputSelected);
-  output.sendSysex([0x43, 0x10, 0x7F, 0x1C], [0x00, 0x01, 0x22, 0x00]);
-}
-
 function ccChange(data) {
   var outputSelected = document.getElementById("midiOut").value;
   var output = WebMidi.getOutputByName(outputSelected);
   var value = data.value;
   var knobAddress = parseInt(data.id) + 15;
   output.sendSysex([0x43, 0x10, 0x7F, 0x1C], [0x00, 0x01, knobAddress, 0x18, value]);
+}
+
+function store() {
+  var outputSelected = document.getElementById("midiOut").value;
+  var output = WebMidi.getOutputByName(outputSelected);
+  output.sendSysex([0x43, 0x10, 0x7F, 0x1C], [0x00, 0x01, 0x22, 0x00]);
 }
 
 function requestData() {
@@ -223,85 +212,37 @@ function processSysex(messageData) {
             case 0x00:
               for (i = 11; i < 24; i++) {
                 document.getElementById("presetName").value = String.fromCharCode(messageData[i]);
+                if (messageData[36] == 1) {
+                  document.getElementById("ccRemote").value = "ccSelected()";
+                } else {
+                  document.getElementById("ccRemote").value = "remoteSelected()";
+                }
               }
               break;
             case 0x10:
-              for (i = 20; i < 35; i++) {
-                document.getElementById("knobName1").value = String.fromCharCode(messageData[i]);
-                document.getElementById("cc1").value = messageData[35];
-              }
-              break;
             case 0x11:
-              for (i = 20; i < 35; i++) {
-                document.getElementById("knobName2").value = String.fromCharCode(messageData[i]);
-                document.getElementById("cc2").value = messageData[35];
-              }
-              break;
             case 0x12:
-              for (i = 20; i < 35; i++) {
-                document.getElementById("knobName3").value = String.fromCharCode(messageData[i]);
-                document.getElementById("cc3").value = messageData[35];
-              }
-              break;
             case 0x13:
-              for (i = 20; i < 35; i++) {
-                document.getElementById("knobName4").value = String.fromCharCode(messageData[i]);
-                document.getElementById("cc4").value = messageData[35];
-              }
-              break;
             case 0x14:
-              for (i = 20; i < 35; i++) {
-                document.getElementById("knobName5").value = String.fromCharCode(messageData[i]);
-                document.getElementById("cc5").value = messageData[35];
-              }
-              break;
             case 0x15:
-              for (i = 20; i < 35; i++) {
-                document.getElementById("knobName6").value = String.fromCharCode(messageData[i]);
-                document.getElementById("cc6").value = messageData[35];
-              }
-              break;
             case 0x16:
-              for (i = 20; i < 35; i++) {
-                document.getElementById("knobName7").value = String.fromCharCode(messageData[i]);
-                document.getElementById("cc7").value = messageData[35];
-              }
-              break;
             case 0x17:
-              for (i = 20; i < 35; i++) {
-                document.getElementById("knobName8").value = String.fromCharCode(messageData[i]);
-                document.getElementById("cc8").value = messageData[35];
-              }
-              break;
             case 0x18:
-              for (i = 20; i < 35; i++) {
-                document.getElementById("knobName9").value = String.fromCharCode(messageData[i]);
-                document.getElementById("cc9").value = messageData[35];
-              }
-              break;
             case 0x19:
-              for (i = 20; i < 35; i++) {
-                document.getElementById("knobName10").value = String.fromCharCode(messageData[i]);
-                document.getElementById("cc10").value = messageData[35];
-              }
-              break;
             case 0x1A:
-              for (i = 20; i < 35; i++) {
-                document.getElementById("knobName11").value = String.fromCharCode(messageData[i]);
-                document.getElementById("cc11").value = messageData[35];
-              }
-              break;
             case 0x1B:
+              var knobId = "knobName" + (messageData[9] - 15);
+              var = "cc" + (messageData[9] - 15);
               for (i = 20; i < 35; i++) {
-                document.getElementById("knobName12").value = String.fromCharCode(messageData[i]);
-                document.getElementById("cc12").value = messageData[35];
+                document.getElementById(knobId).value = String.fromCharCode(messageData[i]);
               }
+              document.getElementById(ccId).value = messageData[35];
               break;
           }
           break;
       }
       break;
-    // parameter dump
+      // parameter dump
     case 0x10:
       // address high
       switch (messageData[6]) {
@@ -325,3 +266,11 @@ function processSysex(messageData) {
   }
 
 }
+
+// on load function
+function onLoadFunction() {
+  getMidiDevices();
+}
+
+// call onload function
+window.onload = onLoadFunction();
