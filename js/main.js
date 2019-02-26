@@ -10,6 +10,12 @@ function inputDeviceSelected() {
     }
   );
 
+  input.addListener('controlchange', "all",
+    function (e) {
+      gotMIDImessage(e.data);
+    }
+  );
+
   input.addListener('sysex', "all",
     function (e) {
       processSysex(e.data);
