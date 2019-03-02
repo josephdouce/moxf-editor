@@ -123,51 +123,12 @@ function presetNameChange(data) {
 function knobNameChange(data) {
   var outputSelected = document.getElementById("midiOut").value;
   var output = WebMidi.getOutputByName(outputSelected);
-  var knob = undefined;
-  switch (data.id) {
-    case "knobName1":
-      knob = 16;
-      break;
-    case "knobName2":
-      knob = 17;
-      break;
-    case "knobName3":
-      knob = 18;
-      break;
-    case "knobName4":
-      knob = 19;
-      break;
-    case "knobName5":
-      knob = 20;
-      break;
-    case "knobName6":
-      knob = 21;
-      break;
-    case "knobName7":
-      knob = 22;
-      break;
-    case "knobName8":
-      knob = 23;
-      break;
-    case "knobName9":
-      knob = 24;
-      break;
-    case "knobName10":
-      knob = 25;
-      break;
-    case "knobName11":
-      knob = 26;
-      break;
-    case "knobName12":
-      knob = 27;
-      break;
-  }
-  console.log(knob);
+  var knobAddress = parseInt(data.id[8]) + 15;
   for (i = 0x09; i < 0x18; i++) {
     if (data.value[i - 9] == undefined) {
-      output.sendSysex([0x43, 0x10, 0x7F, 0x1C], [0x00, 0x01, knob, i, 0x20]);
+      output.sendSysex([0x43, 0x10, 0x7F, 0x1C], [0x00, 0x01, knobAddress, i, 0x20]);
     } else {
-      output.sendSysex([0x43, 0x10, 0x7F, 0x1C], [0x00, 0x01, knob, i, String(data.value[i - 9]).charCodeAt(0)]);
+      output.sendSysex([0x43, 0x10, 0x7F, 0x1C], [0x00, 0x01, knobAddress, i, String(data.value[i - 9]).charCodeAt(0)]);
     }
   }
 }
@@ -176,7 +137,7 @@ function ccChange(data) {
   var outputSelected = document.getElementById("midiOut").value;
   var output = WebMidi.getOutputByName(outputSelected);
   var value = data.value;
-  var knobAddress = parseInt(data.id) + 15;
+  var knobAddress = parseInt(data.id[2]) + 15;
   output.sendSysex([0x43, 0x10, 0x7F, 0x1C], [0x00, 0x01, knobAddress, 0x18, value]);
 }
 
@@ -189,10 +150,10 @@ function store() {
 function requestData() {
   var outputSelected = document.getElementById("midiOut").value;
   var output = WebMidi.getOutputByName(outputSelected);
-  // get preset number
-  output.sendSysex([0x43, 0x30, 0x7F, 0x1C], [0x00, 0x01, 0x20, 0x00]);
+  var presetAddress = document.getElementById('preset').value - 1
   // get preset data
-  output.sendSysex([0x43, 0x30, 0x7F, 0x1C], [0x00, 0x0E, 0x60, document.getElementById('preset').value, 0x00]);
+  console.log("Request Data for Preset: " + document.getElementById('preset').value);
+  output.sendSysex([0x43, 0x20, 0x7F, 0x1C], [0x00, 0x0E, 0x60, presetAddress, 0x00]);
 }
 
 function processSysex(messageData) {
@@ -210,13 +171,14 @@ function processSysex(messageData) {
           // address mid
           switch (messageData[9]) {
             case 0x00:
-              for (i = 11; i < 24; i++) {
-                document.getElementById("presetName").value = String.fromCharCode(messageData[i]);
-                if (messageData[36] == 1) {
-                  document.getElementById("ccRemote").value = "ccSelected()";
-                } else {
-                  document.getElementById("ccRemote").value = "remoteSelected()";
-                }
+              document.getElementById("presetName").value = String.fromCharCode(messageData[11]);
+              for (i = 12; i < 24; i++) {
+                document.getElementById("presetName").value += String.fromCharCode(messageData[i]);
+              }
+              if (messageData[36] == 1) {
+                document.getElementById("ccRemote").value = "ccSelected()";
+              } else {
+                document.getElementById("ccRemote").value = "remoteSelected()";
               }
               break;
             case 0x10:
@@ -232,9 +194,10 @@ function processSysex(messageData) {
             case 0x1A:
             case 0x1B:
               var knobId = "knobName" + (messageData[9] - 15);
-              var = "cc" + (messageData[9] - 15);
-              for (i = 20; i < 35; i++) {
-                document.getElementById(knobId).value = String.fromCharCode(messageData[i]);
+              var ccId = "cc" + (messageData[9] - 15);
+              document.getElementById(knobId).value = String.fromCharCode(messageData[20]);
+              for (i = 21; i < 35; i++) {
+                document.getElementById(knobId).value += String.fromCharCode(messageData[i]);
               }
               document.getElementById(ccId).value = messageData[35];
               break;
@@ -250,10 +213,10 @@ function processSysex(messageData) {
           // address mid
           switch (messageData[7]) {
             case 0x20:
-              if (document.getElementById("preset").value == messageData[9] + 1) {
-                console.log("no change in preset");
+              if (document.getElementById("preset").value == (messageData[9] + 1)) {
+                console.log("Preset Not Changed: " + document.getElementById("preset").value);
               } else {
-                console.log("preset changed updating data");
+                console.log("New Preset: " + (messageData[9] + 1))
                 document.getElementById("preset").value = messageData[9] + 1;
                 requestData();
               }
