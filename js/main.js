@@ -54,9 +54,6 @@ function getMidiDevices() {
     } else {
       console.log("WebMidi enabled");
 
-      var inputs = WebMidi.inputs;
-      var outputs = WebMidi.outputs;
-
       var select = document.getElementById("midiIn");
       for (var i in WebMidi.inputs) {
         var option = document.createElement('option');
