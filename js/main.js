@@ -54,9 +54,6 @@ function getMidiDevices() {
     } else {
       console.log("WebMidi enabled");
 
-      var inputs = WebMidi.inputs;
-      var outputs = WebMidi.outputs;
-
       var select = document.getElementById("midiIn");
       for (var i in WebMidi.inputs) {
         var option = document.createElement('option');
@@ -71,6 +68,8 @@ function getMidiDevices() {
         select.add(option, 0);
       }
     }
+    document.getElementById("midiOut").value = WebMidi.getInputByName("MOXF8 - 5");
+    document.getElementById("midiOut").value = WebMidi.getOutputByName("MOXF8 - 1");
   }, true);
 }
 
