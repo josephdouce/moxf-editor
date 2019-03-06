@@ -103,11 +103,9 @@ div.remote {
   display: none;
 }
 
-select {
-  height: 28px;
+.w3-content {
+  max-width: 960px;
 }
-
-
 
  /* ==========================================================================
    Helper classes
