@@ -68,6 +68,8 @@ function getMidiDevices() {
         select.add(option, 0);
       }
     }
+    document.getElementById("midiOut").value = WebMidi.getInputByName("MOXF8 - 5");
+    document.getElementById("midiOut").value = WebMidi.getOutputByName("MOXF8 - 1");
   }, true);
 }
 

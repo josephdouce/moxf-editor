@@ -7,7 +7,7 @@
  * Kroc Camen, and the H5BP dev community and team.
  */
 
- 
+
 /* ==========================================================================
    Base styles: opinionated defaults
    ========================================================================== */
@@ -103,28 +103,9 @@ div.remote {
   display: none;
 }
 
-*.w3-row {
-  padding: 5px 5px 5px 5px;
+.w3-content {
+  max-width: 960px;
 }
-
-*.w3-col {
-  padding: 5px 5px 5px 5px;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
  /* ==========================================================================
    Helper classes
@@ -206,7 +187,7 @@ div.remote {
   clear: both;
 }
 
- 
+
 /* ==========================================================================
    EXAMPLE Media Queries for Responsive Design.
    These examples override the primary ('mobile first') styles.
@@ -224,7 +205,7 @@ div.remote {
     /* Style adjustments for high resolution devices */
 }
 
- 
+
 /* ==========================================================================
    Print styles.
    Inlined to avoid the additional HTTP request:
@@ -300,5 +281,3 @@ div.remote {
         page-break-after: avoid;
     }
 }
-
-

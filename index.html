@@ -28,7 +28,7 @@
   <![endif]-->
 
   <!-- Add your site or application content here -->
-  <div class="w3-content w3-theme-l4" style="max-width:960px">
+  <div class="w3-content w3-theme-l4">
     <div class="w3-bar w3-theme">
       <button class="w3-bar-item w3-button w3-theme" onclick="openTab('DAW')">DAW</button>
       <button class="w3-bar-item w3-button w3-theme" onclick="openTab('Master')">Master</button>
@@ -40,194 +40,223 @@
       <button class="w3-bar-item w3-button w3-theme" onclick="openTab('MIDI')">MIDI</button>
     </div>
 
-    <div class="w3-container w3-theme-l3">
-      <div class="w3-row">
-        <select id="midiIn" onchange="inputDeviceSelected()">
-          <option>Input</option>
-        </select>
-        <select id="midiOut">
-          <option>Output</option>
-        </select>
+    <div class="w3-container w3-padding-16 w3-theme-l3">
+      <div class="w3-row-padding">
+        <div class="w3-col s12 m4 l4">
+          <label>Midi In:</label>
+          <select class="w3-select w3-border" id="midiIn" onchange="inputDeviceSelected()"></select>
+        </div>
+        <div class="w3-col s12 m4 l4">
+          <label>Midi Out:</label>
+          <select class="w3-select w3-border" id="midiOut"></select>
+        </div>
       </div>
     </div>
 
     <div id="DAW" class="w3-container tabPage">
-      <div class="w3-row">
-        <h2>DAW Editor</h2>
-        <h3>Please connect your MOXF and select input 5 and output 1 from the above seletion boxes</h3>
+      <div class="w3-row-padding">
+        <div class="w3-col">
+          <h2>DAW Editor</h2>
+        </div>
       </div>
 
-      <div class="w3-row ">
-        <input type="number" onchange="presetSelected()" id="preset" min="1" max="50" placeholder="No" />
-        <input type="text" onchange="presetNameChange(this)" id="presetName" placeholder="Preset Name" maxlength="13" />
-        <select id="ccRemote" onchange="changeType(this.value)">
-          <option value="ccSelected()">CC</option>
-          <option value="remoteSelected()">Remote</option>
-        </select>
-
+      <div class="w3-row-padding ">
+        <div class="w3-col s12 m4 l4">
+          <input class="w3-input w3-border" type="number" onchange="presetSelected()" id="preset" min="1" max="50" placeholder="No" />
+        </div>
+        <div class="w3-col s12 m4 l4">
+          <input class="w3-input w3-border" type="text" onchange="presetNameChange(this)" id="presetName" placeholder="Preset Name" maxlength="13" />
+        </div>
+        <div class="w3-col s12 m4 l4">
+          <select class="w3-select w3-border" id="ccRemote" onchange="changeType(this.value)">
+            <option value="ccSelected()">CC</option>
+            <option value="remoteSelected()">Remote</option>
+          </select>
+        </div>
       </div>
 
-      <div class="w3-row  cc">
-        <div class="w3-row  description">
+      <div class="w3-row-padding cc">
+        <div class="w3-col">
           <p>
             In "CC" mode CC values of 1-127 are transmitted on the selected channels.
           </p>
         </div>
-        <div class="w3-row ">
-          <div class="w3-col l3">
-            <input  type="text" onchange="knobNameChange(this)" id="knobName1" placeholder="Display Name" maxlength="15" />
-            <input  type="number" onchange="ccChange(this)" id="cc1" min="1" max="95" placeholder="CC" />
-          </div>
-          <div class="w3-col l3">
-            <input  type="text" onchange="knobNameChange(this)" id="knobName2" placeholder="Display Name" maxlength="15" />
-            <input  type="number" onchange="ccChange(this)" id="cc2" min="1" max="95" placeholder="CC" />
-          </div>
-          <div class="w3-col l3">
-            <input  type="text" onchange="knobNameChange(this)" id="knobName3" placeholder="Display Name" maxlength="15" />
-            <input  type="number" onchange="ccChange(this)" id="cc3" min="1" max="95" placeholder="CC" />
-          </div>
-          <div class="w3-col l3">
-            <input  type="text" onchange="knobNameChange(this)" id="knobName4" placeholder="Display Name" maxlength="15" />
-            <input  type="number" onchange="ccChange(this)" id="cc4" min="1" max="95" placeholder="CC" />
-          </div>
+        <div class="w3-col l3 m6 s12">
+          <input class="w3-input w3-border w3-col s9" type="text" onchange="knobNameChange(this)" id="knobName1" placeholder="Display Name" maxlength="15" />
+          <input class="w3-input w3-border w3-col s3" type="number" onchange="ccChange(this)" id="cc1" min="1" max="95" placeholder="CC" />
         </div>
-        <div class="w3-row ">
-          <div class="w3-col l3">
-            <input  type="text" onchange="knobNameChange(this)" id="knobName5" placeholder="Display Name" maxlength="15" />
-            <input  type="number" onchange="ccChange(this)" id="cc5" min="1" max="95" placeholder="CC" />
-          </div>
-          <div class="w3-col l3">
-            <input  type="text" onchange="knobNameChange(this)" id="knobName6" placeholder="Display Name" maxlength="15" />
-            <input  type="number" onchange="ccChange(this)" id="cc6" min="1" max="95" placeholder="CC" />
-          </div>
-          <div class="w3-col l3">
-            <input  type="text" onchange="knobNameChange(this)" id="knobName7" placeholder="Display Name" maxlength="15" />
-            <input  type="number" onchange="ccChange(this)" id="cc7" min="1" max="95" placeholder="CC" />
-          </div>
-          <div class="w3-col l3">
-            <input  type="text" onchange="knobNameChange(this)" id="knobName8" placeholder="Display Name" maxlength="15" />
-            <input  type="number" onchange="ccChange(this)" id="cc8" min="1" max="95" placeholder="CC" />
-          </div>
+        <div class="w3-col l3 m6 s12">
+          <input class="w3-input w3-border w3-col s9" type="text" onchange="knobNameChange(this)" id="knobName2" placeholder="Display Name" maxlength="15" />
+          <input class="w3-input w3-border w3-col s3" type="number" onchange="ccChange(this)" id="cc2" min="1" max="95" placeholder="CC" />
         </div>
-        <div class="w3-row ">
-          <div class="w3-col l3">
-            <input  type="text" onchange="knobNameChange(this)" id="knobName9" placeholder="Display Name" maxlength="15" />
-            <input  type="number" onchange="ccChange(this)" id="cc9" min="1" max="95" placeholder="CC" />
-          </div>
-          <div class="w3-col l3">
-            <input  type="text" onchange="knobNameChange(this)" id="knobName10" placeholder="Display Name" maxlength="15" />
-            <input  type="number" onchange="ccChange(this)" id="cc10" min="1" max="95" placeholder="CC" />
-          </div>
-          <div class="w3-col l3">
-            <input  type="text" onchange="knobNameChange(this)" id="knobName11" placeholder="Display Name" maxlength="15" />
-            <input  type="number" onchange="ccChange(this)" id="cc11" min="1" max="95" placeholder="CC" />
-          </div>
-          <div class="w3-col l3">
-            <input  type="text" onchange="knobNameChange(this)" id="knobName12" placeholder="Display Name" maxlength="15" />
-            <input  type="number" oonchange="ccChange(this)" id="cc12" min="1" max="95" placeholder="CC" />
-          </div>
+        <div class="w3-col l3 m6 s12">
+          <input class="w3-input w3-border w3-col s9" type="text" onchange="knobNameChange(this)" id="knobName3" placeholder="Display Name" maxlength="15" />
+          <input class="w3-input w3-border w3-col s3" type="number" onchange="ccChange(this)" id="cc3" min="1" max="95" placeholder="CC" />
+        </div>
+        <div class="w3-col l3 m6 s12">
+          <input class="w3-input w3-border w3-col s9" type="text" onchange="knobNameChange(this)" id="knobName4" placeholder="Display Name" maxlength="15" />
+          <input class="w3-input w3-border w3-col s3" type="number" onchange="ccChange(this)" id="cc4" min="1" max="95" placeholder="CC" />
+        </div>
+        <div class="w3-col l3 m6 s12">
+          <input class="w3-input w3-border w3-col s9" type="text" onchange="knobNameChange(this)" id="knobName5" placeholder="Display Name" maxlength="15" />
+          <input class="w3-input w3-border w3-col s3" type="number" onchange="ccChange(this)" id="cc5" min="1" max="95" placeholder="CC" />
+        </div>
+        <div class="w3-col l3 m6 s12">
+          <input class="w3-input w3-border w3-col s9" type="text" onchange="knobNameChange(this)" id="knobName6" placeholder="Display Name" maxlength="15" />
+          <input class="w3-input w3-border w3-col s3" type="number" onchange="ccChange(this)" id="cc6" min="1" max="95" placeholder="CC" />
+        </div>
+        <div class="w3-col l3 m6 s12">
+          <input class="w3-input w3-border w3-col s9" type="text" onchange="knobNameChange(this)" id="knobName7" placeholder="Display Name" maxlength="15" />
+          <input class="w3-input w3-border w3-col s3" type="number" onchange="ccChange(this)" id="cc7" min="1" max="95" placeholder="CC" />
+        </div>
+        <div class="w3-col l3 m6 s12">
+          <input class="w3-input w3-border w3-col s9" type="text" onchange="knobNameChange(this)" id="knobName8" placeholder="Display Name" maxlength="15" />
+          <input class="w3-input w3-border w3-col s3" type="number" onchange="ccChange(this)" id="cc8" min="1" max="95" placeholder="CC" />
+        </div>
+        <div class="w3-col l3 m6 s12">
+          <input class="w3-input w3-border w3-col s9" type="text" onchange="knobNameChange(this)" id="knobName9" placeholder="Display Name" maxlength="15" />
+          <input class="w3-input w3-border w3-col s3" type="number" onchange="ccChange(this)" id="cc9" min="1" max="95" placeholder="CC" />
+        </div>
+        <div class="w3-col l3 m6 s12">
+          <input class="w3-input w3-border w3-col s9" type="text" onchange="knobNameChange(this)" id="knobName10" placeholder="Display Name" maxlength="15" />
+          <input class="w3-input w3-border w3-col s3" type="number" onchange="ccChange(this)" id="cc10" min="1" max="95" placeholder="CC" />
+        </div>
+        <div class="w3-col l3 m6 s12">
+          <input class="w3-input w3-border w3-col s9" type="text" onchange="knobNameChange(this)" id="knobName11" placeholder="Display Name" maxlength="15" />
+          <input class="w3-input w3-border w3-col s3" type="number" onchange="ccChange(this)" id="cc11" min="1" max="95" placeholder="CC" />
+        </div>
+        <div class="w3-col l3 m6 s12">
+          <input class="w3-input w3-border w3-col s9" type="text" onchange="knobNameChange(this)" id="knobName12" placeholder="Display Name" maxlength="15" />
+          <input class="w3-input w3-border w3-col s3" type="number" onchange="ccChange(this)" id="cc12" min="1" max="95" placeholder="CC" />
         </div>
       </div>
 
-      <div class="w3-row remote">
-        <div class="w3-row  description"
-                    <p>
-                        In "Remote" mode the CC channels are static and cannot be changed.
-                        They transmit relative CC values, clockwise to increase, anti-clockwise to decreace on the channels below.
-                    </p>
-                </div>
-        <div class="w3-row ">
-          <div class="w3-col l3">
-            <input  type="text" value="Cutoff" readonly />
-            <input  type="number" value="16" readonly />
-          </div>
-          <div class="w3-col l3">
-            <input  type="text" value="Resonance" readonly />
-            <input  type="number" value="17" readonly />
-          </div>
-          <div class="w3-col l3">
-            <input  type="text" value="FEG Depth" readonly />
-            <input  type="number" value="18" readonly />
-          </div>
-          <div class="w3-col l3">
-            <input  type="text" value="Portamento" readonly />
-            <input  type="number" value="19" readonly />
-          </div>
+      <div class="w3-row-padding remote">
+        <div class="w3-col">
+          <p>
+            In "Remote" mode the CC channels are static and cannot be changed.
+            They transmit relative CC values, clockwise to increase, anti-clockwise to decreace on the channels below.
+          </p>
         </div>
-        <div class="w3-row ">
-          <div class="w3-col l3">
-            <input  type="text" value="Attack" readonly />
-            <input  type="number" value="20" readonly />
-          </div>
-          <div class="w3-col l3">
-            <input  type="text" value="Decay" readonly />
-            <input  type="number" value="21" readonly />
-          </div>
-          <div class="w3-col l3">
-            <input  type="text" value="Sustain" readonly />
-            <input  type="number" value="22" readonly />
-          </div>
-          <div class="w3-col l3">
-            <input  type="text" value="Release" readonly />
-            <input  type="number" value="23" readonly />
-          </div>
+        <div class="w3-col l3 m6 s12">
+          <input class="w3-input w3-border w3-col s9" type="text" value="Cutoff" readonly />
+          <input class="w3-input w3-border w3-col s3" type="number" value="16" readonly />
         </div>
-        <div class="w3-row ">
-          <div class="w3-col l3">
-            <input  type="text" value="Vol" readonly />
-            <input  type="number" value="24" readonly />
-          </div>
-          <div class="w3-col l3">
-            <input  type="text" value="Pan" readonly />
-            <input  type="number" value="25" readonly />
-          </div>
-          <div class="w3-col l3">
-            <input  type="text" value="Assign 1" readonly />
-            <input  type="number" value="26" readonly />
-          </div>
-          <div class="w3-col l3">
-            <input  type="text" value="Assign 2" readonly />
-            <input  type="number" value="27" readonly />
-          </div>
+        <div class="w3-col l3 m6 s12">
+          <input class="w3-input w3-border w3-col s9" type="text" value="Resonance" readonly />
+          <input class="w3-input w3-border w3-col s3" type="number" value="17" readonly />
         </div>
+        <div class="w3-col l3 m6 s12">
+          <input class="w3-input w3-border w3-col s9" type="text" value="FEG Depth" readonly />
+          <input class="w3-input w3-border w3-col s3" type="number" value="18" readonly />
         </div>
+        <div class="w3-col l3 m6 s12">
+          <input class="w3-input w3-border w3-col s9" type="text" value="Portamento" readonly />
+          <input class="w3-input w3-border w3-col s3" type="number" value="19" readonly />
+        </div>
+        <div class="w3-col l3 m6 s12">
+          <input class="w3-input w3-border w3-col s9" type="text" value="Attack" readonly />
+          <input class="w3-input w3-border w3-col s3" type="number" value="20" readonly />
+        </div>
+        <div class="w3-col l3 m6 s12">
+          <input class="w3-input w3-border w3-col s9" type="text" value="Decay" readonly />
+          <input class="w3-input w3-border w3-col s3" type="number" value="21" readonly />
+        </div>
+        <div class="w3-col l3 m6 s12">
+          <input class="w3-input w3-border w3-col s9" type="text" value="Sustain" readonly />
+          <input class="w3-input w3-border w3-col s3" type="number" value="22" readonly />
+        </div>
+        <div class="w3-col l3 m6 s12">
+          <input class="w3-input w3-border w3-col s9" type="text" value="Release" readonly />
+          <input class="w3-input w3-border w3-col s3" type="number" value="23" readonly />
+        </div>
+        <div class="w3-col l3 m6 s12">
+          <input class="w3-input w3-border w3-col s9" type="text" value="Vol" readonly />
+          <input class="w3-input w3-border w3-col s3" type="number" value="24" readonly />
+        </div>
+        <div class="w3-col l3 m6 s12">
+          <input class="w3-input w3-border w3-col s9" type="text" value="Pan" readonly />
+          <input class="w3-input w3-border w3-col s3" type="number" value="25" readonly />
+        </div>
+        <div class="w3-col l3 m6 s12">
+          <input class="w3-input w3-border w3-col s9" type="text" value="Assign 1" readonly />
+          <input class="w3-input w3-border w3-col s3" type="number" value="26" readonly />
+        </div>
+        <div class="w3-col l3 m6 s12">
+          <input class="w3-input w3-border w3-col s9" type="text" value="Assign 2" readonly />
+          <input class="w3-input w3-border w3-col s3" type="number" value="27" readonly />
+        </div>
+      </div>
 
-      <div class="w3-row ">
-        <button class="w3-button w3-theme" onclick="store()">Store</button>
+      <div class="w3-row-padding w3-padding-16">
+        <div class="w3-col">
+          <button class="w3-button w3-theme" onclick="store()">Store</button>
+        </div>
       </div>
 
     </div>
 
     <div id="Master" class="w3-container tabPage" style="display:none">
-      <h2>Master Editor</h2>
+      <div class="w3-row-padding">
+        <div class="w3-col">
+          <h2>Master Editor</h2>
+        </div>
+      </div>
     </div>
 
     <div id="Voice" class="w3-container tabPage" style="display:none">
-      <h2>Voice Editor</h2>
+      <div class="w3-row-padding">
+        <div class="w3-col">
+          <h2>Voice Editor</h2>
+        </div>
+      </div>
     </div>
 
     <div id="Performance" class="w3-container tabPage" style="display:none">
-      <h2>Performance Editor</h2>
+      <div class="w3-row-padding">
+        <div class="w3-col">
+          <h2>Performance Editor</h2>
+        </div>
+      </div>
     </div>
 
     <div id="Mix" class="w3-container tabPage" style="display:none">
-      <h2>Mix Editor</h2>
+      <div class="w3-row-padding">
+        <div class="w3-col">
+          <h2>Mix Editor</h2>
+        </div>
+      </div>
     </div>
 
     <div id="Drum" class="w3-container tabPage" style="display:none">
-      <h2>Drum Editor</h2>
+      <div class="w3-row-padding">
+        <div class="w3-col">
+          <h2>Drum Editor</h2>
+        </div>
+      </div>
     </div>
 
     <div id="Master" class="w3-container tabPage" style="display:none">
-      <h2>Master Editor</h2>
+      <div class="w3-row-padding">
+        <div class="w3-col">
+          <h2>Master Editor</h2>
+        </div>
+      </div>
     </div>
 
     <div id="MIDI" class="w3-container tabPage" style="display:none">
-      <h2>Debugging Data</h2>
-      <section id="midi-data">
-        <ul style="list-style: none;"></ul>
-      </section>
-
+      <div class="w3-row-padding">
+        <div class="w3-col">
+          <h2>Debugging Data</h2>
+        </div>
+      </div>
+      <div class="w3-row-padding">
+        <div class="w3-col">
+          <section id="midi-data">
+            <ul></ul>
+          </section>
+        </div>
+      </div>
     </div>
 
     <!-- WebMIDI -->
@@ -236,7 +265,9 @@
     <!-- Boilerplate Scripts -->
     <script src="js/vendor/modernizr-3.6.0.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
-    <script>window.jQuery || document.write('<script src="js/vendor/jquery-3.3.1.min.js"><\/script>')</script>
+    <script>
+      window.jQuery || document.write('<script src="js/vendor/jquery-3.3.1.min.js"><\/script>')
+    </script>
     <script src="js/plugins.js"></script>
     <script src="js/main.js"></script>
 
@@ -245,8 +276,13 @@
 
     <!-- Google Analytics: change UA-XXXXX-Y to be your site's ID. -->
     <script>
-      window.ga = function () { ga.q.push(arguments) }; ga.q = []; ga.l = +new Date;
-      ga('create', 'UA-XXXXX-Y', 'auto'); ga('send', 'pageview')
+      window.ga = function() {
+        ga.q.push(arguments)
+      };
+      ga.q = [];
+      ga.l = +new Date;
+      ga('create', 'UA-XXXXX-Y', 'auto');
+      ga('send', 'pageview')
     </script>
     <script src="https://www.google-analytics.com/analytics.js" async defer></script>
 
