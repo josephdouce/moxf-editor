@@ -41,19 +41,19 @@
       <button class="w3-bar-item w3-button w3-theme" onclick="openTab('MIDI')">MIDI</button>
     </div>
 
-    <div class="w3-display-container w3-container w3-pale-yellow w3-leftbar w3-border-yellow">
+    <div id="connectionWarning" class="w3-display-container w3-container w3-pale-yellow w3-leftbar w3-border-yellow">
       <span onclick="this.parentElement.style.display='none'" class="w3-button w3-display-topright">X</span>
-      <p>Please connect your MOXF.</p>
+      <p>Please connect your MOXF</p>
     </div>
 
     <div class="w3-container w3-padding-16 w3-theme-l3">
       <div class="w3-row-padding">
         <div class="w3-col s12 m4 l4">
-          <label>Midi In:</label>
+          <label>Midi In</label>
           <select class="w3-select w3-border" id="midiIn" onchange="inputDeviceSelected()"></select>
         </div>
         <div class="w3-col s12 m4 l4">
-          <label>Midi Out:</label>
+          <label>Midi Out</label>
           <select class="w3-select w3-border" id="midiOut"></select>
         </div>
       </div>
@@ -254,7 +254,7 @@
       <div class="w3-row-padding">
         <div class="w3-col">
           <section id="midi-data">
-            <ul></ul>
+            <ul class="w3-ul"></ul>
           </section>
         </div>
       </div>
