@@ -6,18 +6,21 @@ function inputDeviceSelected() {
   // Listen for a all messages on all channels
   input.addListener('noteon', "all",
     function(e) {
+      printMidiDebug("Recieved: " + e.data);
       gotMIDImessage(e.data);
     }
   );
 
   input.addListener('controlchange', "all",
     function(e) {
+      printMidiDebug("Recieved: " + e.data);
       gotMIDImessage(e.data);
     }
   );
 
   input.addListener('sysex', "all",
     function(e) {
+      printMidiDebug("Recieved: " + e.data);
       processSysex(e.data);
     }
   );
@@ -83,10 +86,7 @@ function openTab(tabName) {
 }
 
 function gotMIDImessage(messageData) {
-  var dataList = document.querySelector('#midi-data ul')
-  var newItem = document.createElement('li');
-  newItem.appendChild(document.createTextNode(messageData));
-  dataList.insertBefore(newItem, dataList.firstChild);
+  messageData
 }
 
 function presetSelected() {
@@ -156,11 +156,6 @@ function requestData() {
 }
 
 function processSysex(messageData) {
-  var dataList = document.querySelector('#midi-data ul')
-  var newItem = document.createElement('li');
-  newItem.appendChild(document.createTextNode(messageData));
-  dataList.insertBefore(newItem, dataList.firstChild);
-
   switch (messageData[2]) {
     // bulk dump
     case 0x00:
@@ -224,9 +219,19 @@ function processSysex(messageData) {
           break;
       }
       break;
-
   }
+}
 
+// print midi data if debuggin enabled
+function printMidiDebug(data) {
+  // only print if debug enabled
+  if (document.getElementById("debuggingEnabled").checked) {
+    // append to top of list
+    var dataList = document.querySelector('#midi-data ul')
+    var newItem = document.createElement('li');
+    newItem.appendChild(document.createTextNode(data));
+    dataList.insertBefore(newItem, dataList.firstChild);
+  }
 }
 
 // on load function
