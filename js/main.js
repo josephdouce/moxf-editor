@@ -27,27 +27,21 @@ function inputDeviceSelected() {
   // listen for sysex and update fields
 }
 
-// remote mode selected
-function remoteSelected() {
-  for (let el of document.querySelectorAll('.cc')) el.style.display = 'none';
-  for (let el of document.querySelectorAll('.remote')) el.style.display = 'block';
-  var outputSelected = document.getElementById("midiOut").value;
-  var output = WebMidi.getOutputByName(outputSelected);
-  output.sendSysex([0x43, 0x10, 0x7F, 0x1C], [0x00, 0x01, 0x00, 0x19, 0x00]);
-}
-
-// cc mode selected
-function ccSelected() {
-  for (let el of document.querySelectorAll('.remote')) el.style.display = 'none';
-  for (let el of document.querySelectorAll('.cc')) el.style.display = 'block';
-  var outputSelected = document.getElementById("midiOut").value;
-  var output = WebMidi.getOutputByName(outputSelected);
-  output.sendSysex([0x43, 0x10, 0x7F, 0x1C], [0x00, 0x01, 0x00, 0x19, 0x01]);
-}
-
 // action for change of mode dropdown
 function changeType(value) {
-  eval(value);
+  if (value = "cc"){
+    for (let el of document.querySelectorAll('.remote')) el.style.display = 'none';
+    for (let el of document.querySelectorAll('.cc')) el.style.display = 'block';
+    var outputSelected = document.getElementById("midiOut").value;
+    var output = WebMidi.getOutputByName(outputSelected);
+    output.sendSysex([0x43, 0x10, 0x7F, 0x1C], [0x00, 0x01, 0x00, 0x19, 0x01]);
+  }else if (value = "remote") {
+    for (let el of document.querySelectorAll('.cc')) el.style.display = 'none';
+    for (let el of document.querySelectorAll('.remote')) el.style.display = 'block';
+    var outputSelected = document.getElementById("midiOut").value;
+    var output = WebMidi.getOutputByName(outputSelected);
+    output.sendSysex([0x43, 0x10, 0x7F, 0x1C], [0x00, 0x01, 0x00, 0x19, 0x00]);
+  }
 }
 
 function getMidiDevices() {
