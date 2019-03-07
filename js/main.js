@@ -28,14 +28,15 @@ function inputDeviceSelected() {
 }
 
 // action for change of mode dropdown
-function changeType(value) {
-  if (value = "cc"){
+function changeType() {
+  var type = document.getElementById("ccRemote").value;
+  if (type == "cc") {
     for (let el of document.querySelectorAll('.remote')) el.style.display = 'none';
     for (let el of document.querySelectorAll('.cc')) el.style.display = 'block';
     var outputSelected = document.getElementById("midiOut").value;
     var output = WebMidi.getOutputByName(outputSelected);
     output.sendSysex([0x43, 0x10, 0x7F, 0x1C], [0x00, 0x01, 0x00, 0x19, 0x01]);
-  }else if (value = "remote") {
+  } else if (type == "remote") {
     for (let el of document.querySelectorAll('.cc')) el.style.display = 'none';
     for (let el of document.querySelectorAll('.remote')) el.style.display = 'block';
     var outputSelected = document.getElementById("midiOut").value;
@@ -55,17 +56,17 @@ function getMidiDevices() {
       for (var i in WebMidi.inputs) {
         var option = document.createElement('option');
         option.text = option.value = WebMidi.inputs[i].name;
-        select.add(option, 0);
+        select.add(option);
       }
 
       var select = document.getElementById("midiOut");
       for (var i in WebMidi.inputs) {
         var option = document.createElement('option');
         option.text = option.value = WebMidi.outputs[i].name;
-        select.add(option, 0);
+        select.add(option);
       }
     }
-    document.getElementById("midiOut").value = WebMidi.getInputByName("MOXF8 - 5");
+    document.getElementById("midiIn").value = WebMidi.getInputByName("MOXF8 - 5");
     document.getElementById("midiOut").value = WebMidi.getOutputByName("MOXF8 - 1");
   }, true);
 }
