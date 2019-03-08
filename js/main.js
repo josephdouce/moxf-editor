@@ -101,9 +101,9 @@ function getMidiDevices() {
     document.getElementById("midiOut").add(option);
   }
 
-  document.getElementById("midiIn").value = WebMidi.inputs[0].name;
+  document.getElementById("midiIn").value = WebMidi.getInputByName("MOXF6/MOXF8-5").name;
   inputSelected();
-  document.getElementById("midiOut").value = WebMidi.outputs[0].name;
+  document.getElementById("midiOut").value = WebMidi.getOutputByName("MOXF6/MOXF8-1").name;
   outputSelected();
 }
 
