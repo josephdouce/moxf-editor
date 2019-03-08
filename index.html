@@ -50,11 +50,11 @@
       <div class="w3-row-padding">
         <div class="w3-col s12 m4 l4">
           <label>Midi In</label>
-          <select class="w3-select w3-border" id="midiIn" onchange="inputDeviceSelected()"></select>
+          <select class="w3-select w3-border" id="midiIn" onchange="inputSelected()"></select>
         </div>
         <div class="w3-col s12 m4 l4">
           <label>Midi Out</label>
-          <select class="w3-select w3-border" id="midiOut"></select>
+          <select class="w3-select w3-border" id="midiOut" onchange="outputSelected()"></select>
         </div>
       </div>
     </div>
@@ -68,7 +68,7 @@
 
       <div class="w3-row-padding ">
         <div class="w3-col s12 m4 l4">
-          <input class="w3-input w3-border" type="number" onchange="presetSelected()" id="preset" min="1" max="50" placeholder="No" />
+          <input class="w3-input w3-border" type="number" onchange="presetSelected(this)" id="preset" min="1" max="50" placeholder="No" />
         </div>
         <div class="w3-col s12 m4 l4">
           <input class="w3-input w3-border" type="text" onchange="presetNameChange(this)" id="presetName" placeholder="Preset Name" maxlength="13" />
@@ -248,7 +248,7 @@
           <h2>MIDI Data</h2>
           <input id="debuggingEnabled" class="w3-check" type="checkbox">
           <label>Debugging enabled</label>
-          <p>Live MIDI data will be displated here if debugging is enabled.</p>
+          <p>Live MIDI data will be displayed here if debugging is enabled.</p>
         </div>
       </div>
       <div class="w3-row-padding">

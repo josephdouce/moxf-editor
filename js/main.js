@@ -1,30 +1,40 @@
-// add listeners on selected input device
-function inputDeviceSelected() {
-  intputSelected = document.getElementById("midiIn").value;
-  var input = WebMidi.getInputByName(intputSelected);
+function inputSelected() {
+  console.log("Input selected : " + document.getElementById("midiIn").value);
+  var intputSelected = document.getElementById("midiIn").value;
+  input = WebMidi.getInputByName(intputSelected);
+  input.removeListener();
+  addListeners();
+}
 
-  // Listen for a all messages on all channels
+function outputSelected() {
+  console.log("Output selected : " + document.getElementById("midiOut").value);
+  var outputSelected = document.getElementById("midiOut").value;
+  output = WebMidi.getOutputByName(outputSelected);
+}
+
+// add listeners on selected input device
+function addListeners() {
+  // Listen for note messages on all channels
   input.addListener('noteon', "all",
     function(e) {
       printMidiDebug("Recieved: " + e.data);
-      gotMIDImessage(e.data);
     }
   );
 
+  // Listen for cc messages on all channels
   input.addListener('controlchange', "all",
     function(e) {
       printMidiDebug("Recieved: " + e.data);
-      gotMIDImessage(e.data);
     }
   );
 
+  // Listen for sysex messages on all channels
   input.addListener('sysex', "all",
     function(e) {
       printMidiDebug("Recieved: " + e.data);
       processSysex(e.data);
     }
   );
-  // listen for sysex and update fields
 }
 
 // action for change of mode dropdown
@@ -33,42 +43,68 @@ function changeType() {
   if (type == "cc") {
     for (let el of document.querySelectorAll('.remote')) el.style.display = 'none';
     for (let el of document.querySelectorAll('.cc')) el.style.display = 'block';
-    var outputSelected = document.getElementById("midiOut").value;
-    var output = WebMidi.getOutputByName(outputSelected);
     output.sendSysex([0x43, 0x10, 0x7F, 0x1C], [0x00, 0x01, 0x00, 0x19, 0x01]);
   } else if (type == "remote") {
     for (let el of document.querySelectorAll('.cc')) el.style.display = 'none';
     for (let el of document.querySelectorAll('.remote')) el.style.display = 'block';
-    var outputSelected = document.getElementById("midiOut").value;
-    var output = WebMidi.getOutputByName(outputSelected);
     output.sendSysex([0x43, 0x10, 0x7F, 0x1C], [0x00, 0x01, 0x00, 0x19, 0x00]);
   }
 }
 
-function getMidiDevices() {
-  WebMidi.enable(function(err) {
-    if (err) {
-      console.log("WebMidi could not be enabled.", err);
-    } else {
-      console.log("WebMidi enabled");
+async function enableMidi() {
 
-      var select = document.getElementById("midiIn");
-      for (var i in WebMidi.inputs) {
-        var option = document.createElement('option');
-        option.text = option.value = WebMidi.inputs[i].name;
-        select.add(option);
+  var promise = new Promise((resolve, reject) => {
+    WebMidi.enable(function(err) {
+      if (err) {
+        console.log("WebMidi could not be enabled.", err);
+      } else {
+        resolve();
+        console.log("WebMidi enabled");
       }
+    }, true);
+  });
 
-      var select = document.getElementById("midiOut");
-      for (var i in WebMidi.inputs) {
-        var option = document.createElement('option');
-        option.text = option.value = WebMidi.outputs[i].name;
-        select.add(option);
-      }
+  await promise;
+
+  WebMidi.addListener('connected',
+    function(e) {
+      getMidiDevices();
     }
-    document.getElementById("midiIn").value = WebMidi.getInputByName("MOXF8 - 5");
-    document.getElementById("midiOut").value = WebMidi.getOutputByName("MOXF8 - 1");
-  }, true);
+  );
+
+  WebMidi.addListener('disconnected',
+    function(e) {
+      getMidiDevices();
+    }
+  );
+
+  getMidiDevices();
+
+}
+
+function getMidiDevices() {
+
+  document.getElementById("midiIn").options.length = 0;
+  document.getElementById("midiOut").options.length = 0;
+
+  for (var i in WebMidi.inputs) {
+    console.log("Added input: " + WebMidi.inputs[i].name);
+    var option = document.createElement('option');
+    option.text = option.value = WebMidi.inputs[i].name;
+    document.getElementById("midiIn").add(option);
+  }
+
+  for (var i in WebMidi.inputs) {
+    console.log("Added output: " + WebMidi.inputs[i].name);
+    var option = document.createElement('option');
+    option.text = option.value = WebMidi.outputs[i].name;
+    document.getElementById("midiOut").add(option);
+  }
+
+  document.getElementById("midiIn").value = WebMidi.inputs[0].name;
+  inputSelected();
+  document.getElementById("midiOut").value = WebMidi.outputs[0].name;
+  outputSelected();
 }
 
 function openTab(tabName) {
@@ -80,14 +116,11 @@ function openTab(tabName) {
   document.getElementById(tabName).style.display = "block";
 }
 
-function gotMIDImessage(messageData) {
-  messageData
-}
-
-function presetSelected() {
-  var outputSelected = document.getElementById("midiOut").value;
-  var output = WebMidi.getOutputByName(outputSelected);
-  var preset = document.getElementById("preset").value - 1;
+function presetSelected(data) {
+  if (data.value > 50) {
+    data.value = 50
+  }
+  var preset = data.value - 1;
   // set preset
   output.sendSysex([0x43, 0x10, 0x7F, 0x1C], [0x00, 0x01, 0x20, 0x00, preset]);
   // get data
@@ -95,8 +128,6 @@ function presetSelected() {
 }
 
 function presetNameChange(data) {
-  var outputSelected = document.getElementById("midiOut").value;
-  var output = WebMidi.getOutputByName(outputSelected);
   // set preset name
   for (i = 0x00; i < 0x0C; i++) {
     if (data.value[i] == undefined) {
@@ -115,8 +146,6 @@ function presetNameChange(data) {
 }
 
 function knobNameChange(data) {
-  var outputSelected = document.getElementById("midiOut").value;
-  var output = WebMidi.getOutputByName(outputSelected);
   var knobAddress = parseInt(data.id[8]) + 15;
   for (i = 0x09; i < 0x18; i++) {
     if (data.value[i - 9] == undefined) {
@@ -128,25 +157,22 @@ function knobNameChange(data) {
 }
 
 function ccChange(data) {
-  var outputSelected = document.getElementById("midiOut").value;
-  var output = WebMidi.getOutputByName(outputSelected);
+  if (data.value > 95) {
+    data.value = 95;
+  }
   var value = data.value;
   var knobAddress = parseInt(data.id[2]) + 15;
   output.sendSysex([0x43, 0x10, 0x7F, 0x1C], [0x00, 0x01, knobAddress, 0x18, value]);
 }
 
 function store() {
-  var outputSelected = document.getElementById("midiOut").value;
-  var output = WebMidi.getOutputByName(outputSelected);
   output.sendSysex([0x43, 0x10, 0x7F, 0x1C], [0x00, 0x01, 0x22, 0x00]);
 }
 
 function requestData() {
-  var outputSelected = document.getElementById("midiOut").value;
-  var output = WebMidi.getOutputByName(outputSelected);
-  var presetAddress = document.getElementById('preset').value - 1
+  var presetAddress = document.getElementById('preset').value - 1;
   // get preset data
-  console.log("Request Data for Preset: " + document.getElementById('preset').value);
+  console.log("Requesting data for preset: " + document.getElementById('preset').value);
   output.sendSysex([0x43, 0x20, 0x7F, 0x1C], [0x00, 0x0E, 0x60, presetAddress, 0x00]);
 }
 
@@ -203,9 +229,9 @@ function processSysex(messageData) {
           switch (messageData[7]) {
             case 0x20:
               if (document.getElementById("preset").value == (messageData[9] + 1)) {
-                console.log("Preset Not Changed: " + document.getElementById("preset").value);
+                console.log("Preset not changed: " + document.getElementById("preset").value);
               } else {
-                console.log("New Preset: " + (messageData[9] + 1))
+                console.log("Loading new preset: " + (messageData[9] + 1))
                 document.getElementById("preset").value = messageData[9] + 1;
                 requestData();
               }
@@ -229,10 +255,5 @@ function printMidiDebug(data) {
   }
 }
 
-// on load function
-function onLoadFunction() {
-  getMidiDevices();
-}
-
 // call onload function
-window.onload = onLoadFunction();
+window.onload = enableMidi();
