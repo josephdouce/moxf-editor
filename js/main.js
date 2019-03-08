@@ -191,9 +191,9 @@ function processSysex(messageData) {
                 document.getElementById("presetName").value += String.fromCharCode(messageData[i]);
               }
               if (messageData[36] == 1) {
-                document.getElementById("ccRemote").value = "ccSelected()";
+                document.getElementById("ccRemote").value = "cc";
               } else {
-                document.getElementById("ccRemote").value = "remoteSelected()";
+                document.getElementById("ccRemote").value = "remote";
               }
               break;
             case 0x10:
