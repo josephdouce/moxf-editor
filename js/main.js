@@ -16,21 +16,21 @@ function outputSelected() {
 function addListeners() {
   // Listen for note messages on all channels
   input.addListener('noteon', "all",
-    function(e) {
+    function (e) {
       printMidiDebug("Recieved: " + e.data);
     }
   );
 
   // Listen for cc messages on all channels
   input.addListener('controlchange', "all",
-    function(e) {
+    function (e) {
       printMidiDebug("Recieved: " + e.data);
     }
   );
 
   // Listen for sysex messages on all channels
   input.addListener('sysex', "all",
-    function(e) {
+    function (e) {
       printMidiDebug("Recieved: " + e.data);
       processSysex(e.data);
     }
@@ -54,7 +54,7 @@ function changeType() {
 async function enableMidi() {
 
   var promise = new Promise((resolve, reject) => {
-    WebMidi.enable(function(err) {
+    WebMidi.enable(function (err) {
       if (err) {
         console.log("WebMidi could not be enabled.", err);
       } else {
@@ -67,13 +67,13 @@ async function enableMidi() {
   await promise;
 
   WebMidi.addListener('connected',
-    function(e) {
+    function (e) {
       getMidiDevices();
     }
   );
 
   WebMidi.addListener('disconnected',
-    function(e) {
+    function (e) {
       getMidiDevices();
     }
   );
