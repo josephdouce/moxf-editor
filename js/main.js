@@ -268,47 +268,32 @@ function printMidiDebug(data) {
 // call onload function
 window.onload = enableMidi();
 
-// webapp install
-var deferredPrompt;
+// webapp install desktop
+let deferredPrompt;
+const addBtn = document.querySelector('.a2hs-button');
+addBtn.style.display = 'none';
 
-window.addEventListener('beforeinstallprompt', function (e) {
+window.addEventListener('beforeinstallprompt', (e) => {
   // Prevent Chrome 67 and earlier from automatically showing the prompt
   e.preventDefault();
   // Stash the event so it can be triggered later.
   deferredPrompt = e;
+  // Update UI to notify the user they can add to home screen
+  addBtn.style.display = 'block';
 
-  console.log("ad2hs triggered")
-  console.log(e);
-
-  showAddToHomeScreen();
-
+  addBtn.addEventListener('click', (e) => {
+    // hide our user interface that shows our A2HS button
+    addBtn.style.display = 'none';
+    // Show the prompt
+    deferredPrompt.prompt();
+    // Wait for the user to respond to the prompt
+    deferredPrompt.userChoice.then((choiceResult) => {
+        if (choiceResult.outcome === 'accepted') {
+          console.log('User accepted the A2HS prompt');
+        } else {
+          console.log('User dismissed the A2HS prompt');
+        }
+        deferredPrompt = null;
+      });
+  });
 });
-
-function showAddToHomeScreen() {
-
-  var a2hsBtn = document.querySelector(".ad2hs-prompt");
-
-  a2hsBtn.style.display = "block";
-
-  a2hsBtn.addEventListener("click", addToHomeScreen);
-
-}
-
-function addToHomeScreen() {
-
-  var a2hsBtn = document.querySelector(".ad2hs-prompt"); // hide our user interface that shows our A2HS button
-  a2hsBtn.style.display = 'none'; // Show the prompt
-  deferredPrompt.prompt(); // Wait for the user to respond to the prompt
-
-  deferredPrompt.userChoice
-
-    .then(function (choiceResult) {
-      if (choiceResult.outcome === 'accepted') {
-        console.log('User accepted the A2HS prompt');
-      } else {
-        console.log('User dismissed the A2HS prompt');
-      }
-      deferredPrompt = null;
-      
-    });
-}
