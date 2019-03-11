@@ -87,6 +87,12 @@ function getMidiDevices() {
   document.getElementById("midiIn").options.length = 0;
   document.getElementById("midiOut").options.length = 0;
 
+  if (Webmidi.inputs.length > 0) {
+    document.getElementById('connectionWarning').style.display = 'none';
+  } else {
+    document.getElementById('connectionWarning').style.display = 'block';
+  }
+
   for (var i in WebMidi.inputs) {
     console.log("Added input: " + WebMidi.inputs[i].name);
     var option = document.createElement('option');
@@ -94,8 +100,8 @@ function getMidiDevices() {
     document.getElementById("midiIn").add(option);
   }
 
-  for (var i in WebMidi.inputs) {
-    console.log("Added output: " + WebMidi.inputs[i].name);
+  for (var i in WebMidi.outputs) {
+    console.log("Added output: " + WebMidi.outputs[i].name);
     var option = document.createElement('option');
     option.text = option.value = WebMidi.outputs[i].name;
     document.getElementById("midiOut").add(option);
