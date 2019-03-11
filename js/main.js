@@ -87,8 +87,8 @@ function getMidiDevices() {
   document.getElementById("midiIn").options.length = 0;
   document.getElementById("midiOut").options.length = 0;
 
-  if (Webmidi.inputs.length > 0) {
-    
+  if (WebMidi.inputs.length > 0) {
+
     document.getElementById('connectionWarning').style.display = 'none';
 
     for (var i in WebMidi.inputs) {
