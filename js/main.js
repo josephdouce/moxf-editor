@@ -88,29 +88,32 @@ function getMidiDevices() {
   document.getElementById("midiOut").options.length = 0;
 
   if (Webmidi.inputs.length > 0) {
+    
     document.getElementById('connectionWarning').style.display = 'none';
+
+    for (var i in WebMidi.inputs) {
+      console.log("Added input: " + WebMidi.inputs[i].name);
+      var option = document.createElement('option');
+      option.text = option.value = WebMidi.inputs[i].name;
+      document.getElementById("midiIn").add(option);
+    }
+  
+    for (var i in WebMidi.outputs) {
+      console.log("Added output: " + WebMidi.outputs[i].name);
+      var option = document.createElement('option');
+      option.text = option.value = WebMidi.outputs[i].name;
+      document.getElementById("midiOut").add(option);
+    }
+  
+    document.getElementById("midiIn").value = WebMidi.getInputByName("MOXF6/MOXF8-5").name;
+    inputSelected();
+    document.getElementById("midiOut").value = WebMidi.getOutputByName("MOXF6/MOXF8-1").name;
+    outputSelected();
+
   } else {
     document.getElementById('connectionWarning').style.display = 'block';
   }
 
-  for (var i in WebMidi.inputs) {
-    console.log("Added input: " + WebMidi.inputs[i].name);
-    var option = document.createElement('option');
-    option.text = option.value = WebMidi.inputs[i].name;
-    document.getElementById("midiIn").add(option);
-  }
-
-  for (var i in WebMidi.outputs) {
-    console.log("Added output: " + WebMidi.outputs[i].name);
-    var option = document.createElement('option');
-    option.text = option.value = WebMidi.outputs[i].name;
-    document.getElementById("midiOut").add(option);
-  }
-
-  document.getElementById("midiIn").value = WebMidi.getInputByName("MOXF6/MOXF8-5").name;
-  inputSelected();
-  document.getElementById("midiOut").value = WebMidi.getOutputByName("MOXF6/MOXF8-1").name;
-  outputSelected();
 }
 
 function openTab(tabName) {
