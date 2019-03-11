@@ -14,21 +14,18 @@ function outputSelected() {
 
 // add listeners on selected input device
 function addListeners() {
-  // Listen for note messages on all channels
   input.addListener('noteon', "all",
     function (e) {
       printMidiDebug("Recieved: " + e.data);
     }
   );
 
-  // Listen for cc messages on all channels
   input.addListener('controlchange', "all",
     function (e) {
       printMidiDebug("Recieved: " + e.data);
     }
   );
 
-  // Listen for sysex messages on all channels
   input.addListener('sysex', "all",
     function (e) {
       printMidiDebug("Recieved: " + e.data);
@@ -37,7 +34,7 @@ function addListeners() {
   );
 }
 
-// action for change of mode dropdown
+// funcion for change of cc/remote dropdown
 function changeType() {
   var type = document.getElementById("ccRemote").value;
   if (type == "cc") {
@@ -51,6 +48,7 @@ function changeType() {
   }
 }
 
+// request enable MIDI in broweser and wait for user response before proceeding
 async function enableMidi() {
 
   var promise = new Promise((resolve, reject) => {
@@ -64,6 +62,7 @@ async function enableMidi() {
     }, true);
   });
 
+  // wait for midi to be enabled
   await promise;
 
   WebMidi.addListener('connected',
@@ -82,6 +81,7 @@ async function enableMidi() {
 
 }
 
+// get available midi devices and populate dropdowns 
 function getMidiDevices() {
 
   document.getElementById("midiIn").options.length = 0;
@@ -216,7 +216,11 @@ function processSysex(messageData) {
               }
               document.getElementById(ccId).value = messageData[35];
               break;
+            default:
+              break;
           }
+          break;
+        default:
           break;
       }
       break;
@@ -236,9 +240,15 @@ function processSysex(messageData) {
                 requestData();
               }
               break;
+            default:
+              break;
           }
           break;
+        default:
+          break;
       }
+      break;
+    default:
       break;
   }
 }
@@ -257,3 +267,30 @@ function printMidiDebug(data) {
 
 // call onload function
 window.onload = enableMidi();
+
+// webapp install
+window.addEventListener('beforeinstallprompt', (e) => {
+  // Prevent Chrome 67 and earlier from automatically showing the prompt
+  e.preventDefault();
+  // Stash the event so it can be triggered later.
+  deferredPrompt = e;
+  // Update UI notify the user they can add to home screen
+  btnAdd.style.display = 'block';
+});
+
+btnAdd.addEventListener('click', (e) => {
+  // hide our user interface that shows our A2HS button
+  btnAdd.style.display = 'none';
+  // Show the prompt
+  deferredPrompt.prompt();
+  // Wait for the user to respond to the prompt
+  deferredPrompt.userChoice
+    .then((choiceResult) => {
+      if (choiceResult.outcome === 'accepted') {
+        console.log('User accepted the A2HS prompt');
+      } else {
+        console.log('User dismissed the A2HS prompt');
+      }
+      deferredPrompt = null;
+    });
+});
