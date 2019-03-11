@@ -270,7 +270,7 @@ window.onload = enableMidi();
 
 // webapp install desktop
 let deferredPrompt;
-const addBtn = document.querySelector('.a2hs-button');
+const addBtn = document.querySelector('.add-button');
 addBtn.style.display = 'none';
 
 window.addEventListener('beforeinstallprompt', (e) => {
