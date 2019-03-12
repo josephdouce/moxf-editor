@@ -1,3 +1,5 @@
+var output, input;
+
 function inputSelected() {
   var intputSelected = document.getElementById("midiIn").value;
   if (inputSelected.length > 0) {
