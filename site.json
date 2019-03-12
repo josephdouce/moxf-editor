@@ -7,15 +7,11 @@
     "sizes": "192x192"
   },
   {
-    "src": "tile.png",
+    "src": "icon.png",
     "type": "image/png",
-    "sizes": "558x558"
-  },
-  {
-    "src": "tile-wide.png",
-    "type": "image/png",
-    "sizes": "558x270"
-  }],
+    "sizes": "600x600"
+  }
+  ],
   "display": "standalone",
   "start_url": "/moxf-editor/index.html",
   "background_color": "#fafafa",
