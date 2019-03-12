@@ -285,10 +285,11 @@ function printMidiDebug(data) {
 // call onload function
 window.onload = enableMidi();
 
-// webapp install desktop
+// webapp install
 let deferredPrompt;
 const addBtn = document.querySelector('.add-button');
-addBtn.style.display = 'none';
+const addPanel = document.querySelector('.add-panel');
+addPanel.style.display = 'none';
 
 window.addEventListener('beforeinstallprompt', (e) => {
   // Prevent Chrome 67 and earlier from automatically showing the prompt
@@ -296,11 +297,11 @@ window.addEventListener('beforeinstallprompt', (e) => {
   // Stash the event so it can be triggered later.
   deferredPrompt = e;
   // Update UI to notify the user they can add to home screen
-  addBtn.style.display = 'block';
+  addPanel.style.display = 'block';
 
   addBtn.addEventListener('click', (e) => {
     // hide our user interface that shows our A2HS button
-    addBtn.style.display = 'none';
+    addPanel.style.display = 'none';
     // Show the prompt
     deferredPrompt.prompt();
     // Wait for the user to respond to the prompt
