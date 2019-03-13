@@ -1,5 +1,15 @@
 var output, input;
 
+function sendSysex(data1, data2) {
+  try {
+    output.sendSysex(data1, data2);
+  }
+  catch(err) {
+    alert("No MIDI Device Connected");
+    console.log(err);
+  }
+}
+
 function inputSelected() {
   var intputSelected = document.getElementById("midiIn").value;
   if (inputSelected.length > 0) {
@@ -50,11 +60,11 @@ function changeType() {
   if (type == "cc") {
     for (let el of document.querySelectorAll('.remote')) el.style.display = 'none';
     for (let el of document.querySelectorAll('.cc')) el.style.display = 'block';
-    output.sendSysex([0x43, 0x10, 0x7F, 0x1C], [0x00, 0x01, 0x00, 0x19, 0x01]);
+    sendSysex([0x43, 0x10, 0x7F, 0x1C], [0x00, 0x01, 0x00, 0x19, 0x01]);
   } else if (type == "remote") {
     for (let el of document.querySelectorAll('.cc')) el.style.display = 'none';
     for (let el of document.querySelectorAll('.remote')) el.style.display = 'block';
-    output.sendSysex([0x43, 0x10, 0x7F, 0x1C], [0x00, 0x01, 0x00, 0x19, 0x00]);
+    sendSysex([0x43, 0x10, 0x7F, 0x1C], [0x00, 0x01, 0x00, 0x19, 0x00]);
   }
 }
 
@@ -141,7 +151,7 @@ function presetSelected(data) {
   }
   var preset = data.value - 1;
   // set preset
-  output.sendSysex([0x43, 0x10, 0x7F, 0x1C], [0x00, 0x01, 0x20, 0x00, preset]);
+  sendSysex([0x43, 0x10, 0x7F, 0x1C], [0x00, 0x01, 0x20, 0x00, preset]);
   // get data
   requestData();
 }
@@ -150,16 +160,16 @@ function presetNameChange(data) {
   // set preset name
   for (i = 0x00; i < 0x0C; i++) {
     if (data.value[i] == undefined) {
-      output.sendSysex([0x43, 0x10, 0x7F, 0x1C], [0x00, 0x01, 0x00, i, 0x20]);
+      sendSysex([0x43, 0x10, 0x7F, 0x1C], [0x00, 0x01, 0x00, i, 0x20]);
     } else {
-      output.sendSysex([0x43, 0x10, 0x7F, 0x1C], [0x00, 0x01, 0x00, i, String(data.value[i]).charCodeAt(0)]);
+      sendSysex([0x43, 0x10, 0x7F, 0x1C], [0x00, 0x01, 0x00, i, String(data.value[i]).charCodeAt(0)]);
     }
   }
   for (i = 0x0D; i < 0x19; i++) {
     if (data.value[i] == undefined) {
-      output.sendSysex([0x43, 0x10, 0x7F, 0x1C], [0x00, 0x01, 0x00, i, 0x20]);
+      sendSysex([0x43, 0x10, 0x7F, 0x1C], [0x00, 0x01, 0x00, i, 0x20]);
     } else {
-      output.sendSysex([0x43, 0x10, 0x7F, 0x1C], [0x00, 0x01, 0x00, i, String(data.value[i]).charCodeAt(0)]);
+      sendSysex([0x43, 0x10, 0x7F, 0x1C], [0x00, 0x01, 0x00, i, String(data.value[i]).charCodeAt(0)]);
     }
   }
 }
@@ -168,9 +178,9 @@ function knobNameChange(data) {
   var knobAddress = parseInt(data.id[8]) + 15;
   for (i = 0x09; i < 0x18; i++) {
     if (data.value[i - 9] == undefined) {
-      output.sendSysex([0x43, 0x10, 0x7F, 0x1C], [0x00, 0x01, knobAddress, i, 0x20]);
+      sendSysex([0x43, 0x10, 0x7F, 0x1C], [0x00, 0x01, knobAddress, i, 0x20]);
     } else {
-      output.sendSysex([0x43, 0x10, 0x7F, 0x1C], [0x00, 0x01, knobAddress, i, String(data.value[i - 9]).charCodeAt(0)]);
+      sendSysex([0x43, 0x10, 0x7F, 0x1C], [0x00, 0x01, knobAddress, i, String(data.value[i - 9]).charCodeAt(0)]);
     }
   }
 }
@@ -181,18 +191,18 @@ function ccChange(data) {
   }
   var value = data.value;
   var knobAddress = parseInt(data.id[2]) + 15;
-  output.sendSysex([0x43, 0x10, 0x7F, 0x1C], [0x00, 0x01, knobAddress, 0x18, value]);
+  sendSysex([0x43, 0x10, 0x7F, 0x1C], [0x00, 0x01, knobAddress, 0x18, value]);
 }
 
 function store() {
-  output.sendSysex([0x43, 0x10, 0x7F, 0x1C], [0x00, 0x01, 0x22, 0x00]);
+  sendSysex([0x43, 0x10, 0x7F, 0x1C], [0x00, 0x01, 0x22, 0x00]);
 }
 
 function requestData() {
   var presetAddress = document.getElementById('preset').value - 1;
   // get preset data
   console.log("[Main] Requesting data for preset: " + document.getElementById('preset').value);
-  output.sendSysex([0x43, 0x20, 0x7F, 0x1C], [0x00, 0x0E, 0x60, presetAddress, 0x00]);
+  sendSysex([0x43, 0x20, 0x7F, 0x1C], [0x00, 0x0E, 0x60, presetAddress, 0x00]);
 }
 
 function processSysex(messageData) {
