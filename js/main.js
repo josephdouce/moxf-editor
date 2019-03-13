@@ -146,8 +146,8 @@ function openTab(tabName) {
 }
 
 function presetSelected(data) {
-  if (data.value > 50) {
-    data.value = 50
+  if (1 > data.value > 50) {
+    data.value = 1
   }
   var preset = data.value - 1;
   // set preset
@@ -186,8 +186,11 @@ function knobNameChange(data) {
 }
 
 function ccChange(data) {
-  if (data.value > 95) {
-    data.value = 95;
+  if (1 > data.value > 95) {
+    data.value = 1;
+  }
+  if (data.value == 32) {
+    data.value = 1;
   }
   var value = data.value;
   var knobAddress = parseInt(data.id[2]) + 15;
