@@ -37,19 +37,19 @@ function outputSelected() {
 function addListeners() {
   input.addListener('noteon', "all",
     function (e) {
-      printMidi(document.getElementById("midiIn").value + ": " + e.data);
+      printMidi("noteon", e.data);
     }
   );
 
   input.addListener('controlchange', "all",
     function (e) {
-      printMidi(document.getElementById("midiIn").value + ": " + e.data);
+      printMidi("cc", e.data);
     }
   );
 
   input.addListener('sysex', "all",
     function (e) {
-      printMidi(document.getElementById("midiIn").value + ": " + e.data);
+      printMidi("sysex", e.data);
       processSysex(e.data);
     }
   );
@@ -286,10 +286,10 @@ function processSysex(messageData) {
 }
 
 // print midi data if debuggin enabled
-function printMidi(data) {
+function printMidi(type, data) {
   var dataList = document.querySelector('#midi-data ul')
   var newItem = document.createElement('li');
-  newItem.appendChild(document.createTextNode(data));
+  newItem.appendChild(document.createTextNode("Device: " + document.getElementById("midiIn").value + "\nType: " + type + "\nData:" + data));
   dataList.insertBefore(newItem, dataList.firstChild);
 }
 
