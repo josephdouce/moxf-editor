@@ -37,19 +37,19 @@ function outputSelected() {
 function addListeners() {
   input.addListener('noteon', "all",
     function (e) {
-      printMidi("Recieved: " + e.data);
+      printMidi(document.getElementById("midiIn").value + ": " + e.data);
     }
   );
 
   input.addListener('controlchange', "all",
     function (e) {
-      printMidi("Recieved: " + e.data);
+      printMidi(document.getElementById("midiIn").value + ": " + e.data);
     }
   );
 
   input.addListener('sysex', "all",
     function (e) {
-      printMidi("Recieved: " + e.data);
+      printMidi(document.getElementById("midiIn").value + ": " + e.data);
       processSysex(e.data);
     }
   );
@@ -89,6 +89,8 @@ async function enableMidi() {
   WebMidi.addListener('connected',
     function (e) {
       getMidiDevices();
+      inputSelected();
+      outputSelected();
     }
   );
 
@@ -99,6 +101,8 @@ async function enableMidi() {
   );
 
   getMidiDevices();
+  inputSelected();
+  outputSelected();
 
 }
 
@@ -283,14 +287,10 @@ function processSysex(messageData) {
 
 // print midi data if debuggin enabled
 function printMidi(data) {
-  // only print if debug enabled
-  if (document.getElementById("debuggingEnabled").checked) {
-    // append to top of list
-    var dataList = document.querySelector('#midi-data ul')
-    var newItem = document.createElement('li');
-    newItem.appendChild(document.createTextNode(data));
-    dataList.insertBefore(newItem, dataList.firstChild);
-  }
+  var dataList = document.querySelector('#midi-data ul')
+  var newItem = document.createElement('li');
+  newItem.appendChild(document.createTextNode(data));
+  dataList.insertBefore(newItem, dataList.firstChild);
 }
 
 // call onload function
