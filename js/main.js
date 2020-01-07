@@ -3,8 +3,7 @@ var output, input;
 function sendSysex(data1, data2) {
   try {
     output.sendSysex(data1, data2);
-  }
-  catch(err) {
+  } catch (err) {
     alert("No MIDI Device Connected");
     console.log(err);
   }
@@ -12,23 +11,25 @@ function sendSysex(data1, data2) {
 
 function inputSelected() {
   var intputSelected = document.getElementById("midiIn").value;
-  if (inputSelected.length > 0) {
-  console.log("[Main] Input Selected : " + intputSelected);
-  input = WebMidi.getInputByName(intputSelected);
-  input.removeListener();
-  addListeners();
-  } else {
+  try {
+    console.log("[Main] Input Selected : " + intputSelected);
+    input = WebMidi.getInputByName(intputSelected);
+    input.removeListener();
+    addListeners();
+  } catch (err) {
     console.log("[Main] No Input Selected")
+    console.log(err);
   }
 }
 
 function outputSelected() {
   var outputSelected = document.getElementById("midiOut").value;
-  if (outputSelected.length > 0) {
-  console.log("[Main] Output Selected : " + outputSelected);
-  output = WebMidi.getOutputByName(outputSelected);
-  }else {
+  try {
+    console.log("[Main] Output Selected : " + outputSelected);
+    output = WebMidi.getOutputByName(outputSelected);
+  } catch (err) {
     console.log("[Main] No Output Selected")
+    console.log(err);
   }
 }
 
@@ -36,19 +37,19 @@ function outputSelected() {
 function addListeners() {
   input.addListener('noteon', "all",
     function (e) {
-      printMidiDebug("Recieved: " + e.data);
+      printMidi("Recieved: " + e.data);
     }
   );
 
   input.addListener('controlchange', "all",
     function (e) {
-      printMidiDebug("Recieved: " + e.data);
+      printMidi("Recieved: " + e.data);
     }
   );
 
   input.addListener('sysex', "all",
     function (e) {
-      printMidiDebug("Recieved: " + e.data);
+      printMidi("Recieved: " + e.data);
       processSysex(e.data);
     }
   );
@@ -117,18 +118,13 @@ function getMidiDevices() {
       option.text = option.value = WebMidi.inputs[i].name;
       document.getElementById("midiIn").add(option);
     }
-  
+
     for (var i in WebMidi.outputs) {
       console.log("[Main] Added Output: " + WebMidi.outputs[i].name);
       var option = document.createElement('option');
       option.text = option.value = WebMidi.outputs[i].name;
       document.getElementById("midiOut").add(option);
     }
-  
-    document.getElementById("midiIn").value = WebMidi.getInputByName("MOXF6/MOXF8-5").name;
-    inputSelected();
-    document.getElementById("midiOut").value = WebMidi.getOutputByName("MOXF6/MOXF8-1").name;
-    outputSelected();
 
   } else {
     document.getElementById('connectionWarning').style.display = 'block';
@@ -286,7 +282,7 @@ function processSysex(messageData) {
 }
 
 // print midi data if debuggin enabled
-function printMidiDebug(data) {
+function printMidi(data) {
   // only print if debug enabled
   if (document.getElementById("debuggingEnabled").checked) {
     // append to top of list
@@ -322,12 +318,12 @@ window.addEventListener('beforeinstallprompt', (e) => {
     deferredPrompt.prompt();
     // Wait for the user to respond to the prompt
     deferredPrompt.userChoice.then((choiceResult) => {
-        if (choiceResult.outcome === 'accepted') {
-          console.log('User accepted the A2HS prompt');
-        } else {
-          console.log('User dismissed the A2HS prompt');
-        }
-        deferredPrompt = null;
-      });
+      if (choiceResult.outcome === 'accepted') {
+        console.log('User accepted the A2HS prompt');
+      } else {
+        console.log('User dismissed the A2HS prompt');
+      }
+      deferredPrompt = null;
+    });
   });
 });
