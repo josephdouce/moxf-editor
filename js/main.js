@@ -9,13 +9,36 @@ function sendSysex(data1, data2) {
   }
 }
 
+//change input and add listeners
 function inputSelected() {
+
+  console.log("[Main] Removing Old Listeners")
+  if (input != undefined) {
+    input.removeListener();
+  }
+
   var intputSelected = document.getElementById("midiIn").value;
+
   try {
     console.log("[Main] Input Selected : " + intputSelected);
     input = WebMidi.getInputByName(intputSelected);
-    input.removeListener();
-    addListeners();
+    console.log("[Main] Adding Listeners")
+
+    var events = ['activesensing', 'channelaftertouch', 'channelmode', 'clock', 'continue', 'controlchange', 'keyaftertouch', 'noteoff', 'noteon', 'nrpn', 'pitchbend', 'programchange', 'reset', 'songposition', 'songselect', 'start', 'stop', 'sysex', 'timecode', 'tuningrequest', 'unknownsystemmessage'];
+  
+    for (var i in events) {
+      if (document.getElementById(events[i] + "Enabled").checked) {
+        input.addListener(events[i], "all",
+          function (e) {
+            printMidi(e.target.name + ", " + e.type + ", " + e.data);
+            switch (e.type) {
+              case 'sysex':
+                sysexEventHandler(e.data);
+            }
+          }
+        );
+      };
+    }
   } catch (err) {
     console.log("[Main] No Input Selected")
     console.log(err);
@@ -31,28 +54,6 @@ function outputSelected() {
     console.log("[Main] No Output Selected")
     console.log(err);
   }
-}
-
-// add listeners on selected input device
-function addListeners() {
-  input.addListener('noteon', "all",
-    function (e) {
-      printMidi("noteon", e.data);
-    }
-  );
-
-  input.addListener('controlchange', "all",
-    function (e) {
-      printMidi("cc", e.data);
-    }
-  );
-
-  input.addListener('sysex', "all",
-    function (e) {
-      printMidi("sysex", e.data);
-      processSysex(e.data);
-    }
-  );
 }
 
 // funcion for change of cc/remote dropdown
@@ -71,6 +72,7 @@ function changeType() {
 
 // request enable MIDI in broweser and wait for user response before proceeding
 async function enableMidi() {
+  console.log("[Main] Enabling Midi")
 
   var promise = new Promise((resolve, reject) => {
     WebMidi.enable(function (err) {
@@ -108,6 +110,7 @@ async function enableMidi() {
 
 // get available midi devices and populate dropdowns 
 function getMidiDevices() {
+  console.log("[Main] Getting Midi Devices")
 
   document.getElementById("midiIn").options.length = 0;
   document.getElementById("midiOut").options.length = 0;
@@ -208,7 +211,7 @@ function requestData() {
   sendSysex([0x43, 0x20, 0x7F, 0x1C], [0x00, 0x0E, 0x60, presetAddress, 0x00]);
 }
 
-function processSysex(messageData) {
+function sysexEventHandler(messageData) {
   switch (messageData[2]) {
     // bulk dump
     case 0x00:
@@ -286,10 +289,10 @@ function processSysex(messageData) {
 }
 
 // print midi data if debuggin enabled
-function printMidi(type, data) {
+function printMidi(data) {
   var dataList = document.querySelector('#midi-data ul')
   var newItem = document.createElement('li');
-  newItem.appendChild(document.createTextNode("Device: " + document.getElementById("midiIn").value + "\nType: " + type + "\nData:" + data));
+  newItem.appendChild(document.createTextNode(data));
   dataList.insertBefore(newItem, dataList.firstChild);
 }
 

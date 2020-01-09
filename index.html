@@ -38,16 +38,12 @@
 
     <div class="w3-bar w3-theme">
       <button class="w3-bar-item w3-button w3-theme" onclick="openTab('DAW')">DAW</button>
-      <button class="w3-bar-item w3-button w3-theme" onclick="openTab('Master')">Master</button>
-      <button class="w3-bar-item w3-button w3-theme" onclick="openTab('Voice')">Voice</button>
-      <button class="w3-bar-item w3-button w3-theme" onclick="openTab('Performance')">Performance</button>
-      <button class="w3-bar-item w3-button w3-theme" onclick="openTab('Mix')">Mix</button>
-      <button class="w3-bar-item w3-button w3-theme" onclick="openTab('Drum')">Drum</button>
       <button class="w3-bar-item w3-button w3-theme" onclick="openTab('MIDI')">MIDI</button>
       <button class="w3-bar-item w3-button w3-theme" onclick="openTab('About')">About</button>
     </div>
 
-    <div id="a2hsPanel" class="w3-padding-16 add-panel w3-display-container w3-container w3-pale-green w3-leftbar w3-border-green">
+    <div id="a2hsPanel"
+      class="w3-padding-16 add-panel w3-display-container w3-container w3-pale-green w3-leftbar w3-border-green">
       <span onclick="this.parentElement.style.display='none'" class="w3-button w3-display-topright">X</span>
       <button class="w3-button w3-theme add-button">Install</button>
     </div>
@@ -83,8 +79,8 @@
             placeholder="No" />
         </div>
         <div class="w3-col s12 m4 l4">
-          <input class="w3-input w3-border" type="text" onchange="presetNameChange(this)" id="presetName" placeholder="Preset Name"
-            maxlength="13" />
+          <input class="w3-input w3-border" type="text" onchange="presetNameChange(this)" id="presetName"
+            placeholder="Preset Name" maxlength="13" />
         </div>
         <div class="w3-col s12 m4 l4">
           <select class="w3-select w3-border" id="ccRemote" onchange="changeType()">
@@ -239,47 +235,54 @@
 
     </div>
 
-    <div id="Master" class="w3-container tabPage" style="display:none">
-      <div class="w3-row-padding">
-        <div class="w3-col">
-          <h2>Master Editor</h2>
-        </div>
-      </div>
-    </div>
-
-    <div id="Voice" class="w3-container tabPage" style="display:none">
-      <div class="w3-row-padding">
-        <div class="w3-col">
-          <h2>Voice Editor</h2>
-        </div>
-      </div>
-    </div>
-
-    <div id="Performance" class="w3-container tabPage" style="display:none">
-      <div class="w3-row-padding">
-        <div class="w3-col">
-          <h2>Performance Editor</h2>
-        </div>
-      </div>
-    </div>
-
-    <div id="Mix" class="w3-container tabPage" style="display:none">
-      <div class="w3-row-padding">
-        <div class="w3-col">
-          <h2>Mix Editor</h2>
-        </div>
-      </div>
-    </div>
-
-    <div id="Drum" class="w3-container tabPage" style="display:none">
-      <div class="w3-row-padding">
-        <div class="w3-col">
-          <h2>Drum Editor</h2>
-        </div>
-      </div>
-    </div>
-
     <div id="MIDI" class="w3-container tabPage" style="display:none">
+      <div class="w3-row-padding">
+        <div class="w3-col">
+          <h2>Data Types</h2>
+          <input class="w3-check" type="checkbox" id="activesensingEnabled" onchange="inputSelected()">
+          <label>activesensing</label>
+          <input class="w3-check" type="checkbox" checked="checked" id="channelaftertouchEnabled" onclick="inputSelected()">
+          <label>channelaftertouch</label>
+          <input class="w3-check" type="checkbox" checked="checked" id="channelmodeEnabled" onclick="inputSelected()">
+          <label>channelmode</label>
+          <input class="w3-check" type="checkbox" id="clockEnabled" onclick="inputSelected()">
+          <label>clock</label>
+          <input class="w3-check" type="checkbox" checked="checked" id="continueEnabled" onclick="inputSelected()">
+          <label>continue</label>
+          <input class="w3-check" type="checkbox" checked="checked" id="controlchangeEnabled" onclick="inputSelected()">
+          <label>controlchange</label>
+          <input class="w3-check" type="checkbox" checked="checked" id="keyaftertouchEnabled" onclick="inputSelected()">
+          <label>keyaftertouch</label>
+          <input class="w3-check" type="checkbox" checked="checked" id="noteonEnabled" onclick="inputSelected()">
+          <label>noteon</label>
+          <input class="w3-check" type="checkbox" checked="checked" id="noteoffEnabled" onclick="inputSelected()">
+          <label>noteoff</label>
+          <input class="w3-check" type="checkbox" checked="checked" id="nrpnEnabled" onclick="inputSelected()">
+          <label>nrpn</label>
+          <input class="w3-check" type="checkbox" checked="checked" id="pitchbendEnabled" onclick="inputSelected()">
+          <label>pitchbend</label>
+          <input class="w3-check" type="checkbox" checked="checked" id="programchangeEnabled" onclick="inputSelected()">
+          <label>programchange</label>
+          <input class="w3-check" type="checkbox" checked="checked" id="resetEnabled" onclick="inputSelected()">
+          <label>reset</label>
+          <input class="w3-check" type="checkbox" checked="checked" id="songpositionEnabled" onclick="inputSelected()">
+          <label>songposition</label>
+          <input class="w3-check" type="checkbox" checked="checked" id="songselectEnabled" onclick="inputSelected()">
+          <label>songselect</label>
+          <input class="w3-check" type="checkbox" checked="checked" id="startEnabled" onclick="inputSelected()">
+          <label>start</label>
+          <input class="w3-check" type="checkbox" checked="checked" id="stopEnabled" onclick="inputSelected()">
+          <label>stop</label>
+          <input class="w3-check" type="checkbox" checked="checked" id="sysexEnabled" onclick="inputSelected()">
+          <label>sysex</label>
+          <input class="w3-check" type="checkbox" checked="checked" id="timecodeEnabled" onclick="inputSelected()">
+          <label>timecode</label>
+          <input class="w3-check" type="checkbox" checked="checked" id="tuningrequestEnabled" onclick="inputSelected()">
+          <label>tuningrequest</label>
+          <input class="w3-check" type="checkbox" checked="checked" id="unknownsystemmessageEnabled" onclick="inputSelected()">
+          <label>unknownsystemmessage</label>
+        </div>
+      </div>
       <div class="w3-row-padding">
         <div class="w3-col">
           <h2>MIDI Data</h2>
@@ -310,8 +313,8 @@
 
   <!-- Boilerplate Scripts -->
   <script src="js/vendor/modernizr-3.6.0.min.js"></script>
-  <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
-    crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js"
+    integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
   <script>
     window.jQuery || document.write('<script src="js/vendor/jquery-3.3.1.min.js"><\/script>')
 
