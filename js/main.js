@@ -83,6 +83,7 @@ async function enableMidi() {
 
   WebMidi.addListener('connected',
     function (e) {
+      console.log("New Device Connected")
       getMidiDevices();
       updateListeners();
       outputSelected();
@@ -91,6 +92,7 @@ async function enableMidi() {
 
   WebMidi.addListener('disconnected',
     function (e) {
+      console.log("Device Disonnected")
       getMidiDevices();
     }
   );
