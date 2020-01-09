@@ -57,7 +57,7 @@
       <div class="w3-row-padding">
         <div class="w3-col s12 m4 l4">
           <label>Midi In</label>
-          <select class="w3-select w3-border" id="midiIn" onchange="inputSelected()"></select>
+          <ul class="w3-list w3-border" id="midiIn"></ul>
         </div>
         <div class="w3-col s12 m4 l4">
           <label>Midi Out</label>
@@ -239,47 +239,47 @@
       <div class="w3-row-padding">
         <div class="w3-col">
           <h2>Data Types</h2>
-          <input class="w3-check" type="checkbox" id="activesensingEnabled" onchange="inputSelected()">
+          <input class="w3-check" type="checkbox" id="activesensingEnabled" onchange="updateListeners()">
           <label>activesensing</label>
-          <input class="w3-check" type="checkbox" checked="checked" id="channelaftertouchEnabled" onclick="inputSelected()">
+          <input class="w3-check" type="checkbox" checked="checked" id="channelaftertouchEnabled" onclick="updateListeners()">
           <label>channelaftertouch</label>
-          <input class="w3-check" type="checkbox" checked="checked" id="channelmodeEnabled" onclick="inputSelected()">
+          <input class="w3-check" type="checkbox" checked="checked" id="channelmodeEnabled" onclick="updateListeners()">
           <label>channelmode</label>
-          <input class="w3-check" type="checkbox" id="clockEnabled" onclick="inputSelected()">
+          <input class="w3-check" type="checkbox" id="clockEnabled" onclick="updateListeners()">
           <label>clock</label>
-          <input class="w3-check" type="checkbox" checked="checked" id="continueEnabled" onclick="inputSelected()">
+          <input class="w3-check" type="checkbox" checked="checked" id="continueEnabled" onclick="updateListeners()">
           <label>continue</label>
-          <input class="w3-check" type="checkbox" checked="checked" id="controlchangeEnabled" onclick="inputSelected()">
+          <input class="w3-check" type="checkbox" checked="checked" id="controlchangeEnabled" onclick="updateListeners()">
           <label>controlchange</label>
-          <input class="w3-check" type="checkbox" checked="checked" id="keyaftertouchEnabled" onclick="inputSelected()">
+          <input class="w3-check" type="checkbox" checked="checked" id="keyaftertouchEnabled" onclick="updateListeners()">
           <label>keyaftertouch</label>
-          <input class="w3-check" type="checkbox" checked="checked" id="noteonEnabled" onclick="inputSelected()">
+          <input class="w3-check" type="checkbox" checked="checked" id="noteonEnabled" onclick="updateListeners()">
           <label>noteon</label>
-          <input class="w3-check" type="checkbox" checked="checked" id="noteoffEnabled" onclick="inputSelected()">
+          <input class="w3-check" type="checkbox" checked="checked" id="noteoffEnabled" onclick="updateListeners()">
           <label>noteoff</label>
-          <input class="w3-check" type="checkbox" checked="checked" id="nrpnEnabled" onclick="inputSelected()">
+          <input class="w3-check" type="checkbox" checked="checked" id="nrpnEnabled" onclick="updateListeners()">
           <label>nrpn</label>
-          <input class="w3-check" type="checkbox" checked="checked" id="pitchbendEnabled" onclick="inputSelected()">
+          <input class="w3-check" type="checkbox" checked="checked" id="pitchbendEnabled" onclick="updateListeners()">
           <label>pitchbend</label>
-          <input class="w3-check" type="checkbox" checked="checked" id="programchangeEnabled" onclick="inputSelected()">
+          <input class="w3-check" type="checkbox" checked="checked" id="programchangeEnabled" onclick="updateListeners()">
           <label>programchange</label>
-          <input class="w3-check" type="checkbox" checked="checked" id="resetEnabled" onclick="inputSelected()">
+          <input class="w3-check" type="checkbox" checked="checked" id="resetEnabled" onclick="updateListeners()">
           <label>reset</label>
-          <input class="w3-check" type="checkbox" checked="checked" id="songpositionEnabled" onclick="inputSelected()">
+          <input class="w3-check" type="checkbox" checked="checked" id="songpositionEnabled" onclick="updateListeners()">
           <label>songposition</label>
-          <input class="w3-check" type="checkbox" checked="checked" id="songselectEnabled" onclick="inputSelected()">
+          <input class="w3-check" type="checkbox" checked="checked" id="songselectEnabled" onclick="updateListeners()">
           <label>songselect</label>
-          <input class="w3-check" type="checkbox" checked="checked" id="startEnabled" onclick="inputSelected()">
+          <input class="w3-check" type="checkbox" checked="checked" id="startEnabled" onclick="updateListeners()">
           <label>start</label>
-          <input class="w3-check" type="checkbox" checked="checked" id="stopEnabled" onclick="inputSelected()">
+          <input class="w3-check" type="checkbox" checked="checked" id="stopEnabled" onclick="updateListeners()">
           <label>stop</label>
-          <input class="w3-check" type="checkbox" checked="checked" id="sysexEnabled" onclick="inputSelected()">
+          <input class="w3-check" type="checkbox" checked="checked" id="sysexEnabled" onclick="updateListeners()">
           <label>sysex</label>
-          <input class="w3-check" type="checkbox" checked="checked" id="timecodeEnabled" onclick="inputSelected()">
+          <input class="w3-check" type="checkbox" checked="checked" id="timecodeEnabled" onclick="updateListeners()">
           <label>timecode</label>
-          <input class="w3-check" type="checkbox" checked="checked" id="tuningrequestEnabled" onclick="inputSelected()">
+          <input class="w3-check" type="checkbox" checked="checked" id="tuningrequestEnabled" onclick="updateListeners()">
           <label>tuningrequest</label>
-          <input class="w3-check" type="checkbox" checked="checked" id="unknownsystemmessageEnabled" onclick="inputSelected()">
+          <input class="w3-check" type="checkbox" checked="checked" id="unknownsystemmessageEnabled" onclick="updateListeners()">
           <label>unknownsystemmessage</label>
         </div>
       </div>

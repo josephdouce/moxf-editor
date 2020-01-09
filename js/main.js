@@ -10,22 +10,18 @@ function sendSysex(data1, data2) {
 }
 
 //change input and add listeners
-function inputSelected() {
+function updateListeners() {
 
-  console.log("[Main] Removing Old Listeners")
-  if (input != undefined) {
+  console.log("[Main] Updating Listeners")
+
+  for (var i in WebMidi.inputs) {
+
+    input = WebMidi.inputs[i];
+
     input.removeListener();
-  }
-
-  var intputSelected = document.getElementById("midiIn").value;
-
-  try {
-    console.log("[Main] Input Selected : " + intputSelected);
-    input = WebMidi.getInputByName(intputSelected);
-    console.log("[Main] Adding Listeners")
 
     var events = ['activesensing', 'channelaftertouch', 'channelmode', 'clock', 'continue', 'controlchange', 'keyaftertouch', 'noteoff', 'noteon', 'nrpn', 'pitchbend', 'programchange', 'reset', 'songposition', 'songselect', 'start', 'stop', 'sysex', 'timecode', 'tuningrequest', 'unknownsystemmessage'];
-  
+
     for (var i in events) {
       if (document.getElementById(events[i] + "Enabled").checked) {
         input.addListener(events[i], "all",
@@ -39,9 +35,6 @@ function inputSelected() {
         );
       };
     }
-  } catch (err) {
-    console.log("[Main] No Input Selected")
-    console.log(err);
   }
 }
 
@@ -91,7 +84,7 @@ async function enableMidi() {
   WebMidi.addListener('connected',
     function (e) {
       getMidiDevices();
-      inputSelected();
+      updateListeners();
       outputSelected();
     }
   );
@@ -103,7 +96,7 @@ async function enableMidi() {
   );
 
   getMidiDevices();
-  inputSelected();
+  updateListeners();
   outputSelected();
 
 }
@@ -112,8 +105,8 @@ async function enableMidi() {
 function getMidiDevices() {
   console.log("[Main] Getting Midi Devices")
 
-  document.getElementById("midiIn").options.length = 0;
   document.getElementById("midiOut").options.length = 0;
+  document.getElementById("midiIn").innerHTML = "";
 
   if (WebMidi.inputs.length > 0) {
 
@@ -121,9 +114,10 @@ function getMidiDevices() {
 
     for (var i in WebMidi.inputs) {
       console.log("[Main] Added Input: " + WebMidi.inputs[i].name);
-      var option = document.createElement('option');
-      option.text = option.value = WebMidi.inputs[i].name;
-      document.getElementById("midiIn").add(option);
+      var ul = document.getElementById("midiIn");
+      var li = document.createElement("li");
+      li.appendChild(document.createTextNode(WebMidi.inputs[i].name));
+      ul.appendChild(li);
     }
 
     for (var i in WebMidi.outputs) {
