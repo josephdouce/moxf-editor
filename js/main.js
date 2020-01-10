@@ -1,10 +1,43 @@
 var output, input;
 
-function sendSysex(data1, data2) {
+function sysexDumpSendTest() {
+  sysexBulkDumpSend(14,64,0,[]);
+  sysexBulkDumpSend(48,0,0,[77,101,109,111,114,105,101,115,32,32,32,32,32,32,32,32,32,32,32,32,0,0,0,0,7,0,0,0,0,0,0,64,0,64,64,64,64,64,64,0,64,64,64,64,0,0,64,64,0,64,64,64,0,64,64,0,80,64,1,127,127,0,0,1,1,0,60,0,0,0,0,0,0,0,0,1,0,32,0,15]);
+  sysexBulkDumpSend(15,64,0,[]);
+}
+
+function sysexBulkDumpChange(high, mid, low, data) {  
+  var byteCount = data.length + 4;
+  var checksum = ~[0x00 , high, mid, low].concat(data).reduce((a, b) => a + b, 0) + 1 & 0x7F
   try {
-    output.sendSysex(data1, data2);
+    console.log(0x43, [0x00, 0x7F, 0x1C, 0x00, byteCount ,0x00 , high, mid, low].concat(data).concat(checksum))
+    output.sendSysex(0x43, [0x00, 0x7F, 0x1C, 0x00, byteCount ,0x00 , high, mid, low].concat(data).concat(checksum));
   } catch (err) {
-    alert("No MIDI Device Connected");
+    console.log(err);
+  }
+}
+
+
+function sysexParameterChange(high, mid, low, data) {
+  try {
+    output.sendSysex(0x43, [0x10, 0x7F, 0x1C, 0x00, high, mid, low].concat(data));
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+function sysexBulkDumpRequest(high, mid, low) {
+  try {
+    output.sendSysex(0x43, [0x20, 0x7F, 0x1C, 0x00, high, mid, low]);
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+function sysexParameterRequest(high, mid, low) {
+  try {
+    output.sendSysex(0x43, [0x30, 0x7F, 0x1C, 0x00, high, mid, low]);
+  } catch (err) {
     console.log(err);
   }
 }
@@ -20,7 +53,10 @@ function updateListeners() {
 
     input.removeListener();
 
-    var events = ['activesensing', 'channelaftertouch', 'channelmode', 'clock', 'continue', 'controlchange', 'keyaftertouch', 'noteoff', 'noteon', 'nrpn', 'pitchbend', 'programchange', 'reset', 'songposition', 'songselect', 'start', 'stop', 'sysex', 'timecode', 'tuningrequest', 'unknownsystemmessage'];
+    var events = ['activesensing', 'channelaftertouch', 'channelmode', 'clock', 'continue', 'controlchange',
+      'keyaftertouch', 'noteoff', 'noteon', 'nrpn', 'pitchbend', 'programchange', 'reset', 'songposition',
+      'songselect', 'start', 'stop', 'sysex', 'timecode', 'tuningrequest', 'unknownsystemmessage'
+    ];
 
     for (var i in events) {
       if (document.getElementById(events[i] + "Enabled").checked) {
@@ -55,11 +91,11 @@ function changeType() {
   if (type == "cc") {
     for (let el of document.querySelectorAll('.remote')) el.style.display = 'none';
     for (let el of document.querySelectorAll('.cc')) el.style.display = 'block';
-    sendSysex([0x43, 0x10, 0x7F, 0x1C], [0x00, 0x01, 0x00, 0x19, 0x01]);
+    sysexParameterChange(0x01, 0x00, 0x19, 0x01);
   } else if (type == "remote") {
     for (let el of document.querySelectorAll('.cc')) el.style.display = 'none';
     for (let el of document.querySelectorAll('.remote')) el.style.display = 'block';
-    sendSysex([0x43, 0x10, 0x7F, 0x1C], [0x00, 0x01, 0x00, 0x19, 0x00]);
+    sysexParameterChange(0x01, 0x00, 0x19, 0x00);
   }
 }
 
@@ -150,7 +186,7 @@ function presetSelected(data) {
   }
   var preset = data.value - 1;
   // set preset
-  sendSysex([0x43, 0x10, 0x7F, 0x1C], [0x00, 0x01, 0x20, 0x00, preset]);
+  sysexParameterChange(0x01, 0x20, 0x00, preset);
   // get data
   requestData();
 }
@@ -159,16 +195,16 @@ function presetNameChange(data) {
   // set preset name
   for (i = 0x00; i < 0x0C; i++) {
     if (data.value[i] == undefined) {
-      sendSysex([0x43, 0x10, 0x7F, 0x1C], [0x00, 0x01, 0x00, i, 0x20]);
+      sysexParameterChange(0x01, 0x00, i, 0x20);
     } else {
-      sendSysex([0x43, 0x10, 0x7F, 0x1C], [0x00, 0x01, 0x00, i, String(data.value[i]).charCodeAt(0)]);
+      sysexParameterChange(0x01, 0x00, i, String(data.value[i]).charCodeAt(0));
     }
   }
   for (i = 0x0D; i < 0x19; i++) {
     if (data.value[i] == undefined) {
-      sendSysex([0x43, 0x10, 0x7F, 0x1C], [0x00, 0x01, 0x00, i, 0x20]);
+      sysexParameterChange(0x01, 0x00, i, 0x20);
     } else {
-      sendSysex([0x43, 0x10, 0x7F, 0x1C], [0x00, 0x01, 0x00, i, String(data.value[i]).charCodeAt(0)]);
+      sysexParameterChange(0x01, 0x00, i, String(data.value[i]).charCodeAt(0));
     }
   }
 }
@@ -177,9 +213,9 @@ function knobNameChange(data) {
   var knobAddress = parseInt(data.id[8]) + 15;
   for (i = 0x09; i < 0x18; i++) {
     if (data.value[i - 9] == undefined) {
-      sendSysex([0x43, 0x10, 0x7F, 0x1C], [0x00, 0x01, knobAddress, i, 0x20]);
+      sysexParameterChange(0x01, knobAddress, i, 0x20);
     } else {
-      sendSysex([0x43, 0x10, 0x7F, 0x1C], [0x00, 0x01, knobAddress, i, String(data.value[i - 9]).charCodeAt(0)]);
+      sysexParameterChange(0x01, knobAddress, i, String(data.value[i - 9]).charCodeAt(0));
     }
   }
 }
@@ -193,18 +229,18 @@ function ccChange(data) {
   }
   var value = data.value;
   var knobAddress = parseInt(data.id[2]) + 15;
-  sendSysex([0x43, 0x10, 0x7F, 0x1C], [0x00, 0x01, knobAddress, 0x18, value]);
+  sysexParameterChange(0x01, knobAddress, 0x18, value);
 }
 
 function store() {
-  sendSysex([0x43, 0x10, 0x7F, 0x1C], [0x00, 0x01, 0x22, 0x00]);
+  sysexParameterChange(0x01, 0x22, 0x00, []);
 }
 
 function requestData() {
   var presetAddress = document.getElementById('preset').value - 1;
   // get preset data
   console.log("[Main] Requesting data for preset: " + document.getElementById('preset').value);
-  sendSysex([0x43, 0x20, 0x7F, 0x1C], [0x00, 0x0E, 0x60, presetAddress, 0x00]);
+  sysexBulkDumpRequest(0x0E, 0x60, presetAddress);
 }
 
 function sysexEventHandler(messageData) {

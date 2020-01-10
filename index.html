@@ -236,12 +236,21 @@
     </div>
 
     <div id="MIDI" class="w3-container tabPage" style="display:none">
+      <div class="w3-row-padding w3-padding-16">
+        <div class="w3-col">
+          <button class="w3-button w3-theme w3-col l4" onclick="sysexDumpSendTest()">sysexDumpSend</button>
+          <button class="w3-button w3-theme w3-col l4" onclick="sysexParameterSend(0x30, 0x00, 0x00, 77)">sysexParameterSend</button>
+          <button class="w3-button w3-theme w3-col l4" onclick="sysexBulkDumpRequest(0x0E, 0x40, 0x00)">sysexDumpRequest</button>
+          <button class="w3-button w3-theme w3-col l4" onclick="sysexParameterRequest(0x30, 0x00, 0x00)">sysexParameterRequest</button>
+        </div>
+      </div>
       <div class="w3-row-padding">
         <div class="w3-col">
           <h2>Data Types</h2>
           <input class="w3-check" type="checkbox" id="activesensingEnabled" onchange="updateListeners()">
           <label>activesensing</label>
-          <input class="w3-check" type="checkbox" checked="checked" id="channelaftertouchEnabled" onclick="updateListeners()">
+          <input class="w3-check" type="checkbox" checked="checked" id="channelaftertouchEnabled"
+            onclick="updateListeners()">
           <label>channelaftertouch</label>
           <input class="w3-check" type="checkbox" checked="checked" id="channelmodeEnabled" onclick="updateListeners()">
           <label>channelmode</label>
@@ -249,9 +258,11 @@
           <label>clock</label>
           <input class="w3-check" type="checkbox" checked="checked" id="continueEnabled" onclick="updateListeners()">
           <label>continue</label>
-          <input class="w3-check" type="checkbox" checked="checked" id="controlchangeEnabled" onclick="updateListeners()">
+          <input class="w3-check" type="checkbox" checked="checked" id="controlchangeEnabled"
+            onclick="updateListeners()">
           <label>controlchange</label>
-          <input class="w3-check" type="checkbox" checked="checked" id="keyaftertouchEnabled" onclick="updateListeners()">
+          <input class="w3-check" type="checkbox" checked="checked" id="keyaftertouchEnabled"
+            onclick="updateListeners()">
           <label>keyaftertouch</label>
           <input class="w3-check" type="checkbox" checked="checked" id="noteonEnabled" onclick="updateListeners()">
           <label>noteon</label>
@@ -261,11 +272,13 @@
           <label>nrpn</label>
           <input class="w3-check" type="checkbox" checked="checked" id="pitchbendEnabled" onclick="updateListeners()">
           <label>pitchbend</label>
-          <input class="w3-check" type="checkbox" checked="checked" id="programchangeEnabled" onclick="updateListeners()">
+          <input class="w3-check" type="checkbox" checked="checked" id="programchangeEnabled"
+            onclick="updateListeners()">
           <label>programchange</label>
           <input class="w3-check" type="checkbox" checked="checked" id="resetEnabled" onclick="updateListeners()">
           <label>reset</label>
-          <input class="w3-check" type="checkbox" checked="checked" id="songpositionEnabled" onclick="updateListeners()">
+          <input class="w3-check" type="checkbox" checked="checked" id="songpositionEnabled"
+            onclick="updateListeners()">
           <label>songposition</label>
           <input class="w3-check" type="checkbox" checked="checked" id="songselectEnabled" onclick="updateListeners()">
           <label>songselect</label>
@@ -277,9 +290,11 @@
           <label>sysex</label>
           <input class="w3-check" type="checkbox" checked="checked" id="timecodeEnabled" onclick="updateListeners()">
           <label>timecode</label>
-          <input class="w3-check" type="checkbox" checked="checked" id="tuningrequestEnabled" onclick="updateListeners()">
+          <input class="w3-check" type="checkbox" checked="checked" id="tuningrequestEnabled"
+            onclick="updateListeners()">
           <label>tuningrequest</label>
-          <input class="w3-check" type="checkbox" checked="checked" id="unknownsystemmessageEnabled" onclick="updateListeners()">
+          <input class="w3-check" type="checkbox" checked="checked" id="unknownsystemmessageEnabled"
+            onclick="updateListeners()">
           <label>unknownsystemmessage</label>
         </div>
       </div>
