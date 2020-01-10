@@ -1,22 +1,22 @@
-var output, input;
+var output = WebMidi.output;
+var input;
 
 function sysexDumpSendTest() {
-  sysexBulkDumpSend(14,64,0,[]);
-  sysexBulkDumpSend(48,0,0,[77,101,109,111,114,105,101,115,32,32,32,32,32,32,32,32,32,32,32,32,0,0,0,0,7,0,0,0,0,0,0,64,0,64,64,64,64,64,64,0,64,64,64,64,0,0,64,64,0,64,64,64,0,64,64,0,80,64,1,127,127,0,0,1,1,0,60,0,0,0,0,0,0,0,0,1,0,32,0,15]);
-  sysexBulkDumpSend(15,64,0,[]);
+  sysexBulkDumpSend(14, 64, 0, []);
+  sysexBulkDumpSend(48, 0, 0, [77, 101, 109, 111, 114, 105, 101, 115, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 64, 0, 64, 64, 64, 64, 64, 64, 0, 64, 64, 64, 64, 0, 0, 64, 64, 0, 64, 64, 64, 0, 64, 64, 0, 80, 64, 1, 127, 127, 0, 0, 1, 1, 0, 60, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 32, 0, 15]);
+  sysexBulkDumpSend(15, 64, 0, []);
 }
 
-function sysexBulkDumpChange(high, mid, low, data) {  
+function sysexBulkDumpChange(high, mid, low, data) {
   var byteCount = data.length + 4;
-  var checksum = ~[0x00 , high, mid, low].concat(data).reduce((a, b) => a + b, 0) + 1 & 0x7F
+  var checksum = ~[0x00, high, mid, low].concat(data).reduce((a, b) => a + b, 0) + 1 & 0x7F
   try {
-    console.log(0x43, [0x00, 0x7F, 0x1C, 0x00, byteCount ,0x00 , high, mid, low].concat(data).concat(checksum))
-    output.sendSysex(0x43, [0x00, 0x7F, 0x1C, 0x00, byteCount ,0x00 , high, mid, low].concat(data).concat(checksum));
+    console.log(0x43, [0x00, 0x7F, 0x1C, 0x00, byteCount, 0x00, high, mid, low].concat(data).concat(checksum))
+    output.sendSysex(0x43, [0x00, 0x7F, 0x1C, 0x00, byteCount, 0x00, high, mid, low].concat(data).concat(checksum));
   } catch (err) {
     console.log(err);
   }
 }
-
 
 function sysexParameterChange(high, mid, low, data) {
   try {
@@ -171,9 +171,18 @@ function getMidiDevices() {
 
 }
 
-function openTab(tabName) {
+function openMainTab(tabName) {
   var i;
-  var x = document.getElementsByClassName("tabPage");
+  var x = document.getElementsByClassName("mainTabPage");
+  for (i = 0; i < x.length; i++) {
+    x[i].style.display = "none";
+  }
+  document.getElementById(tabName).style.display = "block";
+}
+
+function openLibrarianTab(tabName) {
+  var i;
+  var x = document.getElementsByClassName("librarianTabPage");
   for (i = 0; i < x.length; i++) {
     x[i].style.display = "none";
   }
@@ -328,8 +337,87 @@ function printMidi(data) {
   dataList.insertBefore(newItem, dataList.firstChild);
 }
 
+function voiceSelect(i) {
+  sysexParameterChange(0x0A, 0x00, 0x01, 0)
+  output.sendControlChange(0, 63);
+  output.sendControlChange(32, 0);
+  output.sendProgramChange(i);
+}
+
+function performanceSelect(i) {
+  sysexParameterChange(0x0A, 0x00, 0x01, 1)
+  output.sendControlChange(0, 63);
+  output.sendControlChange(32, 64);
+  output.sendProgramChange(i);
+}
+
+function songSelect(i) {
+  sysexParameterChange(0x0A, 0x00, 0x01, 3)
+  output.sendSongSelect(i);
+}
+
+function patternSelect(i) {
+  sysexParameterChange(0x0A, 0x00, 0x01, 2)
+  output.sendSongSelect(i);
+}
+
+function masterSelect(i) {
+  sysexParameterChange(0x0A, 0x00, 0x01, 4)
+  sysexParameterChange(0x0A, 0x00, 0x00, i)
+}
+
+function buildLibrarian() {
+  var i;
+  for (i = 0; i < 128; i++) {
+    // Adds an element to the document
+    var p = document.getElementById("Performance");
+    var newElement = document.createElement("button");
+    newElement.setAttribute('class', "w3-col l3 w3-button");
+    newElement.setAttribute('onclick', "performanceSelect(" + i + ")")
+    newElement.innerHTML = i;
+    p.appendChild(newElement);
+
+    // Adds an element to the document
+    var p = document.getElementById("Voice");
+    var newElement = document.createElement("button");
+    newElement.setAttribute('class', "w3-col l3 w3-button");
+    newElement.setAttribute('onclick', "voiceSelect(" + i + ")")
+    newElement.innerHTML = i;
+    p.appendChild(newElement);
+
+    // Adds an element to the document
+    var p = document.getElementById("Song");
+    var newElement = document.createElement("button");
+    newElement.setAttribute('class', "w3-col l3 w3-button");
+    newElement.setAttribute('onclick', "songSelect(" + i + ")")
+    newElement.innerHTML = i;
+    p.appendChild(newElement);
+
+    // Adds an element to the document
+    var p = document.getElementById("Pattern");
+    var newElement = document.createElement("button");
+    newElement.setAttribute('class', "w3-col l3 w3-button");
+    newElement.setAttribute('onclick', "patternSelect(" + i + ")")
+    newElement.innerHTML = i;
+    p.appendChild(newElement);
+
+    // Adds an element to the document
+    var p = document.getElementById("Master");
+    var newElement = document.createElement("button");
+    newElement.setAttribute('class', "w3-col l3 w3-button");
+    newElement.setAttribute('onclick', "masterSelect(" + i + ")")
+    newElement.innerHTML = i;
+    p.appendChild(newElement);
+  }
+}
+
+function onloadFunction() {
+  enableMidi();
+  buildLibrarian();
+}
+
 // call onload function
-window.onload = enableMidi();
+window.onload = onloadFunction();
 
 // webapp install
 let deferredPrompt;

@@ -37,9 +37,10 @@
   <div class="w3-content w3-theme-l4">
 
     <div class="w3-bar w3-theme">
-      <button class="w3-bar-item w3-button w3-theme" onclick="openTab('DAW')">DAW</button>
-      <button class="w3-bar-item w3-button w3-theme" onclick="openTab('MIDI')">MIDI</button>
-      <button class="w3-bar-item w3-button w3-theme" onclick="openTab('About')">About</button>
+      <button class="w3-bar-item w3-button w3-theme" onclick="openMainTab('DAW')">DAW</button>
+      <button class="w3-bar-item w3-button w3-theme" onclick="openMainTab('Librarian')">Librarian</button>
+      <button class="w3-bar-item w3-button w3-theme" onclick="openMainTab('MIDI')">MIDI</button>
+      <button class="w3-bar-item w3-button w3-theme" onclick="openMainTab('About')">About</button>
     </div>
 
     <div id="a2hsPanel"
@@ -53,20 +54,7 @@
       <p>Please connect your MOXF</p>
     </div>
 
-    <div class="w3-container w3-padding-16 w3-theme-l3">
-      <div class="w3-row-padding">
-        <div class="w3-col s12 m4 l4">
-          <label>Midi In</label>
-          <ul class="w3-list w3-border" id="midiIn"></ul>
-        </div>
-        <div class="w3-col s12 m4 l4">
-          <label>Midi Out</label>
-          <select class="w3-select w3-border" id="midiOut" onchange="outputSelected()"></select>
-        </div>
-      </div>
-    </div>
-
-    <div id="DAW" class="w3-container tabPage">
+    <div id="DAW" class="w3-container mainTabPage">
       <div class="w3-row-padding">
         <div class="w3-col">
           <h2>DAW Editor</h2>
@@ -235,13 +223,28 @@
 
     </div>
 
-    <div id="MIDI" class="w3-container tabPage" style="display:none">
+    <div id="MIDI" class="w3-container mainTabPage" style="display:none">
+      <div class="w3-container w3-padding-16 w3-theme-l3">
+        <div class="w3-row-padding">
+          <div class="w3-col s12 m4 l4">
+            <label>Midi In</label>
+            <ul class="w3-list w3-border" id="midiIn"></ul>
+          </div>
+          <div class="w3-col s12 m4 l4">
+            <label>Midi Out</label>
+            <select class="w3-select w3-border" id="midiOut" onchange="outputSelected()"></select>
+          </div>
+        </div>
+      </div>
       <div class="w3-row-padding w3-padding-16">
         <div class="w3-col">
           <button class="w3-button w3-theme w3-col l4" onclick="sysexDumpSendTest()">sysexDumpSend</button>
-          <button class="w3-button w3-theme w3-col l4" onclick="sysexParameterSend(0x30, 0x00, 0x00, 77)">sysexParameterSend</button>
-          <button class="w3-button w3-theme w3-col l4" onclick="sysexBulkDumpRequest(0x0E, 0x40, 0x00)">sysexDumpRequest</button>
-          <button class="w3-button w3-theme w3-col l4" onclick="sysexParameterRequest(0x30, 0x00, 0x00)">sysexParameterRequest</button>
+          <button class="w3-button w3-theme w3-col l4"
+            onclick="sysexParameterSend(0x30, 0x00, 0x00, 77)">sysexParameterSend</button>
+          <button class="w3-button w3-theme w3-col l4"
+            onclick="sysexBulkDumpRequest(0x0E, 0x40, 0x00)">sysexDumpRequest</button>
+          <button class="w3-button w3-theme w3-col l4"
+            onclick="sysexParameterRequest(0x30, 0x00, 0x00)">sysexParameterRequest</button>
         </div>
       </div>
       <div class="w3-row-padding">
@@ -312,7 +315,22 @@
       </div>
     </div>
 
-    <div id="About" class="w3-container tabPage" style="display:none">
+    <div id="Librarian" class="w3-container mainTabPage" style="display:none">
+      <div class="w3-bar w3-theme">
+        <button class="w3-bar-item w3-button w3-theme" onclick="openLibrarianTab('Voice')">Voice</button>
+        <button class="w3-bar-item w3-button w3-theme" onclick="openLibrarianTab('Performance')">Performance</button>
+        <button class="w3-bar-item w3-button w3-theme" onclick="openLibrarianTab('Song')">Song</button>
+        <button class="w3-bar-item w3-button w3-theme" onclick="openLibrarianTab('Pattern')">Pattern</button> 
+        <button class="w3-bar-item w3-button w3-theme" onclick="openLibrarianTab('Master')">Master</button>
+      </div>
+      <div id="Voice" class="w3-container librarianTabPage"></div>
+      <div id="Performance" class="w3-container librarianTabPage" style="display:none"></div>
+      <div id="Song" class="w3-container librarianTabPage" style="display:none"></div>
+      <div id="Pattern" class="w3-container librarianTabPage" style="display:none"></div>
+      <div id="Master" class="w3-container librarianTabPage" style="display:none"></div>
+    </div>
+
+    <div id="About" class="w3-container mainTabPage" style="display:none">
       <div class="w3-row-padding">
         <div class="w3-col">
           <h2>About</h2>
