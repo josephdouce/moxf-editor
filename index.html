@@ -37,10 +37,10 @@
   <div class="w3-content w3-theme-l4">
 
     <div class="w3-bar w3-theme">
-      <button class="w3-bar-item w3-button w3-theme" onclick="openMainTab('DAW')">DAW</button>
-      <button class="w3-bar-item w3-button w3-theme" onclick="openMainTab('Librarian')">Librarian</button>
-      <button class="w3-bar-item w3-button w3-theme" onclick="openMainTab('MIDI')">MIDI</button>
-      <button class="w3-bar-item w3-button w3-theme" onclick="openMainTab('About')">About</button>
+      <button class="w3-bar-item w3-button tablink w3-red" onclick="openMainTab(event, 'DAW')">DAW</button>
+      <button class="w3-bar-item w3-button tablink" onclick="openMainTab(event, 'Librarian')">Librarian</button>
+      <button class="w3-bar-item w3-button tablink" onclick="openMainTab(event, 'MIDI')">MIDI</button>
+      <button class="w3-bar-item w3-button tablink" onclick="openMainTab(event, 'About')">About</button>
     </div>
 
     <div id="a2hsPanel"
@@ -317,16 +317,53 @@
 
     <div id="Librarian" class="w3-container mainTabPage" style="display:none">
       <div class="w3-bar w3-theme">
-        <button class="w3-bar-item w3-button w3-theme" onclick="openLibrarianTab('Voice')">Voice</button>
-        <button class="w3-bar-item w3-button w3-theme" onclick="openLibrarianTab('Performance')">Performance</button>
+        <div class="w3-dropdown-hover">
+          <button class="w3-button w3-theme">Voice</button>
+          <div class="w3-dropdown-content w3-bar-block w3-card-4">
+            <a href="#" class="w3-bar-item w3-button" onclick="openLibrarianTab('Voice-Pre-1')">Pre 1</a>
+            <a href="#" class="w3-bar-item w3-button" onclick="openLibrarianTab('Voice-Pre-2')">Pre 2</a>
+            <a href="#" class="w3-bar-item w3-button" onclick="openLibrarianTab('Voice-Pre-3')">Pre 3</a>
+            <a href="#" class="w3-bar-item w3-button" onclick="openLibrarianTab('Voice-Pre-4')">Pre 4</a>
+            <a href="#" class="w3-bar-item w3-button" onclick="openLibrarianTab('Voice-Pre-5')">Pre 5</a>
+            <a href="#" class="w3-bar-item w3-button" onclick="openLibrarianTab('Voice-Pre-6')">Pre 6</a>
+            <a href="#" class="w3-bar-item w3-button" onclick="openLibrarianTab('Voice-Pre-7')">Pre 7</a>
+            <a href="#" class="w3-bar-item w3-button" onclick="openLibrarianTab('Voice-Pre-8')">Pre 8</a>
+            <a href="#" class="w3-bar-item w3-button" onclick="openLibrarianTab('Voice-Pre-9')">Pre 9</a>
+            <a href="#" class="w3-bar-item w3-button" onclick="openLibrarianTab('Voice-User-1')">User 1</a>
+            <a href="#" class="w3-bar-item w3-button" onclick="openLibrarianTab('Voice-User-2')">User 2</a>
+            <a href="#" class="w3-bar-item w3-button" onclick="openLibrarianTab('Voice-User-3')">User 3</a>
+          </div>
+        </div>
+        <div class="w3-dropdown-hover">
+          <button class="w3-button">Performance</button>
+          <div class="w3-dropdown-content w3-bar-block w3-card-4">
+            <a href="#" class="w3-bar-item w3-button" onclick="openLibrarianTab('Performance-User-1')">User 1</a>
+            <a href="#" class="w3-bar-item w3-button" onclick="openLibrarianTab('Performance-User-2')">User 2</a>
+          </div>
+        </div>
         <button class="w3-bar-item w3-button w3-theme" onclick="openLibrarianTab('Song')">Song</button>
-        <button class="w3-bar-item w3-button w3-theme" onclick="openLibrarianTab('Pattern')">Pattern</button> 
+        <button class="w3-bar-item w3-button w3-theme" onclick="openLibrarianTab('Pattern')">Pattern</button>
+        <button class="w3-bar-item w3-button w3-theme" onclick="openLibrarianTab('Mix')">Mix</button>
         <button class="w3-bar-item w3-button w3-theme" onclick="openLibrarianTab('Master')">Master</button>
+        <span id="Librarian-Page-Selected" class="w3-bar-item w3-theme w3-right">Voice-Pre-1</span>
       </div>
-      <div id="Voice" class="w3-container librarianTabPage"></div>
-      <div id="Performance" class="w3-container librarianTabPage" style="display:none"></div>
+      <div id="Voice-Pre-1" class="w3-container librarianTabPage"></div>
+      <div id="Voice-Pre-2" class="w3-container librarianTabPage" style="display:none"></div>
+      <div id="Voice-Pre-3" class="w3-container librarianTabPage" style="display:none"></div>
+      <div id="Voice-Pre-4" class="w3-container librarianTabPage" style="display:none"></div>
+      <div id="Voice-Pre-5" class="w3-container librarianTabPage" style="display:none"></div>
+      <div id="Voice-Pre-6" class="w3-container librarianTabPage" style="display:none"></div>
+      <div id="Voice-Pre-7" class="w3-container librarianTabPage" style="display:none"></div>
+      <div id="Voice-Pre-8" class="w3-container librarianTabPage" style="display:none"></div>
+      <div id="Voice-Pre-9" class="w3-container librarianTabPage" style="display:none"></div>
+      <div id="Voice-User-1" class="w3-container librarianTabPage" style="display:none"></div>
+      <div id="Voice-User-2" class="w3-container librarianTabPage" style="display:none"></div>
+      <div id="Voice-User-3" class="w3-container librarianTabPage" style="display:none"></div>
+      <div id="Performance-User-1" class="w3-container librarianTabPage" style="display:none"></div>
+      <div id="Performance-User-2" class="w3-container librarianTabPage" style="display:none"></div>
       <div id="Song" class="w3-container librarianTabPage" style="display:none"></div>
       <div id="Pattern" class="w3-container librarianTabPage" style="display:none"></div>
+      <div id="Mix" class="w3-container librarianTabPage" style="display:none"></div>
       <div id="Master" class="w3-container librarianTabPage" style="display:none"></div>
     </div>
 
