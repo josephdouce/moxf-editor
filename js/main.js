@@ -180,10 +180,10 @@ function openMainTab(event, tabName) {
   }
   tablinks = document.getElementsByClassName("tablink");
   for (i = 0; i < x.length; i++) {
-    tablinks[i].className = tablinks[i].className.replace(" w3-red", "");
+    tablinks[i].className = tablinks[i].className.replace(" w3-grey", "");
   }
   document.getElementById(tabName).style.display = "block";
-  event.currentTarget.className += " w3-red";
+  event.currentTarget.className += " w3-grey";
 
 }
 
