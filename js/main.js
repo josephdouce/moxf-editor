@@ -172,7 +172,6 @@ function getMidiDevices() {
 }
 
 function openMainTab(event, tabName) {
-
   var i, x, tablinks;
   x = document.getElementsByClassName("mainTabPage");
   for (i = 0; i < x.length; i++) {
@@ -184,7 +183,6 @@ function openMainTab(event, tabName) {
   }
   document.getElementById(tabName).style.display = "block";
   event.currentTarget.className += " w3-grey";
-
 }
 
 function openLibrarianTab(tabName) {
@@ -387,7 +385,7 @@ function buildLibrarian() {
     // Adds an element to the document
     var p = document.getElementById("Performance-User-1");
     var newElement = document.createElement("button");
-    newElement.setAttribute('class', "w3-col l15 w3-button");
+    newElement.setAttribute('class', "w3-col l15 w3-button w3-theme-l4 w3-border-white");
     newElement.setAttribute('onclick', "performanceSelect(64, " + i + ")")
     newElement.innerHTML = i;
     p.appendChild(newElement);
@@ -395,112 +393,112 @@ function buildLibrarian() {
     // Adds an element to the document
     var p = document.getElementById("Performance-User-2");
     var newElement = document.createElement("button");
-    newElement.setAttribute('class', "w3-col l15 w3-button");
+    newElement.setAttribute('class', "w3-col l15 w3-button w3-theme-l4 w3-border-white");
     newElement.setAttribute('onclick', "performanceSelect(65, " + i + ")")
     newElement.innerHTML = i;
     p.appendChild(newElement);
 
     var p = document.getElementById("Voice-Pre-1");
     var newElement = document.createElement("button");
-    newElement.setAttribute('class', "w3-col l15 w3-button");
+    newElement.setAttribute('class', "w3-col l15 w3-button w3-theme-l4 w3-border-white");
     newElement.setAttribute('onclick', "voiceSelect(0, " + i + ")")
     newElement.innerHTML = i;
     p.appendChild(newElement);
 
     var p = document.getElementById("Voice-Pre-2");
     var newElement = document.createElement("button");
-    newElement.setAttribute('class', "w3-col l15 w3-button");
+    newElement.setAttribute('class', "w3-col l15 w3-button w3-theme-l4 w3-border-white");
     newElement.setAttribute('onclick', "voiceSelect(1, " + i + ")")
     newElement.innerHTML = i;
     p.appendChild(newElement);
 
     var p = document.getElementById("Voice-Pre-3");
     var newElement = document.createElement("button");
-    newElement.setAttribute('class', "w3-col l15 w3-button");
+    newElement.setAttribute('class', "w3-col l15 w3-button w3-theme-l4 w3-border-white");
     newElement.setAttribute('onclick', "voiceSelect(2, " + i + ")")
     newElement.innerHTML = i;
     p.appendChild(newElement);
 
     var p = document.getElementById("Voice-Pre-4");
     var newElement = document.createElement("button");
-    newElement.setAttribute('class', "w3-col l15 w3-button");
+    newElement.setAttribute('class', "w3-col l15 w3-button w3-theme-l4 w3-border-white");
     newElement.setAttribute('onclick', "voiceSelect(3, " + i + ")")
     newElement.innerHTML = i;
     p.appendChild(newElement);
     
     var p = document.getElementById("Voice-Pre-5");
     var newElement = document.createElement("button");
-    newElement.setAttribute('class', "w3-col l15 w3-button");
+    newElement.setAttribute('class', "w3-col l15 w3-button w3-theme-l4 w3-border-white");
     newElement.setAttribute('onclick', "voiceSelect(4, " + i + ")")
     newElement.innerHTML = i;
     p.appendChild(newElement);
     
     var p = document.getElementById("Voice-Pre-6");
     var newElement = document.createElement("button");
-    newElement.setAttribute('class', "w3-col l15 w3-button");
+    newElement.setAttribute('class', "w3-col l15 w3-button w3-theme-l4 w3-border-white");
     newElement.setAttribute('onclick', "voiceSelect(5, " + i + ")")
     newElement.innerHTML = i;
     p.appendChild(newElement);
     
     var p = document.getElementById("Voice-Pre-7");
     var newElement = document.createElement("button");
-    newElement.setAttribute('class', "w3-col l15 w3-button");
+    newElement.setAttribute('class', "w3-col l15 w3-button w3-theme-l4 w3-border-white");
     newElement.setAttribute('onclick', "voiceSelect(6, " + i + ")")
     newElement.innerHTML = i;
     p.appendChild(newElement);
     
     var p = document.getElementById("Voice-Pre-8");
     var newElement = document.createElement("button");
-    newElement.setAttribute('class', "w3-col l15 w3-button");
+    newElement.setAttribute('class', "w3-col l15 w3-button w3-theme-l4 w3-border-white");
     newElement.setAttribute('onclick', "voiceSelect(7, " + i + ")")
     newElement.innerHTML = i;
     p.appendChild(newElement);
     
     var p = document.getElementById("Voice-Pre-9");
     var newElement = document.createElement("button");
-    newElement.setAttribute('class', "w3-col l15 w3-button");
+    newElement.setAttribute('class', "w3-col l15 w3-button w3-theme-l4 w3-border-white");
     newElement.setAttribute('onclick', "voiceSelect(8, " + i + ")")
     newElement.innerHTML = i;
     p.appendChild(newElement);
     
     var p = document.getElementById("Voice-User-1");
     var newElement = document.createElement("button");
-    newElement.setAttribute('class', "w3-col l15 w3-button");
+    newElement.setAttribute('class', "w3-col l15 w3-button w3-theme-l4 w3-border-white");
     newElement.setAttribute('onclick', "voiceSelect(9, " + i + ")")
     newElement.innerHTML = i;
     p.appendChild(newElement);
     
     var p = document.getElementById("Voice-User-2");
     var newElement = document.createElement("button");
-    newElement.setAttribute('class', "w3-col l15 w3-button");
+    newElement.setAttribute('class', "w3-col l15 w3-button w3-theme-l4 w3-border-white");
     newElement.setAttribute('onclick', "voiceSelect(10, " + i + ")")
     newElement.innerHTML = i;
     p.appendChild(newElement);
     
     var p = document.getElementById("Voice-User-3");
     var newElement = document.createElement("button");
-    newElement.setAttribute('class', "w3-col l15 w3-button");
+    newElement.setAttribute('class', "w3-col l15 w3-button w3-theme-l4 w3-border-white");
     newElement.setAttribute('onclick', "voiceSelect(11, " + i + ")")
     newElement.innerHTML = i;
     p.appendChild(newElement);
 
     var p = document.getElementById("Song");
     var newElement = document.createElement("button");
-    newElement.setAttribute('class', "w3-col l15 w3-button");
+    newElement.setAttribute('class', "w3-col l15 w3-button w3-theme-l4 w3-border-white");
     newElement.setAttribute('onclick', "songSelect(" + i + ")")
     newElement.innerHTML = i;
     p.appendChild(newElement);
 
     var p = document.getElementById("Pattern");
     var newElement = document.createElement("button");
-    newElement.setAttribute('class', "w3-col l15 w3-button");
+    newElement.setAttribute('class', "w3-col l15 w3-button w3-theme-l4 w3-border-white");
     newElement.setAttribute('onclick', "patternSelect(" + i + ")")
     newElement.innerHTML = i;
     p.appendChild(newElement);
 
     var p = document.getElementById("Master");
     var newElement = document.createElement("button");
-    newElement.setAttribute('class', "w3-col l15 w3-button");
+    newElement.setAttribute('class', "w3-col l15 w3-button w3-theme-l4 w3-border-white");
     newElement.setAttribute('onclick', "masterSelect(" + i + ")")
     newElement.innerHTML = i;
     p.appendChild(newElement);
@@ -508,7 +506,7 @@ function buildLibrarian() {
   for (i = 0; i < 16; i++) {
     var p = document.getElementById("Mix");
     var newElement = document.createElement("button");
-    newElement.setAttribute('class', "w3-col l15 w3-button");
+    newElement.setAttribute('class', "w3-col l15 w3-button w3-theme-l4 w3-border-white");
     newElement.setAttribute('onclick', "mixSelect(" + i + ")")
     newElement.innerHTML = i;
     p.appendChild(newElement);
