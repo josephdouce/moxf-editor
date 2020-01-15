@@ -43,8 +43,7 @@
       <button class="w3-bar-item w3-button tablink" onclick="openMainTab(event, 'About')">About</button>
     </div>
 
-    <div id="a2hsPanel"
-      class="w3-padding-16 add-panel w3-display-container  w3-pale-green w3-leftbar w3-border-green">
+    <div id="a2hsPanel" class="w3-padding-16 add-panel w3-display-container  w3-pale-green w3-leftbar w3-border-green">
       <span onclick="this.parentElement.style.display='none'" class="w3-button w3-display-topright">X</span>
       <button class="w3-button add-button">Install</button>
     </div>
@@ -78,140 +77,20 @@
         </div>
       </div>
 
-      <div class="w3-row-padding cc">
+      <div id="ccView" class="w3-row-padding cc">
         <div class="w3-col">
           <p>
             In "CC" mode CC values of 1-127 are transmitted on the selected channels.
           </p>
         </div>
-        <div class="w3-col l3 m6 s12">
-          <input class="w3-input w3-border w3-col s9" type="text" onchange="knobNameChange(this)" id="knobName1"
-            placeholder="Display Name" maxlength="15" />
-          <input class="w3-input w3-border w3-col s3" type="number" onchange="ccChange(this)" id="cc1" min="1" max="95"
-            placeholder="CC" />
-        </div>
-        <div class="w3-col l3 m6 s12">
-          <input class="w3-input w3-border w3-col s9" type="text" onchange="knobNameChange(this)" id="knobName2"
-            placeholder="Display Name" maxlength="15" />
-          <input class="w3-input w3-border w3-col s3" type="number" onchange="ccChange(this)" id="cc2" min="1" max="95"
-            placeholder="CC" />
-        </div>
-        <div class="w3-col l3 m6 s12">
-          <input class="w3-input w3-border w3-col s9" type="text" onchange="knobNameChange(this)" id="knobName3"
-            placeholder="Display Name" maxlength="15" />
-          <input class="w3-input w3-border w3-col s3" type="number" onchange="ccChange(this)" id="cc3" min="1" max="95"
-            placeholder="CC" />
-        </div>
-        <div class="w3-col l3 m6 s12">
-          <input class="w3-input w3-border w3-col s9" type="text" onchange="knobNameChange(this)" id="knobName4"
-            placeholder="Display Name" maxlength="15" />
-          <input class="w3-input w3-border w3-col s3" type="number" onchange="ccChange(this)" id="cc4" min="1" max="95"
-            placeholder="CC" />
-        </div>
-        <div class="w3-col l3 m6 s12">
-          <input class="w3-input w3-border w3-col s9" type="text" onchange="knobNameChange(this)" id="knobName5"
-            placeholder="Display Name" maxlength="15" />
-          <input class="w3-input w3-border w3-col s3" type="number" onchange="ccChange(this)" id="cc5" min="1" max="95"
-            placeholder="CC" />
-        </div>
-        <div class="w3-col l3 m6 s12">
-          <input class="w3-input w3-border w3-col s9" type="text" onchange="knobNameChange(this)" id="knobName6"
-            placeholder="Display Name" maxlength="15" />
-          <input class="w3-input w3-border w3-col s3" type="number" onchange="ccChange(this)" id="cc6" min="1" max="95"
-            placeholder="CC" />
-        </div>
-        <div class="w3-col l3 m6 s12">
-          <input class="w3-input w3-border w3-col s9" type="text" onchange="knobNameChange(this)" id="knobName7"
-            placeholder="Display Name" maxlength="15" />
-          <input class="w3-input w3-border w3-col s3" type="number" onchange="ccChange(this)" id="cc7" min="1" max="95"
-            placeholder="CC" />
-        </div>
-        <div class="w3-col l3 m6 s12">
-          <input class="w3-input w3-border w3-col s9" type="text" onchange="knobNameChange(this)" id="knobName8"
-            placeholder="Display Name" maxlength="15" />
-          <input class="w3-input w3-border w3-col s3" type="number" onchange="ccChange(this)" id="cc8" min="1" max="95"
-            placeholder="CC" />
-        </div>
-        <div class="w3-col l3 m6 s12">
-          <input class="w3-input w3-border w3-col s9" type="text" onchange="knobNameChange(this)" id="knobName9"
-            placeholder="Display Name" maxlength="15" />
-          <input class="w3-input w3-border w3-col s3" type="number" onchange="ccChange(this)" id="cc9" min="1" max="95"
-            placeholder="CC" />
-        </div>
-        <div class="w3-col l3 m6 s12">
-          <input class="w3-input w3-border w3-col s9" type="text" onchange="knobNameChange(this)" id="knobName10"
-            placeholder="Display Name" maxlength="15" />
-          <input class="w3-input w3-border w3-col s3" type="number" onchange="ccChange(this)" id="cc10" min="1" max="95"
-            placeholder="CC" />
-        </div>
-        <div class="w3-col l3 m6 s12">
-          <input class="w3-input w3-border w3-col s9" type="text" onchange="knobNameChange(this)" id="knobName11"
-            placeholder="Display Name" maxlength="15" />
-          <input class="w3-input w3-border w3-col s3" type="number" onchange="ccChange(this)" id="cc11" min="1" max="95"
-            placeholder="CC" />
-        </div>
-        <div class="w3-col l3 m6 s12">
-          <input class="w3-input w3-border w3-col s9" type="text" onchange="knobNameChange(this)" id="knobName12"
-            placeholder="Display Name" maxlength="15" />
-          <input class="w3-input w3-border w3-col s3" type="number" onchange="ccChange(this)" id="cc12" min="1" max="95"
-            placeholder="CC" />
-        </div>
       </div>
 
-      <div class="w3-row-padding remote">
+      <div id="remoteView" class="w3-row-padding remote">
         <div class="w3-col">
           <p>
             In "Remote" mode the CC channels are static and cannot be changed.
             They transmit relative CC values, clockwise to increase, anti-clockwise to decreace on the channels below.
           </p>
-        </div>
-        <div class="w3-col l3 m6 s12">
-          <input class="w3-input w3-border w3-col s9" type="text" value="Cutoff" readonly />
-          <input class="w3-input w3-border w3-col s3" type="number" value="16" readonly />
-        </div>
-        <div class="w3-col l3 m6 s12">
-          <input class="w3-input w3-border w3-col s9" type="text" value="Resonance" readonly />
-          <input class="w3-input w3-border w3-col s3" type="number" value="17" readonly />
-        </div>
-        <div class="w3-col l3 m6 s12">
-          <input class="w3-input w3-border w3-col s9" type="text" value="FEG Depth" readonly />
-          <input class="w3-input w3-border w3-col s3" type="number" value="18" readonly />
-        </div>
-        <div class="w3-col l3 m6 s12">
-          <input class="w3-input w3-border w3-col s9" type="text" value="Portamento" readonly />
-          <input class="w3-input w3-border w3-col s3" type="number" value="19" readonly />
-        </div>
-        <div class="w3-col l3 m6 s12">
-          <input class="w3-input w3-border w3-col s9" type="text" value="Attack" readonly />
-          <input class="w3-input w3-border w3-col s3" type="number" value="20" readonly />
-        </div>
-        <div class="w3-col l3 m6 s12">
-          <input class="w3-input w3-border w3-col s9" type="text" value="Decay" readonly />
-          <input class="w3-input w3-border w3-col s3" type="number" value="21" readonly />
-        </div>
-        <div class="w3-col l3 m6 s12">
-          <input class="w3-input w3-border w3-col s9" type="text" value="Sustain" readonly />
-          <input class="w3-input w3-border w3-col s3" type="number" value="22" readonly />
-        </div>
-        <div class="w3-col l3 m6 s12">
-          <input class="w3-input w3-border w3-col s9" type="text" value="Release" readonly />
-          <input class="w3-input w3-border w3-col s3" type="number" value="23" readonly />
-        </div>
-        <div class="w3-col l3 m6 s12">
-          <input class="w3-input w3-border w3-col s9" type="text" value="Vol" readonly />
-          <input class="w3-input w3-border w3-col s3" type="number" value="24" readonly />
-        </div>
-        <div class="w3-col l3 m6 s12">
-          <input class="w3-input w3-border w3-col s9" type="text" value="Pan" readonly />
-          <input class="w3-input w3-border w3-col s3" type="number" value="25" readonly />
-        </div>
-        <div class="w3-col l3 m6 s12">
-          <input class="w3-input w3-border w3-col s9" type="text" value="Assign 1" readonly />
-          <input class="w3-input w3-border w3-col s3" type="number" value="26" readonly />
-        </div>
-        <div class="w3-col l3 m6 s12">
-          <input class="w3-input w3-border w3-col s9" type="text" value="Assign 2" readonly />
-          <input class="w3-input w3-border w3-col s3" type="number" value="27" readonly />
         </div>
       </div>
 
@@ -238,67 +117,18 @@
       </div>
       <div class="w3-row-padding w3-padding-16">
         <div class="w3-col">
-          <button class="w3-button w3-col l4" onclick="sysexDumpSendTest()">sysexDumpSend</button>
-          <button class="w3-button w3-col l4"
+          <button class="w3-button w3-theme	w3-col l3" onclick="sysexDumpSendTest()">sysexDumpSend</button>
+          <button class="w3-button w3-theme	w3-col l3"
             onclick="sysexParameterSend(0x30, 0x00, 0x00, 77)">sysexParameterSend</button>
-          <button class="w3-button w3-col l4"
+          <button class="w3-button w3-theme	w3-col l3"
             onclick="sysexBulkDumpRequest(0x0E, 0x40, 0x00)">sysexDumpRequest</button>
-          <button class="w3-button w3-col l4"
+          <button class="w3-button w3-theme	w3-col l3"
             onclick="sysexParameterRequest(0x30, 0x00, 0x00)">sysexParameterRequest</button>
         </div>
       </div>
       <div class="w3-row-padding">
-        <div class="w3-col">
-          <h2>Data Types</h2>
-          <input class="w3-check" type="checkbox" id="activesensingEnabled" onchange="updateListeners()">
-          <label>activesensing</label>
-          <input class="w3-check" type="checkbox" checked="checked" id="channelaftertouchEnabled"
-            onclick="updateListeners()">
-          <label>channelaftertouch</label>
-          <input class="w3-check" type="checkbox" checked="checked" id="channelmodeEnabled" onclick="updateListeners()">
-          <label>channelmode</label>
-          <input class="w3-check" type="checkbox" id="clockEnabled" onclick="updateListeners()">
-          <label>clock</label>
-          <input class="w3-check" type="checkbox" checked="checked" id="continueEnabled" onclick="updateListeners()">
-          <label>continue</label>
-          <input class="w3-check" type="checkbox" checked="checked" id="controlchangeEnabled"
-            onclick="updateListeners()">
-          <label>controlchange</label>
-          <input class="w3-check" type="checkbox" checked="checked" id="keyaftertouchEnabled"
-            onclick="updateListeners()">
-          <label>keyaftertouch</label>
-          <input class="w3-check" type="checkbox" checked="checked" id="noteonEnabled" onclick="updateListeners()">
-          <label>noteon</label>
-          <input class="w3-check" type="checkbox" checked="checked" id="noteoffEnabled" onclick="updateListeners()">
-          <label>noteoff</label>
-          <input class="w3-check" type="checkbox" checked="checked" id="nrpnEnabled" onclick="updateListeners()">
-          <label>nrpn</label>
-          <input class="w3-check" type="checkbox" checked="checked" id="pitchbendEnabled" onclick="updateListeners()">
-          <label>pitchbend</label>
-          <input class="w3-check" type="checkbox" checked="checked" id="programchangeEnabled"
-            onclick="updateListeners()">
-          <label>programchange</label>
-          <input class="w3-check" type="checkbox" checked="checked" id="resetEnabled" onclick="updateListeners()">
-          <label>reset</label>
-          <input class="w3-check" type="checkbox" checked="checked" id="songpositionEnabled"
-            onclick="updateListeners()">
-          <label>songposition</label>
-          <input class="w3-check" type="checkbox" checked="checked" id="songselectEnabled" onclick="updateListeners()">
-          <label>songselect</label>
-          <input class="w3-check" type="checkbox" checked="checked" id="startEnabled" onclick="updateListeners()">
-          <label>start</label>
-          <input class="w3-check" type="checkbox" checked="checked" id="stopEnabled" onclick="updateListeners()">
-          <label>stop</label>
-          <input class="w3-check" type="checkbox" checked="checked" id="sysexEnabled" onclick="updateListeners()">
-          <label>sysex</label>
-          <input class="w3-check" type="checkbox" checked="checked" id="timecodeEnabled" onclick="updateListeners()">
-          <label>timecode</label>
-          <input class="w3-check" type="checkbox" checked="checked" id="tuningrequestEnabled"
-            onclick="updateListeners()">
-          <label>tuningrequest</label>
-          <input class="w3-check" type="checkbox" checked="checked" id="unknownsystemmessageEnabled"
-            onclick="updateListeners()">
-          <label>unknownsystemmessage</label>
+        <div id="midiDataTypes" class="w3-col">
+          <h2>Data Types Enabled</h2>
         </div>
       </div>
       <div class="w3-row-padding">
@@ -316,30 +146,14 @@
     </div>
 
     <div id="Librarian" class="mainTabPage" style="display:none">
-      <div class="w3-bar w3-theme w3-topbar">
+      <div class="w3-bar w3-theme">
         <div class="w3-dropdown-hover">
           <button class="w3-button w3-theme">Voice</button>
-          <div class="w3-dropdown-content w3-bar-block w3-card-4">
-            <a href="#" class="w3-bar-item w3-button" onclick="openLibrarianTab('Voice-Pre-1')">Pre 1</a>
-            <a href="#" class="w3-bar-item w3-button" onclick="openLibrarianTab('Voice-Pre-2')">Pre 2</a>
-            <a href="#" class="w3-bar-item w3-button" onclick="openLibrarianTab('Voice-Pre-3')">Pre 3</a>
-            <a href="#" class="w3-bar-item w3-button" onclick="openLibrarianTab('Voice-Pre-4')">Pre 4</a>
-            <a href="#" class="w3-bar-item w3-button" onclick="openLibrarianTab('Voice-Pre-5')">Pre 5</a>
-            <a href="#" class="w3-bar-item w3-button" onclick="openLibrarianTab('Voice-Pre-6')">Pre 6</a>
-            <a href="#" class="w3-bar-item w3-button" onclick="openLibrarianTab('Voice-Pre-7')">Pre 7</a>
-            <a href="#" class="w3-bar-item w3-button" onclick="openLibrarianTab('Voice-Pre-8')">Pre 8</a>
-            <a href="#" class="w3-bar-item w3-button" onclick="openLibrarianTab('Voice-Pre-9')">Pre 9</a>
-            <a href="#" class="w3-bar-item w3-button" onclick="openLibrarianTab('Voice-User-1')">User 1</a>
-            <a href="#" class="w3-bar-item w3-button" onclick="openLibrarianTab('Voice-User-2')">User 2</a>
-            <a href="#" class="w3-bar-item w3-button" onclick="openLibrarianTab('Voice-User-3')">User 3</a>
-          </div>
+          <div id="voiceDropdown" class="w3-dropdown-content w3-bar-block w3-card-4"></div>
         </div>
         <div class="w3-dropdown-hover">
           <button class="w3-button">Performance</button>
-          <div class="w3-dropdown-content w3-bar-block w3-card-4">
-            <a href="#" class="w3-bar-item w3-button" onclick="openLibrarianTab('Performance-User-1')">User 1</a>
-            <a href="#" class="w3-bar-item w3-button" onclick="openLibrarianTab('Performance-User-2')">User 2</a>
-          </div>
+          <div id="performanceDropdown" class="w3-dropdown-content w3-bar-block w3-card-4"></div>
         </div>
         <button class="w3-bar-item w3-button" onclick="openLibrarianTab('Song')">Song</button>
         <button class="w3-bar-item w3-button" onclick="openLibrarianTab('Pattern')">Pattern</button>
@@ -347,24 +161,6 @@
         <button class="w3-bar-item w3-button" onclick="openLibrarianTab('Master')">Master</button>
         <span id="Librarian-Page-Selected" class="w3-bar-item w3-right">Voice-Pre-1</span>
       </div>
-      <div id="Voice-Pre-1" class="librarianTabPage"></div>
-      <div id="Voice-Pre-2" class="librarianTabPage" style="display:none"></div>
-      <div id="Voice-Pre-3" class="librarianTabPage" style="display:none"></div>
-      <div id="Voice-Pre-4" class="librarianTabPage" style="display:none"></div>
-      <div id="Voice-Pre-5" class="librarianTabPage" style="display:none"></div>
-      <div id="Voice-Pre-6" class="librarianTabPage" style="display:none"></div>
-      <div id="Voice-Pre-7" class="librarianTabPage" style="display:none"></div>
-      <div id="Voice-Pre-8" class="librarianTabPage" style="display:none"></div>
-      <div id="Voice-Pre-9" class="librarianTabPage" style="display:none"></div>
-      <div id="Voice-User-1" class="librarianTabPage" style="display:none"></div>
-      <div id="Voice-User-2" class="librarianTabPage" style="display:none"></div>
-      <div id="Voice-User-3" class="librarianTabPage" style="display:none"></div>
-      <div id="Performance-User-1" class="librarianTabPage" style="display:none"></div>
-      <div id="Performance-User-2" class="librarianTabPage" style="display:none"></div>
-      <div id="Song" class="librarianTabPage" style="display:none"></div>
-      <div id="Pattern" class="librarianTabPage" style="display:none"></div>
-      <div id="Mix" class="librarianTabPage" style="display:none"></div>
-      <div id="Master" class="librarianTabPage" style="display:none"></div>
     </div>
 
     <div id="About" class="mainTabPage" style="display:none">

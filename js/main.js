@@ -1,4 +1,4 @@
-var output = WebMidi.output;
+var output;
 var input;
 
 function sysexDumpSendTest() {
@@ -259,75 +259,63 @@ function requestData() {
 }
 
 function sysexEventHandler(messageData) {
-  switch (messageData[2]) {
-    // bulk dump
-    case 0x00:
-      // address high
-      switch (messageData[8]) {
-        case 0x01:
-          // address mid
-          switch (messageData[9]) {
-            case 0x00:
-              document.getElementById("presetName").value = String.fromCharCode(messageData[11]);
-              for (i = 12; i < 24; i++) {
-                document.getElementById("presetName").value += String.fromCharCode(messageData[i]);
-              }
-              if (messageData[36] == 1) {
-                document.getElementById("ccRemote").value = "cc";
-              } else {
-                document.getElementById("ccRemote").value = "remote";
-              }
-              break;
-            case 0x10:
-            case 0x11:
-            case 0x12:
-            case 0x13:
-            case 0x14:
-            case 0x15:
-            case 0x16:
-            case 0x17:
-            case 0x18:
-            case 0x19:
-            case 0x1A:
-            case 0x1B:
-              var knobId = "knobName" + (messageData[9] - 15);
-              var ccId = "cc" + (messageData[9] - 15);
-              document.getElementById(knobId).value = String.fromCharCode(messageData[20]);
-              for (i = 21; i < 35; i++) {
-                document.getElementById(knobId).value += String.fromCharCode(messageData[i]);
-              }
-              document.getElementById(ccId).value = messageData[35];
-              break;
-            default:
-              break;
-          }
-          break;
-        default:
-          break;
-      }
-      break;
-      // parameter dump
-    case 0x10:
-      // address high
-      switch (messageData[6]) {
-        case 0x01:
-          // address mid
-          switch (messageData[7]) {
-            case 0x20:
-              if (document.getElementById("preset").value == (messageData[9] + 1)) {
-                console.log("[Main] Preset not changed: " + document.getElementById("preset").value);
-              } else {
-                console.log("[Main] Loading new preset: " + (messageData[9] + 1))
-                document.getElementById("preset").value = messageData[9] + 1;
-                requestData();
+  switch (messageData[1]) { // manaufacturer identifier 
+    case 0x43: // yamaha
+      switch (messageData[2]) { // message type
+        case 0x00: // bulk dump
+          switch (messageData[8]) { // address high
+            case 0x01: // daw 
+              switch (messageData[9]) { // address mid
+                case 0x00:
+                  document.getElementById("presetName").value = String.fromCharCode(messageData[11]);
+                  for (i = 12; i < 24; i++) {
+                    document.getElementById("presetName").value += String.fromCharCode(messageData[i]);
+                  }
+                  if (messageData[36] == 1) {
+                    document.getElementById("ccRemote").value = "cc";
+                  } else {
+                    document.getElementById("ccRemote").value = "remote";
+                  }
+                  break;
+                case 0x1B:
+                  var knobId = "knobName" + (messageData[9] - 15);
+                  var ccId = "cc" + (messageData[9] - 15);
+                  document.getElementById(knobId).value = String.fromCharCode(messageData[20]);
+                  for (i = 21; i < 35; i++) {
+                    document.getElementById(knobId).value += String.fromCharCode(messageData[i]);
+                  }
+                  document.getElementById(ccId).value = messageData[35];
+                  break;
+                default:
+                  break;
               }
               break;
             default:
               break;
           }
-          break;
-        default:
-          break;
+          case 0x10: // parameter dump
+            switch (messageData[6]) { // address high
+              case 0x01: // daw 
+                switch (messageData[7]) { // address mid
+                  case 0x20: // preset?
+                    if (document.getElementById("preset").value == (messageData[9] + 1)) {
+                      console.log("[Main] Preset not changed: " + document.getElementById("preset").value);
+                    } else {
+                      console.log("[Main] Loading new preset: " + (messageData[9] + 1))
+                      document.getElementById("preset").value = messageData[9] + 1;
+                      requestData();
+                    }
+                    break;
+                  default:
+                    break;
+                }
+                break;
+              default:
+                break;
+            }
+            break;
+          default:
+            break;
       }
       break;
     default:
@@ -378,110 +366,170 @@ function mixSelect(i) {
   output.sendProgramChange(i);
 }
 
+function buildMidi() {
+  var i;
+  dataTypes = [
+    "activesensingEnabled", "channelaftertouchEnabled", "channelmodeEnabled",
+    "clockEnabled", "continueEnabled", "controlchangeEnabled",
+    "keyaftertouchEnabled", "noteonEnabled", "noteoffEnabled",
+    "nrpnEnabled", "pitchbendEnabled", "programchangeEnabled",
+    "resetEnabled", "songpositionEnabled", "songselectEnabled",
+    "startEnabled", "stopEnabled", "sysexEnabled", "timecodeEnabled",
+    "tuningrequestEnabled", "unknownsystemmessageEnabled"
+  ]
+
+  for (i = 0; i < dataTypes.length; i++) {
+    var p = document.getElementById("midiDataTypes");
+    var newElement = document.createElement("div");
+    var newElement2 = document.createElement("label");
+    var newElement3 = document.createElement("input");
+
+    newElement.setAttribute('class', "w3-col l3 m6 s12")
+
+    newElement2.innerHTML = " " + dataTypes[i].slice(0,-7);
+
+    newElement3.setAttribute('class', "w3-check");
+    newElement3.setAttribute('type', "checkbox");
+    newElement3.setAttribute('checked', "checked");
+    newElement3.setAttribute('id', dataTypes[i]);
+    newElement3.setAttribute('onchange', "updateListeners()");
+
+    newElement.appendChild(newElement3);
+    newElement.appendChild(newElement2);
+    p.appendChild(newElement);
+  }
+}
+
+function buildDaw() {
+  var i;
+  var remoteNames = ["Cutoff", "Resonance", "FEG Depth", "Portamento",
+    "Attack", "Decay", "Sustain", "Release", "Vol", "Pan", "Assign 1",
+    "Assign 2"
+  ];
+
+  for (i = 0; i < 12; i++) {
+    var p = document.getElementById("ccView");
+    var newElement = document.createElement("div");
+    var newElement2 = document.createElement("input");
+    var newElement3 = document.createElement("input");
+
+    newElement.setAttribute('class', "w3-col l3 m6 s12");
+
+    newElement2.setAttribute('class', "w3-input w3-border w3-col s9")
+    newElement2.setAttribute('type', "text")
+    newElement2.setAttribute('onchange', "knobNameChange(this)")
+    newElement2.setAttribute('placeholder', "DisplayName")
+    newElement2.setAttribute('id', "knobName" + (i + 1))
+    newElement2.setAttribute('maxlength', "15")
+
+    newElement3.setAttribute('class', "w3-input w3-border w3-col s3")
+    newElement3.setAttribute('type', "number")
+    newElement3.setAttribute('onchange', "ccChange(this)")
+    newElement3.setAttribute('id', "cc" + (i + 1))
+    newElement3.setAttribute('min', "1")
+    newElement3.setAttribute('max', "95")
+    newElement3.setAttribute('placeholder', "CC")
+
+    newElement.appendChild(newElement2);
+    newElement.appendChild(newElement3);
+    p.appendChild(newElement);
+  }
+
+  for (i = 0; i < 12; i++) {
+    var p = document.getElementById("remoteView");
+    var newElement = document.createElement("div");
+    var newElement2 = document.createElement("input");
+    var newElement3 = document.createElement("input");
+
+    newElement.setAttribute('class', "w3-col l3 m6 s12");
+
+    newElement2.setAttribute('class', "w3-input w3-border w3-col s9")
+    newElement2.setAttribute('type', "text")
+    newElement2.setAttribute('value', remoteNames[i])
+    newElement2.setAttribute('readonly', 'true')
+
+    newElement3.setAttribute('class', "w3-input w3-border w3-col s3")
+    newElement3.setAttribute('type', "number")
+    newElement3.setAttribute('value', (i + 16))
+    newElement3.setAttribute('readonly', 'true')
+
+    newElement.appendChild(newElement2);
+    newElement.appendChild(newElement3);
+    p.appendChild(newElement);
+  }
+}
 
 function buildLibrarian() {
   var i;
+  var j;
+  var tabs = [
+    "Voice-Pre-1", "Voice-Pre-2", "Voice-Pre-3", "Voice-Pre-4",
+    "Voice-Pre-5", "Voice-Pre-6", "Voice-Pre-7", "Voice-Pre-8",
+    "Voice-Pre-9", "Voice-User-1", "Voice-User-2", "Voice-User-3",
+    "Performance-User-1", "Performance-User-2", "Song",
+    "Pattern", "Mix", "Master"
+  ];
+
+  // add tab pages 
+  for (i = 0; i < tabs.length; i++) {
+    var p = document.getElementById("Librarian");
+    var newElement = document.createElement("div");
+    newElement.setAttribute('class', "librarianTabPage");
+    newElement.setAttribute('id', tabs[i])
+    if (i > 0) {
+      newElement.setAttribute('style', "display:none")
+    }
+    p.appendChild(newElement);
+  }
+
+  // add voice dropdown options
+  for (i = 0; i < 12; i++) {
+    var p = document.getElementById("voiceDropdown");
+    var newElement = document.createElement("a");
+    newElement.setAttribute('class', "w3-bar-item w3-button");
+    newElement.setAttribute('href', "#")
+    newElement.setAttribute('onclick', "openLibrarianTab('" + tabs[i] + "')")
+    newElement.innerHTML = tabs[i]
+    p.appendChild(newElement);
+  }
+
+  // add performance dropdown options
+  for (i = 12; i < 14; i++) {
+    var p = document.getElementById("performanceDropdown");
+    var newElement = document.createElement("a");
+    newElement.setAttribute('class', "w3-bar-item w3-button");
+    newElement.setAttribute('href', "#")
+    newElement.setAttribute('onclick', "openLibrarianTab('" + tabs[i] + "')")
+    newElement.innerHTML = tabs[i]
+    p.appendChild(newElement);
+  }
+
+  // add voices
+  for (j = 0; j < 12; j++) {
+    for (i = 0; i < 128; i++) {
+      var p = document.getElementById(tabs[j]);
+      var newElement = document.createElement("button");
+      newElement.setAttribute('class', "w3-col l15 w3-button w3-theme-l4 w3-border-white");
+      newElement.setAttribute('onclick', "voiceSelect(" + j + ", " + i + ")")
+      newElement.innerHTML = i;
+      p.appendChild(newElement);
+    }
+  }
+
+  // add performances
+  for (j = 12; j < 14; j++) {
+    for (i = 0; i < 128; i++) {
+      var p = document.getElementById(tabs[j]);
+      var newElement = document.createElement("button");
+      newElement.setAttribute('class', "w3-col l15 w3-button w3-theme-l4 w3-border-white");
+      newElement.setAttribute('onclick', "performanceSelect(" + (64 - 12 + j) + ", " + i + ")")
+      newElement.innerHTML = i;
+      p.appendChild(newElement);
+    }
+  }
+
+  // add pattern/song/masters
   for (i = 0; i < 128; i++) {
-    // Adds an element to the document
-    var p = document.getElementById("Performance-User-1");
-    var newElement = document.createElement("button");
-    newElement.setAttribute('class', "w3-col l15 w3-button w3-theme-l4 w3-border-white");
-    newElement.setAttribute('onclick', "performanceSelect(64, " + i + ")")
-    newElement.innerHTML = i;
-    p.appendChild(newElement);
-
-    // Adds an element to the document
-    var p = document.getElementById("Performance-User-2");
-    var newElement = document.createElement("button");
-    newElement.setAttribute('class', "w3-col l15 w3-button w3-theme-l4 w3-border-white");
-    newElement.setAttribute('onclick', "performanceSelect(65, " + i + ")")
-    newElement.innerHTML = i;
-    p.appendChild(newElement);
-
-    var p = document.getElementById("Voice-Pre-1");
-    var newElement = document.createElement("button");
-    newElement.setAttribute('class', "w3-col l15 w3-button w3-theme-l4 w3-border-white");
-    newElement.setAttribute('onclick', "voiceSelect(0, " + i + ")")
-    newElement.innerHTML = i;
-    p.appendChild(newElement);
-
-    var p = document.getElementById("Voice-Pre-2");
-    var newElement = document.createElement("button");
-    newElement.setAttribute('class', "w3-col l15 w3-button w3-theme-l4 w3-border-white");
-    newElement.setAttribute('onclick', "voiceSelect(1, " + i + ")")
-    newElement.innerHTML = i;
-    p.appendChild(newElement);
-
-    var p = document.getElementById("Voice-Pre-3");
-    var newElement = document.createElement("button");
-    newElement.setAttribute('class', "w3-col l15 w3-button w3-theme-l4 w3-border-white");
-    newElement.setAttribute('onclick', "voiceSelect(2, " + i + ")")
-    newElement.innerHTML = i;
-    p.appendChild(newElement);
-
-    var p = document.getElementById("Voice-Pre-4");
-    var newElement = document.createElement("button");
-    newElement.setAttribute('class', "w3-col l15 w3-button w3-theme-l4 w3-border-white");
-    newElement.setAttribute('onclick', "voiceSelect(3, " + i + ")")
-    newElement.innerHTML = i;
-    p.appendChild(newElement);
-    
-    var p = document.getElementById("Voice-Pre-5");
-    var newElement = document.createElement("button");
-    newElement.setAttribute('class', "w3-col l15 w3-button w3-theme-l4 w3-border-white");
-    newElement.setAttribute('onclick', "voiceSelect(4, " + i + ")")
-    newElement.innerHTML = i;
-    p.appendChild(newElement);
-    
-    var p = document.getElementById("Voice-Pre-6");
-    var newElement = document.createElement("button");
-    newElement.setAttribute('class', "w3-col l15 w3-button w3-theme-l4 w3-border-white");
-    newElement.setAttribute('onclick', "voiceSelect(5, " + i + ")")
-    newElement.innerHTML = i;
-    p.appendChild(newElement);
-    
-    var p = document.getElementById("Voice-Pre-7");
-    var newElement = document.createElement("button");
-    newElement.setAttribute('class', "w3-col l15 w3-button w3-theme-l4 w3-border-white");
-    newElement.setAttribute('onclick', "voiceSelect(6, " + i + ")")
-    newElement.innerHTML = i;
-    p.appendChild(newElement);
-    
-    var p = document.getElementById("Voice-Pre-8");
-    var newElement = document.createElement("button");
-    newElement.setAttribute('class', "w3-col l15 w3-button w3-theme-l4 w3-border-white");
-    newElement.setAttribute('onclick', "voiceSelect(7, " + i + ")")
-    newElement.innerHTML = i;
-    p.appendChild(newElement);
-    
-    var p = document.getElementById("Voice-Pre-9");
-    var newElement = document.createElement("button");
-    newElement.setAttribute('class', "w3-col l15 w3-button w3-theme-l4 w3-border-white");
-    newElement.setAttribute('onclick', "voiceSelect(8, " + i + ")")
-    newElement.innerHTML = i;
-    p.appendChild(newElement);
-    
-    var p = document.getElementById("Voice-User-1");
-    var newElement = document.createElement("button");
-    newElement.setAttribute('class', "w3-col l15 w3-button w3-theme-l4 w3-border-white");
-    newElement.setAttribute('onclick', "voiceSelect(9, " + i + ")")
-    newElement.innerHTML = i;
-    p.appendChild(newElement);
-    
-    var p = document.getElementById("Voice-User-2");
-    var newElement = document.createElement("button");
-    newElement.setAttribute('class', "w3-col l15 w3-button w3-theme-l4 w3-border-white");
-    newElement.setAttribute('onclick', "voiceSelect(10, " + i + ")")
-    newElement.innerHTML = i;
-    p.appendChild(newElement);
-    
-    var p = document.getElementById("Voice-User-3");
-    var newElement = document.createElement("button");
-    newElement.setAttribute('class', "w3-col l15 w3-button w3-theme-l4 w3-border-white");
-    newElement.setAttribute('onclick', "voiceSelect(11, " + i + ")")
-    newElement.innerHTML = i;
-    p.appendChild(newElement);
-
     var p = document.getElementById("Song");
     var newElement = document.createElement("button");
     newElement.setAttribute('class', "w3-col l15 w3-button w3-theme-l4 w3-border-white");
@@ -503,6 +551,8 @@ function buildLibrarian() {
     newElement.innerHTML = i;
     p.appendChild(newElement);
   }
+
+  // add mixes
   for (i = 0; i < 16; i++) {
     var p = document.getElementById("Mix");
     var newElement = document.createElement("button");
@@ -515,6 +565,8 @@ function buildLibrarian() {
 
 function onloadFunction() {
   enableMidi();
+  buildMidi();
+  buildDaw();
   buildLibrarian();
 }
 
