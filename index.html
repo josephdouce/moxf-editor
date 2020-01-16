@@ -1,11 +1,11 @@
-<!doctype html>
+<!doctye html>
 <html class="no-js" lang="">
 
 <head>
   <!-- Site Info-->
   <meta charset="utf-8">
   <title>MOXF Editor</title>
-  <meta name="description" content="MOXF Editor">
+  <meta name="descrition" content="MOXF Editor">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/png" href="favicon.png">
 
@@ -107,23 +107,12 @@
         <div class="w3-row-padding">
           <div class="w3-col s12 m4 l4">
             <label>Midi In</label>
-            <ul class="w3-list w3-border" id="midiIn"></ul>
+            <ul class="w3-list" id="midiIn"></ul>
           </div>
           <div class="w3-col s12 m4 l4">
             <label>Midi Out</label>
             <select class="w3-select w3-border" id="midiOut" onchange="outputSelected()"></select>
           </div>
-        </div>
-      </div>
-      <div class="w3-row-padding w3-padding-16">
-        <div class="w3-col">
-          <button class="w3-button w3-theme	w3-col l3" onclick="sysexDumpSendTest()">sysexDumpSend</button>
-          <button class="w3-button w3-theme	w3-col l3"
-            onclick="sysexParameterSend(0x30, 0x00, 0x00, 77)">sysexParameterSend</button>
-          <button class="w3-button w3-theme	w3-col l3"
-            onclick="sysexBulkDumpRequest(0x0E, 0x40, 0x00)">sysexDumpRequest</button>
-          <button class="w3-button w3-theme	w3-col l3"
-            onclick="sysexParameterRequest(0x30, 0x00, 0x00)">sysexParameterRequest</button>
         </div>
       </div>
       <div class="w3-row-padding">
@@ -139,7 +128,7 @@
       <div class="w3-row-padding">
         <div class="w3-col">
           <section id="midi-data">
-            <ul class="w3-ul"></ul>
+            <ul style="list-style-type: none; padding: 0" ></ul>
           </section>
         </div>
       </div>

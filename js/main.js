@@ -1,24 +1,33 @@
 var output;
 var input;
-
-function sysexDumpSendTest() {
-  sysexBulkDumpSend(14, 64, 0, []);
-  sysexBulkDumpSend(48, 0, 0, [77, 101, 109, 111, 114, 105, 101, 115, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 64, 0, 64, 64, 64, 64, 64, 64, 0, 64, 64, 64, 64, 0, 0, 64, 64, 0, 64, 64, 64, 0, 64, 64, 0, 80, 64, 1, 127, 127, 0, 0, 1, 1, 0, 60, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 32, 0, 15]);
-  sysexBulkDumpSend(15, 64, 0, []);
+var bulkFlag = false;
+var bulkSysexArray = [];
+var systemData = {
+  banks: [{
+    "name": "performanceBank1",
+    "bulkHeader": [0x40],
+    "sysexDump": []
+  }]
 }
 
-function sysexBulkDumpChange(high, mid, low, data) {
-  var byteCount = data.length + 4;
+function sysexDumpSendTest() {
+  sysexBulkDumpSend(14, 64, 0);
+  sysexBulkDumpSend(48, 0, 0, [77, 101, 109, 111, 114, 105, 101, 115, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 64, 0, 64, 64, 64, 64, 64, 64, 0, 64, 64, 64, 64, 0, 0, 64, 64, 0, 64, 64, 64, 0, 64, 64, 0, 80, 64, 1, 127, 127, 0, 0, 1, 1, 0, 60, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 32, 0, 15]);
+  sysexBulkDumpSend(15, 64, 0);
+}
+
+function sysexBulkDumpSend(high, mid, low, data = []) {
+  var byteCount1 = 0x00;
+  var byteCount2 = data.length + 4;
   var checksum = ~[0x00, high, mid, low].concat(data).reduce((a, b) => a + b, 0) + 1 & 0x7F
   try {
-    console.log(0x43, [0x00, 0x7F, 0x1C, 0x00, byteCount, 0x00, high, mid, low].concat(data).concat(checksum))
-    output.sendSysex(0x43, [0x00, 0x7F, 0x1C, 0x00, byteCount, 0x00, high, mid, low].concat(data).concat(checksum));
+    output.sendSysex(0x43, [0x00, 0x7F, 0x1C, byteCount1, byteCount2, 0x00, high, mid, low].concat(data).concat(checksum));
   } catch (err) {
     console.log(err);
   }
 }
 
-function sysexParameterChange(high, mid, low, data) {
+function sysexParameterSend(high, mid, low, data = []) {
   try {
     output.sendSysex(0x43, [0x10, 0x7F, 0x1C, 0x00, high, mid, low].concat(data));
   } catch (err) {
@@ -45,7 +54,7 @@ function sysexParameterRequest(high, mid, low) {
 //change input and add listeners
 function updateListeners() {
 
-  console.log("[Main] Updating Listeners")
+  console.log("[Main] Updating listeners")
 
   for (var i in WebMidi.inputs) {
 
@@ -62,7 +71,7 @@ function updateListeners() {
       if (document.getElementById(events[i] + "Enabled").checked) {
         input.addListener(events[i], "all",
           function (e) {
-            printMidi(e.target.name + ", " + e.type + ", " + e.data);
+            printMidi(e.target.name + ", " + e.type + ", " + toHexString(e.data));
             switch (e.type) {
               case 'sysex':
                 sysexEventHandler(e.data);
@@ -77,10 +86,10 @@ function updateListeners() {
 function outputSelected() {
   var outputSelected = document.getElementById("midiOut").value;
   try {
-    console.log("[Main] Output Selected : " + outputSelected);
+    console.log("[Main] Output selected : " + outputSelected);
     output = WebMidi.getOutputByName(outputSelected);
   } catch (err) {
-    console.log("[Main] No Output Selected")
+    console.log("[Main] No output selected")
     console.log(err);
   }
 }
@@ -91,25 +100,25 @@ function changeType() {
   if (type == "cc") {
     for (let el of document.querySelectorAll('.remote')) el.style.display = 'none';
     for (let el of document.querySelectorAll('.cc')) el.style.display = 'block';
-    sysexParameterChange(0x01, 0x00, 0x19, 0x01);
+    sysexParameterSend(0x01, 0x00, 0x19, 0x01);
   } else if (type == "remote") {
     for (let el of document.querySelectorAll('.cc')) el.style.display = 'none';
     for (let el of document.querySelectorAll('.remote')) el.style.display = 'block';
-    sysexParameterChange(0x01, 0x00, 0x19, 0x00);
+    sysexParameterSend(0x01, 0x00, 0x19, 0x00);
   }
 }
 
 // request enable MIDI in broweser and wait for user response before proceeding
 async function enableMidi() {
-  console.log("[Main] Enabling Midi")
+  console.log("[Main] Enabling midi")
 
   var promise = new Promise((resolve, reject) => {
     WebMidi.enable(function (err) {
       if (err) {
-        console.log("[Main] WebMidi could not be enabled.", err);
+        console.log("[Main] webmidi could not be enabled.", err);
       } else {
         resolve();
-        console.log("[Main] WebMidi enabled");
+        console.log("[Main] webmidi enabled");
       }
     }, true);
   });
@@ -119,7 +128,7 @@ async function enableMidi() {
 
   WebMidi.addListener('connected',
     function (e) {
-      console.log("New Device Connected")
+      console.log("New Device connected")
       getMidiDevices();
       updateListeners();
       outputSelected();
@@ -128,7 +137,7 @@ async function enableMidi() {
 
   WebMidi.addListener('disconnected',
     function (e) {
-      console.log("Device Disonnected")
+      console.log("Device disonnected")
       getMidiDevices();
     }
   );
@@ -141,7 +150,7 @@ async function enableMidi() {
 
 // get available midi devices and populate dropdowns 
 function getMidiDevices() {
-  console.log("[Main] Getting Midi Devices")
+  console.log("[Main] Getting midi Devices")
 
   document.getElementById("midiOut").options.length = 0;
   document.getElementById("midiIn").innerHTML = "";
@@ -151,7 +160,7 @@ function getMidiDevices() {
     document.getElementById('connectionWarning').style.display = 'none';
 
     for (var i in WebMidi.inputs) {
-      console.log("[Main] Added Input: " + WebMidi.inputs[i].name);
+      console.log("[Main] Added input: " + WebMidi.inputs[i].name);
       var ul = document.getElementById("midiIn");
       var li = document.createElement("li");
       li.appendChild(document.createTextNode(WebMidi.inputs[i].name));
@@ -159,7 +168,7 @@ function getMidiDevices() {
     }
 
     for (var i in WebMidi.outputs) {
-      console.log("[Main] Added Output: " + WebMidi.outputs[i].name);
+      console.log("[Main] Added output: " + WebMidi.outputs[i].name);
       var option = document.createElement('option');
       option.text = option.value = WebMidi.outputs[i].name;
       document.getElementById("midiOut").add(option);
@@ -201,7 +210,7 @@ function presetSelected(data) {
   }
   var preset = data.value - 1;
   // set preset
-  sysexParameterChange(0x01, 0x20, 0x00, preset);
+  sysexParameterSend(0x01, 0x20, 0x00, preset);
   // get data
   requestData();
 }
@@ -210,16 +219,16 @@ function presetNameChange(data) {
   // set preset name
   for (i = 0x00; i < 0x0C; i++) {
     if (data.value[i] == undefined) {
-      sysexParameterChange(0x01, 0x00, i, 0x20);
+      sysexParameterSend(0x01, 0x00, i, 0x20);
     } else {
-      sysexParameterChange(0x01, 0x00, i, String(data.value[i]).charCodeAt(0));
+      sysexParameterSend(0x01, 0x00, i, String(data.value[i]).charCodeAt(0));
     }
   }
   for (i = 0x0D; i < 0x19; i++) {
     if (data.value[i] == undefined) {
-      sysexParameterChange(0x01, 0x00, i, 0x20);
+      sysexParameterSend(0x01, 0x00, i, 0x20);
     } else {
-      sysexParameterChange(0x01, 0x00, i, String(data.value[i]).charCodeAt(0));
+      sysexParameterSend(0x01, 0x00, i, String(data.value[i]).charCodeAt(0));
     }
   }
 }
@@ -228,9 +237,9 @@ function knobNameChange(data) {
   var knobAddress = parseInt(data.id[8]) + 15;
   for (i = 0x09; i < 0x18; i++) {
     if (data.value[i - 9] == undefined) {
-      sysexParameterChange(0x01, knobAddress, i, 0x20);
+      sysexParameterSend(0x01, knobAddress, i, 0x20);
     } else {
-      sysexParameterChange(0x01, knobAddress, i, String(data.value[i - 9]).charCodeAt(0));
+      sysexParameterSend(0x01, knobAddress, i, String(data.value[i - 9]).charCodeAt(0));
     }
   }
 }
@@ -244,11 +253,11 @@ function ccChange(data) {
   }
   var value = data.value;
   var knobAddress = parseInt(data.id[2]) + 15;
-  sysexParameterChange(0x01, knobAddress, 0x18, value);
+  sysexParameterSend(0x01, knobAddress, 0x18, value);
 }
 
 function store() {
-  sysexParameterChange(0x01, 0x22, 0x00, []);
+  sysexParameterSend(0x01, 0x22, 0x00, []);
 }
 
 function requestData() {
@@ -258,57 +267,84 @@ function requestData() {
   sysexBulkDumpRequest(0x0E, 0x60, presetAddress);
 }
 
-function sysexEventHandler(messageData) {
-  switch (messageData[1]) { // manaufacturer identifier 
-    case 0x43: // yamaha
-      switch (messageData[2]) { // message type
-        case 0x00: // bulk dump
-          switch (messageData[8]) { // address high
-            case 0x01: // daw 
-              switch (messageData[9]) { // address mid
-                case 0x00:
-                  document.getElementById("presetName").value = String.fromCharCode(messageData[11]);
-                  for (i = 12; i < 24; i++) {
-                    document.getElementById("presetName").value += String.fromCharCode(messageData[i]);
-                  }
-                  if (messageData[36] == 1) {
-                    document.getElementById("ccRemote").value = "cc";
-                  } else {
-                    document.getElementById("ccRemote").value = "remote";
-                  }
-                  break;
-                case 0x1B:
-                  var knobId = "knobName" + (messageData[9] - 15);
-                  var ccId = "cc" + (messageData[9] - 15);
-                  document.getElementById(knobId).value = String.fromCharCode(messageData[20]);
-                  for (i = 21; i < 35; i++) {
-                    document.getElementById(knobId).value += String.fromCharCode(messageData[i]);
-                  }
-                  document.getElementById(ccId).value = messageData[35];
-                  break;
-                default:
-                  break;
-              }
-              break;
-            default:
-              break;
-          }
-          case 0x10: // parameter dump
-            switch (messageData[6]) { // address high
-              case 0x01: // daw 
-                switch (messageData[7]) { // address mid
-                  case 0x20: // preset?
-                    if (document.getElementById("preset").value == (messageData[9] + 1)) {
-                      console.log("[Main] Preset not changed: " + document.getElementById("preset").value);
-                    } else {
-                      console.log("[Main] Loading new preset: " + (messageData[9] + 1))
-                      document.getElementById("preset").value = messageData[9] + 1;
-                      requestData();
-                    }
-                    break;
-                  default:
-                    break;
+function toHexString(byteArray) {
+  return Array.from(byteArray, function (byte) {
+    return ('0' + (byte & 0xFF).toString(16)).slice(-2).toUpperCase();
+  }).join(', ')
+}
+
+// process a bulk sysex array 
+function processBulkSysex(bulkSysexArray) {
+  var j;
+
+  switch (bulkSysexArray[0][9]) {
+    case 0x01:
+    case 0x02:
+    case 0x03:
+    case 0x04:
+    case 0x05:
+    case 0x06:
+    case 0x07:
+    case 0x08:
+    case 0x09:
+    case 0x0A:
+    case 0x0B:
+    case 0x0C:
+      console.log("Voice Bank: " + (bulkSysexArray[0][9] + 1) + ", Preset: " + (bulkSysexArray[0][10] + 1))
+      break;
+    case 0x20:
+      console.log("Drum Preset: " + (bulkSysexArray[0][10] + 1))
+      break;
+    case 0x21:
+      console.log("Drum GM: " + (bulkSysexArray[0][10] + 1))
+      break;
+    case 0x28:
+      console.log("Drum User: " + (bulkSysexArray[0][10] + 1))
+      break;
+    case 0x31:
+      console.log("Mix: " + (bulkSysexArray[0][10] + 1))
+      break;
+    case 0x40:
+    case 0x41:
+      console.log("Performance Bank: " + (bulkSysexArray[0][9] - 0x3F) + ", Preset: " + (bulkSysexArray[0][10] + 1))
+      break
+    case 0x60:
+      console.log("DAW Preset: " + bulkSysexArray[0][10])
+      for (j = 1; j < bulkSysexArray.length - 1; j++) {
+        messageData = bulkSysexArray[j];
+        switch (messageData[8]) { // address mid
+          case 0x01: // daw 
+            switch (messageData[9]) { // address low
+              case 0x00:
+                document.getElementById("presetName").value = String.fromCharCode(messageData[11]);
+                for (i = 12; i < 24; i++) {
+                  document.getElementById("presetName").value += String.fromCharCode(messageData[i]);
                 }
+                if (messageData[36] == 1) {
+                  document.getElementById("ccRemote").value = "cc";
+                } else {
+                  document.getElementById("ccRemote").value = "remote";
+                }
+                break;
+              case 0x10:
+              case 0x11:
+              case 0x12:
+              case 0x13:
+              case 0x14:
+              case 0x15:
+              case 0x16:
+              case 0x17:
+              case 0x18:
+              case 0x19:
+              case 0x1A:
+              case 0x1B:
+                var knobId = "knobName" + (messageData[9] - 15);
+                var ccId = "cc" + (messageData[9] - 15);
+                document.getElementById(knobId).value = String.fromCharCode(messageData[20]);
+                for (i = 21; i < 35; i++) {
+                  document.getElementById(knobId).value += String.fromCharCode(messageData[i]);
+                }
+                document.getElementById(ccId).value = messageData[35];
                 break;
               default:
                 break;
@@ -316,6 +352,31 @@ function sysexEventHandler(messageData) {
             break;
           default:
             break;
+        }
+      }
+      break;
+    case 0x70:
+      console.log("Master Preset:" + (bulkSysexArray[0][10] + 1))
+      break;
+  }
+}
+
+// process a parameter change sysex message 
+function processParameterSysex(messageData) {
+  switch (messageData[6]) { // address high
+    case 0x01: // daw 
+      switch (messageData[7]) { // address mid
+        case 0x20: // preset 
+          if (document.getElementById("preset").value == (messageData[9] + 1)) {
+            console.log("[Main] Preset not changed: " + document.getElementById("preset").value);
+          } else {
+            console.log("[Main] Loading new preset: " + (messageData[9] + 1))
+            document.getElementById("preset").value = messageData[9] + 1;
+            requestData();
+          }
+          break;
+        default:
+          break;
       }
       break;
     default:
@@ -323,41 +384,72 @@ function sysexEventHandler(messageData) {
   }
 }
 
-// print midi data if debuggin enabled
+function sysexEventHandler(messageData) {
+  // only process MOXF messages
+  if (messageData[1] != 0x43 | messageData[3] != 0x7F | messageData[4] != 0x1C) {
+    console.log("[Main] Unsupported sysex command recieved")
+  } else {
+    // if bulk header set bulk flag 
+    if (messageData[8] == 0x0E & messageData[2] == 0x00) {
+      bulkFlag = true
+    }
+
+    // add to bulk array until bulk flag is unset
+    if (bulkFlag == true) {
+      bulkSysexArray.push(messageData);
+    }
+
+    // if not bulk message process immediatly
+    if (bulkFlag != true) {
+      console.log("[Main] Sysex parameter event recieved")
+      processParameterSysex(messageData)
+    }
+
+    // if bulk footer is recieved process the block
+    if (messageData[8] == 0x0F & messageData[2] == 0x00) {
+      console.log("[Main] Sysex bulk event recieved")
+      processBulkSysex(bulkSysexArray);
+      bulkSysexArray = [];
+      bulkFlag = false;
+    }
+  }
+}
+
+// display raw midi data on MIDI page
 function printMidi(data) {
   var dataList = document.querySelector('#midi-data ul')
   var newItem = document.createElement('li');
-  newItem.appendChild(document.createTextNode(data));
+  newItem.innerHTML = data;
   dataList.insertBefore(newItem, dataList.firstChild);
 }
 
 function voiceSelect(LSB, i) {
-  sysexParameterChange(0x0A, 0x00, 0x01, 0)
+  sysexParameterSend(0x0A, 0x00, 0x01, 0)
   output.sendControlChange(0, 63);
   output.sendControlChange(32, LSB);
   output.sendProgramChange(i);
 }
 
 function performanceSelect(LSB, i) {
-  sysexParameterChange(0x0A, 0x00, 0x01, 1)
+  sysexParameterSend(0x0A, 0x00, 0x01, 1)
   output.sendControlChange(0, 63);
   output.sendControlChange(32, LSB);
   output.sendProgramChange(i);
 }
 
 function songSelect(i) {
-  sysexParameterChange(0x0A, 0x00, 0x01, 3)
+  sysexParameterSend(0x0A, 0x00, 0x01, 3)
   output.sendSongSelect(i);
 }
 
 function patternSelect(i) {
-  sysexParameterChange(0x0A, 0x00, 0x01, 2)
+  sysexParameterSend(0x0A, 0x00, 0x01, 2)
   output.sendSongSelect(i);
 }
 
 function masterSelect(i) {
-  sysexParameterChange(0x0A, 0x00, 0x01, 4)
-  sysexParameterChange(0x0A, 0x00, 0x00, i)
+  sysexParameterSend(0x0A, 0x00, 0x01, 4)
+  sysexParameterSend(0x0A, 0x00, 0x00, i)
 }
 
 function mixSelect(i) {
@@ -366,6 +458,7 @@ function mixSelect(i) {
   output.sendProgramChange(i);
 }
 
+// build the midi page
 function buildMidi() {
   var i;
   dataTypes = [
@@ -378,6 +471,7 @@ function buildMidi() {
     "tuningrequestEnabled", "unknownsystemmessageEnabled"
   ]
 
+  // add all the checkboxes with labels
   for (i = 0; i < dataTypes.length; i++) {
     var p = document.getElementById("midiDataTypes");
     var newElement = document.createElement("div");
@@ -386,7 +480,7 @@ function buildMidi() {
 
     newElement.setAttribute('class', "w3-col l3 m6 s12")
 
-    newElement2.innerHTML = " " + dataTypes[i].slice(0,-7);
+    newElement2.innerHTML = " " + dataTypes[i].slice(0, -7);
 
     newElement3.setAttribute('class', "w3-check");
     newElement3.setAttribute('type', "checkbox");
@@ -400,6 +494,7 @@ function buildMidi() {
   }
 }
 
+//build the daw page
 function buildDaw() {
   var i;
   var remoteNames = ["Cutoff", "Resonance", "FEG Depth", "Portamento",
@@ -407,6 +502,7 @@ function buildDaw() {
     "Assign 2"
   ];
 
+  // build the cc view
   for (i = 0; i < 12; i++) {
     var p = document.getElementById("ccView");
     var newElement = document.createElement("div");
@@ -435,6 +531,7 @@ function buildDaw() {
     p.appendChild(newElement);
   }
 
+  // build the remote view
   for (i = 0; i < 12; i++) {
     var p = document.getElementById("remoteView");
     var newElement = document.createElement("div");
@@ -459,6 +556,7 @@ function buildDaw() {
   }
 }
 
+//build the librarian page
 function buildLibrarian() {
   var i;
   var j;
