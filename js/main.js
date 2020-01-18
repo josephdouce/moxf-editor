@@ -8,8 +8,11 @@ var bulkFlag = false;
 var bulkSysexArray = [];
 
 function sysexDumpSendTest() {
+  // bulk header
   sysexBulkDumpSend(14, 64, 0);
+  // bulk data 
   sysexBulkDumpSend(48, 0, 0, [77, 101, 109, 111, 114, 105, 101, 115, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 64, 0, 64, 64, 64, 64, 64, 64, 0, 64, 64, 64, 64, 0, 0, 64, 64, 0, 64, 64, 64, 0, 64, 64, 0, 80, 64, 1, 127, 127, 0, 0, 1, 1, 0, 60, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 32, 0, 15]);
+  // bulk footer
   sysexBulkDumpSend(15, 64, 0);
 }
 
@@ -209,7 +212,7 @@ function presetSelected(data) {
   // set preset
   sysexParameterSend(0x01, 0x20, 0x00, preset);
   // get data
-  requestData();
+  requestDawData();
 }
 
 function presetNameChange(data) {
@@ -257,7 +260,7 @@ function store() {
   sysexParameterSend(0x01, 0x22, 0x00, []);
 }
 
-function requestData() {
+function requestDawData() {
   var presetAddress = document.getElementById('preset').value - 1;
   // get preset data
   console.log("[Main] Requesting Data for DAW Preset: " + document.getElementById('preset').value);
@@ -271,22 +274,33 @@ function toHexString(byteArray) {
 }
 
 // process a bulk sysex array 
-function processBulkSysex(bulkSysexArray) {
+function processBulkSysex(bulkSysexArray, store = true) {
+
   var j;
   var bulkHeader = toHexString([bulkSysexArray[0][8], bulkSysexArray[0][9], bulkSysexArray[0][10]]);
 
   // add data to db
-  var request = indexedDB.open('db1', 1);
-  request.onsuccess = function (event) {
-    var db = event.target.result;
-    var transaction = db.transaction('store1', 'readwrite');
-    var dbstore = transaction.objectStore('store1');
-    dbstore.add(bulkSysexArray, bulkHeader);
-  };
-  request.onupgradeneeded = function (event) {
-    var db = event.target.result;
-    db.createObjectStore('store1');
-  };
+  if (store == true) {
+    var request = indexedDB.open('db1', 1);
+
+    request.onerror = function (event) {
+      console.log("Unable to open 'db1'");
+    };
+    request.onsuccess = function (event) {
+      console.log("[IndexedDB] DB Opened")
+      var db = event.target.result;
+      var transaction = db.transaction('store1', 'readwrite');
+      var dbstore = transaction.objectStore('store1');
+      dbstore.add(bulkSysexArray, bulkHeader);
+      console.log("[IndexedDB] \"" + bulkHeader + "\" Added to DB")
+      db.close();
+      console.log("[IndexedDB] DB Closed")
+    };
+    request.onupgradeneeded = function (event) {
+      var db = event.target.result;
+      db.createObjectStore('store1');
+    };
+  }
 
   switch (bulkSysexArray[0][9]) {
     case 0x01:
@@ -301,26 +315,26 @@ function processBulkSysex(bulkSysexArray) {
     case 0x0A:
     case 0x0B:
     case 0x0C:
-      console.log("[Main] Voice Bank: " + (bulkSysexArray[0][9] + 1) + ", Preset: " + (bulkSysexArray[0][10] + 1))
+      console.log("[Main] Voice Bank: " + (bulkSysexArray[0][9] + 1) + ", Preset: " + (bulkSysexArray[0][10] + 1) + " Processed")
       break;
     case 0x20:
-      console.log("[Main] Drum Preset: " + (bulkSysexArray[0][10] + 1))
+      console.log("[Main] Drum Preset: " + (bulkSysexArray[0][10] + 1) + " Processed")
       break;
     case 0x21:
-      console.log("[Main] Drum GM: " + (bulkSysexArray[0][10] + 1))
+      console.log("[Main] Drum GM: " + (bulkSysexArray[0][10] + 1) + " Processed")
       break;
     case 0x28:
-      console.log("[Main] Drum User: " + (bulkSysexArray[0][10] + 1))
+      console.log("[Main] Drum User: " + (bulkSysexArray[0][10] + 1) + " Processed")
       break;
     case 0x31:
-      console.log("[Main] Mix: " + (bulkSysexArray[0][10] + 1))
+      console.log("[Main] Mix: " + (bulkSysexArray[0][10] + 1) + " Processed")
       break;
     case 0x40:
     case 0x41:
-      console.log("[Main] Performance Bank: " + (bulkSysexArray[0][9] - 0x3F) + ", Preset: " + (bulkSysexArray[0][10] + 1))
+      console.log("[Main] Performance Bank: " + (bulkSysexArray[0][9] - 0x3F) + ", Preset: " + (bulkSysexArray[0][10] + 1) + " Processed")
       break
     case 0x60:
-      console.log("[Main] DAW Preset: " + bulkSysexArray[0][10])
+      console.log("[Main] DAW Preset: " + bulkSysexArray[0][10] + " Processed")
       for (j = 1; j < bulkSysexArray.length - 1; j++) {
         messageData = bulkSysexArray[j];
         switch (messageData[8]) { // address mid
@@ -367,7 +381,7 @@ function processBulkSysex(bulkSysexArray) {
       }
       break;
     case 0x70:
-      console.log("[Main] Master Preset:" + (bulkSysexArray[0][10] + 1))
+      console.log("[Main] Master Preset:" + (bulkSysexArray[0][10] + 1) + " Processed")
       break;
   }
 }
@@ -383,7 +397,7 @@ function processParameterSysex(messageData) {
           } else {
             console.log("[Main] Loading New Preset: " + (messageData[9] + 1))
             document.getElementById("preset").value = messageData[9] + 1;
-            requestData();
+            requestDawData();
           }
           break;
         default:
@@ -404,12 +418,13 @@ function sysexEventHandler(messageData) {
       case 0x00: // bulk
         // if bulk type & bulk header set bulk flag 
         if (messageData[8] == 0x0E) {
+          console.log("[Sysex] Bulk Header Recieved")
           bulkFlag = true
         }
 
         // if no header was recieved process one line bulk message immediatly
         if (bulkFlag != true) {
-          console.log("[Main] Sysex Single Bulk Recieved")
+          console.log("[Sysex] Bulk Message Recieved")
           processBulkSysex(bulkSysexArray);
         }
 
@@ -420,7 +435,6 @@ function sysexEventHandler(messageData) {
 
         // if bulk footer is recieved process the block
         if (messageData[8] == 0x0F) {
-          console.log("[Main] Sysex Bulk Recieved")
           processBulkSysex(bulkSysexArray);
           bulkSysexArray = [];
           bulkFlag = false;
@@ -428,7 +442,7 @@ function sysexEventHandler(messageData) {
         break;
       case 0x10: // single parameter
         // if not bulk message process immediatly
-        console.log("[Main] Sysex Parameter Recieved")
+        console.log("[Sysex] Parameter Recieved")
         processParameterSysex(messageData)
         break;
     }
@@ -445,23 +459,34 @@ function printMidi(data) {
 
 function loadDataStore() {
   var i;
-  var request = indexedDB.open('db1');
+  var request = indexedDB.open('db1', 1);
+
+  request.onerror = function (event) {
+    console.log("[IndexedDB] Unable to Open DB");
+  };
   request.onsuccess = function (event) {
-    var db = request.result;
+    console.log("[IndexedDB] DB Opened")
+    var db = event.target.result;
     var transaction = db.transaction('store1', 'readwrite');
     var dbstore = transaction.objectStore('store1');
-    keys = dbstore.getAllKeys();
-    keys.onsuccess = function () {
-      for (i=0; i < 1; i++) {
-        console.log(keys.result[i]);
-        data = dbstore.get(keys.result[i])
-        data.onsuccess = function () {
-          console.log(data.result);
-          processBulkSysex(data.result);
-        }
+    dbstore.openCursor().onsuccess = function (event) {
+      var cursor = event.target.result;
+      if (cursor) {
+        processBulkSysex(cursor.value,false)
+        cursor.continue();
+      } else {
+        db.close();
+        console.log("[IndexedDB] DB Closed")
       }
-    };
+    }
+
   };
+
+  request.onupgradeneeded = function (event) {
+    var db = event.target.result;
+    db.createObjectStore('store1');
+  };
+
 }
 
 function voiceSelect(LSB, i) {
