@@ -303,6 +303,7 @@ function processBulkSysex(bulkSysexArray, store = true) {
   }
 
   switch (bulkSysexArray[0][9]) {
+    case 0x00:
     case 0x01:
     case 0x02:
     case 0x03:
@@ -311,11 +312,20 @@ function processBulkSysex(bulkSysexArray, store = true) {
     case 0x06:
     case 0x07:
     case 0x08:
-    case 0x09:
+      console.log("[Main] Voice Bank: " + (bulkSysexArray[0][9] + 1) + ", Preset: " + (bulkSysexArray[0][10] + 1) + " Processed")
+      var name = String.fromCharCode.apply(String, bulkSysexArray[1].slice(11, 31));
+      var librarianId = "voice-" + (bulkSysexArray[0][9] + 1) + "-" + (bulkSysexArray[0][10] + 1);
+      console.log(librarianId, name);
+      document.getElementById(librarianId).innerHTML = name;
+      break;
     case 0x0A:
     case 0x0B:
     case 0x0C:
-      console.log("[Main] Voice Bank: " + (bulkSysexArray[0][9] + 1) + ", Preset: " + (bulkSysexArray[0][10] + 1) + " Processed")
+      console.log("[Main] Voice Bank: " + bulkSysexArray[0][9] + ", Preset: " + (bulkSysexArray[0][10] + 1) + " Processed")
+      var name = String.fromCharCode.apply(String, bulkSysexArray[1].slice(11, 31));
+      var librarianId = "voice-" + bulkSysexArray[0][9] + "-" + (bulkSysexArray[0][10] + 1);
+      console.log(librarianId, name);
+      document.getElementById(librarianId).innerHTML = name;
       break;
     case 0x20:
       console.log("[Main] Drum Preset: " + (bulkSysexArray[0][10] + 1) + " Processed")
@@ -332,7 +342,10 @@ function processBulkSysex(bulkSysexArray, store = true) {
     case 0x40:
     case 0x41:
       console.log("[Main] Performance Bank: " + (bulkSysexArray[0][9] - 0x3F) + ", Preset: " + (bulkSysexArray[0][10] + 1) + " Processed")
-      break
+      var name = String.fromCharCode.apply(String, bulkSysexArray[1].slice(11, 31));
+      var librarianId = "perf-" + (bulkSysexArray[0][9] - 0x3F) + "-" + (bulkSysexArray[0][10] + 1);
+      document.getElementById(librarianId).innerHTML = name;
+      break;
     case 0x60:
       console.log("[Main] DAW Preset: " + bulkSysexArray[0][10] + " Processed")
       for (j = 1; j < bulkSysexArray.length - 1; j++) {
@@ -382,6 +395,9 @@ function processBulkSysex(bulkSysexArray, store = true) {
       break;
     case 0x70:
       console.log("[Main] Master Preset:" + (bulkSysexArray[0][10] + 1) + " Processed")
+      var name = String.fromCharCode.apply(String, bulkSysexArray[1].slice(11, 31));
+      var librarianId = "master-" + (bulkSysexArray[0][10] + 1);
+      document.getElementById(librarianId).innerHTML = name;
       break;
   }
 }
@@ -442,7 +458,7 @@ function sysexEventHandler(messageData) {
         break;
       case 0x10: // single parameter
         // if not bulk message process immediatly
-        console.log("[Sysex] Parameter Recieved")
+        console.log("[Sysex] Parameter Recieved" + messageData)
         processParameterSysex(messageData)
         break;
     }
@@ -472,7 +488,7 @@ function loadDataStore() {
     dbstore.openCursor().onsuccess = function (event) {
       var cursor = event.target.result;
       if (cursor) {
-        processBulkSysex(cursor.value,false)
+        processBulkSysex(cursor.value, false)
         cursor.continue();
       } else {
         db.close();
@@ -494,6 +510,12 @@ function voiceSelect(LSB, i) {
   output.sendControlChange(0, 63);
   output.sendControlChange(32, LSB);
   output.sendProgramChange(i);
+  if (LSB < 9) {
+    sysexBulkDumpRequest(0x0E, LSB, i);
+  }
+  if (9 < LSB < 12) {
+    sysexBulkDumpRequest(0x0E, LSB + 1, i);
+  }
 }
 
 function performanceSelect(LSB, i) {
@@ -501,6 +523,7 @@ function performanceSelect(LSB, i) {
   output.sendControlChange(0, 63);
   output.sendControlChange(32, LSB);
   output.sendProgramChange(i);
+  sysexBulkDumpRequest(0x0E, LSB, i);
 }
 
 function songSelect(i) {
@@ -516,12 +539,11 @@ function patternSelect(i) {
 function masterSelect(i) {
   sysexParameterSend(0x0A, 0x00, 0x01, 4)
   sysexParameterSend(0x0A, 0x00, 0x00, i)
+  sysexBulkDumpRequest(0x0E, 0x70, i);
 }
 
 function mixSelect(i) {
-  output.sendControlChange(0, 63);
-  output.sendControlChange(32, 60);
-  output.sendProgramChange(i);
+  console.log("[Placeholder] Mix Select " + i);
 }
 
 // build the midi page
@@ -675,7 +697,8 @@ function buildLibrarian() {
       var newElement = document.createElement("button");
       newElement.setAttribute('class', "w3-col l15 w3-button w3-theme-l4 w3-border-white");
       newElement.setAttribute('onclick', "voiceSelect(" + j + ", " + i + ")")
-      newElement.innerHTML = i;
+      newElement.setAttribute('id', "voice-" + (j + 1) + "-" + (i + 1))
+      newElement.innerHTML = i + 1;
       p.appendChild(newElement);
     }
   }
@@ -687,7 +710,8 @@ function buildLibrarian() {
       var newElement = document.createElement("button");
       newElement.setAttribute('class', "w3-col l15 w3-button w3-theme-l4 w3-border-white");
       newElement.setAttribute('onclick', "performanceSelect(" + (64 - 12 + j) + ", " + i + ")")
-      newElement.innerHTML = i;
+      newElement.setAttribute('id', "perf-" + (j - 11) + "-" + (i + 1))
+      newElement.innerHTML = i + 1;
       p.appendChild(newElement);
     }
   }
@@ -698,21 +722,24 @@ function buildLibrarian() {
     var newElement = document.createElement("button");
     newElement.setAttribute('class', "w3-col l15 w3-button w3-theme-l4 w3-border-white");
     newElement.setAttribute('onclick', "songSelect(" + i + ")")
-    newElement.innerHTML = i;
+    newElement.setAttribute('id', "song-" + (i + 1))
+    newElement.innerHTML = i + 1;
     p.appendChild(newElement);
 
     var p = document.getElementById("Pattern");
     var newElement = document.createElement("button");
     newElement.setAttribute('class', "w3-col l15 w3-button w3-theme-l4 w3-border-white");
     newElement.setAttribute('onclick', "patternSelect(" + i + ")")
-    newElement.innerHTML = i;
+    newElement.setAttribute('id', "pattern-" + (i + 1))
+    newElement.innerHTML = i + 1;
     p.appendChild(newElement);
 
     var p = document.getElementById("Master");
     var newElement = document.createElement("button");
     newElement.setAttribute('class', "w3-col l15 w3-button w3-theme-l4 w3-border-white");
     newElement.setAttribute('onclick', "masterSelect(" + i + ")")
-    newElement.innerHTML = i;
+    newElement.setAttribute('id', "master-" + (i + 1))
+    newElement.innerHTML = i + 1;
     p.appendChild(newElement);
   }
 
@@ -722,7 +749,7 @@ function buildLibrarian() {
     var newElement = document.createElement("button");
     newElement.setAttribute('class', "w3-col l15 w3-button w3-theme-l4 w3-border-white");
     newElement.setAttribute('onclick', "mixSelect(" + i + ")")
-    newElement.innerHTML = i;
+    newElement.innerHTML = i + 1;
     p.appendChild(newElement);
   }
 }
