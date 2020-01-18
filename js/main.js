@@ -1,14 +1,11 @@
+if (!('indexedDB' in window)) {
+  console.log('This browser doesn\'t support IndexedDB');
+}
+
 var output;
 var input;
 var bulkFlag = false;
 var bulkSysexArray = [];
-var systemData = {
-  banks: [{
-    "name": "performanceBank1",
-    "bulkHeader": [0x40],
-    "sysexDump": []
-  }]
-}
 
 function sysexDumpSendTest() {
   sysexBulkDumpSend(14, 64, 0);
@@ -54,7 +51,7 @@ function sysexParameterRequest(high, mid, low) {
 //change input and add listeners
 function updateListeners() {
 
-  console.log("[Main] Updating listeners")
+  console.log("[Main] Updating Listeners")
 
   for (var i in WebMidi.inputs) {
 
@@ -86,10 +83,10 @@ function updateListeners() {
 function outputSelected() {
   var outputSelected = document.getElementById("midiOut").value;
   try {
-    console.log("[Main] Output selected : " + outputSelected);
+    console.log("[Main] Output Selected : " + outputSelected);
     output = WebMidi.getOutputByName(outputSelected);
   } catch (err) {
-    console.log("[Main] No output selected")
+    console.log("[Main] No MIDI Output")
     console.log(err);
   }
 }
@@ -110,15 +107,15 @@ function changeType() {
 
 // request enable MIDI in broweser and wait for user response before proceeding
 async function enableMidi() {
-  console.log("[Main] Enabling midi")
+  console.log("[Main] Enabling MIDI")
 
   var promise = new Promise((resolve, reject) => {
     WebMidi.enable(function (err) {
       if (err) {
-        console.log("[Main] webmidi could not be enabled.", err);
+        console.log("[Main] WebMidi could not be Enabled.", err);
       } else {
         resolve();
-        console.log("[Main] webmidi enabled");
+        console.log("[Main] WebMidi Enabled");
       }
     }, true);
   });
@@ -128,7 +125,7 @@ async function enableMidi() {
 
   WebMidi.addListener('connected',
     function (e) {
-      console.log("New Device connected")
+      console.log("[Main] New Device Connected")
       getMidiDevices();
       updateListeners();
       outputSelected();
@@ -137,7 +134,7 @@ async function enableMidi() {
 
   WebMidi.addListener('disconnected',
     function (e) {
-      console.log("Device disonnected")
+      console.log("[Main] Device Disonnected")
       getMidiDevices();
     }
   );
@@ -150,7 +147,7 @@ async function enableMidi() {
 
 // get available midi devices and populate dropdowns 
 function getMidiDevices() {
-  console.log("[Main] Getting midi Devices")
+  console.log("[Main] Getting MIDI Devices")
 
   document.getElementById("midiOut").options.length = 0;
   document.getElementById("midiIn").innerHTML = "";
@@ -160,7 +157,7 @@ function getMidiDevices() {
     document.getElementById('connectionWarning').style.display = 'none';
 
     for (var i in WebMidi.inputs) {
-      console.log("[Main] Added input: " + WebMidi.inputs[i].name);
+      console.log("[Main] Added Input: " + WebMidi.inputs[i].name);
       var ul = document.getElementById("midiIn");
       var li = document.createElement("li");
       li.appendChild(document.createTextNode(WebMidi.inputs[i].name));
@@ -168,7 +165,7 @@ function getMidiDevices() {
     }
 
     for (var i in WebMidi.outputs) {
-      console.log("[Main] Added output: " + WebMidi.outputs[i].name);
+      console.log("[Main] Added Output: " + WebMidi.outputs[i].name);
       var option = document.createElement('option');
       option.text = option.value = WebMidi.outputs[i].name;
       document.getElementById("midiOut").add(option);
@@ -263,7 +260,7 @@ function store() {
 function requestData() {
   var presetAddress = document.getElementById('preset').value - 1;
   // get preset data
-  console.log("[Main] Requesting data for preset: " + document.getElementById('preset').value);
+  console.log("[Main] Requesting Data for DAW Preset: " + document.getElementById('preset').value);
   sysexBulkDumpRequest(0x0E, 0x60, presetAddress);
 }
 
@@ -276,6 +273,20 @@ function toHexString(byteArray) {
 // process a bulk sysex array 
 function processBulkSysex(bulkSysexArray) {
   var j;
+  var bulkHeader = toHexString([bulkSysexArray[0][8], bulkSysexArray[0][9], bulkSysexArray[0][10]]);
+
+  // add data to db
+  var request = indexedDB.open('db1', 1);
+  request.onsuccess = function (event) {
+    var db = event.target.result;
+    var transaction = db.transaction('store1', 'readwrite');
+    var dbstore = transaction.objectStore('store1');
+    dbstore.add(bulkSysexArray, bulkHeader);
+  };
+  request.onupgradeneeded = function (event) {
+    var db = event.target.result;
+    db.createObjectStore('store1');
+  };
 
   switch (bulkSysexArray[0][9]) {
     case 0x01:
@@ -290,26 +301,26 @@ function processBulkSysex(bulkSysexArray) {
     case 0x0A:
     case 0x0B:
     case 0x0C:
-      console.log("Voice Bank: " + (bulkSysexArray[0][9] + 1) + ", Preset: " + (bulkSysexArray[0][10] + 1))
+      console.log("[Main] Voice Bank: " + (bulkSysexArray[0][9] + 1) + ", Preset: " + (bulkSysexArray[0][10] + 1))
       break;
     case 0x20:
-      console.log("Drum Preset: " + (bulkSysexArray[0][10] + 1))
+      console.log("[Main] Drum Preset: " + (bulkSysexArray[0][10] + 1))
       break;
     case 0x21:
-      console.log("Drum GM: " + (bulkSysexArray[0][10] + 1))
+      console.log("[Main] Drum GM: " + (bulkSysexArray[0][10] + 1))
       break;
     case 0x28:
-      console.log("Drum User: " + (bulkSysexArray[0][10] + 1))
+      console.log("[Main] Drum User: " + (bulkSysexArray[0][10] + 1))
       break;
     case 0x31:
-      console.log("Mix: " + (bulkSysexArray[0][10] + 1))
+      console.log("[Main] Mix: " + (bulkSysexArray[0][10] + 1))
       break;
     case 0x40:
     case 0x41:
-      console.log("Performance Bank: " + (bulkSysexArray[0][9] - 0x3F) + ", Preset: " + (bulkSysexArray[0][10] + 1))
+      console.log("[Main] Performance Bank: " + (bulkSysexArray[0][9] - 0x3F) + ", Preset: " + (bulkSysexArray[0][10] + 1))
       break
     case 0x60:
-      console.log("DAW Preset: " + bulkSysexArray[0][10])
+      console.log("[Main] DAW Preset: " + bulkSysexArray[0][10])
       for (j = 1; j < bulkSysexArray.length - 1; j++) {
         messageData = bulkSysexArray[j];
         switch (messageData[8]) { // address mid
@@ -356,7 +367,7 @@ function processBulkSysex(bulkSysexArray) {
       }
       break;
     case 0x70:
-      console.log("Master Preset:" + (bulkSysexArray[0][10] + 1))
+      console.log("[Main] Master Preset:" + (bulkSysexArray[0][10] + 1))
       break;
   }
 }
@@ -368,9 +379,9 @@ function processParameterSysex(messageData) {
       switch (messageData[7]) { // address mid
         case 0x20: // preset 
           if (document.getElementById("preset").value == (messageData[9] + 1)) {
-            console.log("[Main] Preset not changed: " + document.getElementById("preset").value);
+            console.log("[Main] Preset Not Changed: " + document.getElementById("preset").value);
           } else {
-            console.log("[Main] Loading new preset: " + (messageData[9] + 1))
+            console.log("[Main] Loading New Preset: " + (messageData[9] + 1))
             document.getElementById("preset").value = messageData[9] + 1;
             requestData();
           }
@@ -387,30 +398,39 @@ function processParameterSysex(messageData) {
 function sysexEventHandler(messageData) {
   // only process MOXF messages
   if (messageData[1] != 0x43 | messageData[3] != 0x7F | messageData[4] != 0x1C) {
-    console.log("[Main] Unsupported sysex command recieved")
+    console.log("[Main] Unsupported Sysex Command Recieved")
   } else {
-    // if bulk header set bulk flag 
-    if (messageData[8] == 0x0E & messageData[2] == 0x00) {
-      bulkFlag = true
-    }
+    switch (messageData[2]) { // type identifier
+      case 0x00: // bulk
+        // if bulk type & bulk header set bulk flag 
+        if (messageData[8] == 0x0E) {
+          bulkFlag = true
+        }
 
-    // add to bulk array until bulk flag is unset
-    if (bulkFlag == true) {
-      bulkSysexArray.push(messageData);
-    }
+        // if no header was recieved process one line bulk message immediatly
+        if (bulkFlag != true) {
+          console.log("[Main] Sysex Single Bulk Recieved")
+          processBulkSysex(bulkSysexArray);
+        }
 
-    // if not bulk message process immediatly
-    if (bulkFlag != true) {
-      console.log("[Main] Sysex parameter event recieved")
-      processParameterSysex(messageData)
-    }
+        // if header was recieved add to bulk array until bulk bulk footer is recieved.
+        if (bulkFlag == true) {
+          bulkSysexArray.push(messageData);
+        }
 
-    // if bulk footer is recieved process the block
-    if (messageData[8] == 0x0F & messageData[2] == 0x00) {
-      console.log("[Main] Sysex bulk event recieved")
-      processBulkSysex(bulkSysexArray);
-      bulkSysexArray = [];
-      bulkFlag = false;
+        // if bulk footer is recieved process the block
+        if (messageData[8] == 0x0F) {
+          console.log("[Main] Sysex Bulk Recieved")
+          processBulkSysex(bulkSysexArray);
+          bulkSysexArray = [];
+          bulkFlag = false;
+        }
+        break;
+      case 0x10: // single parameter
+        // if not bulk message process immediatly
+        console.log("[Main] Sysex Parameter Recieved")
+        processParameterSysex(messageData)
+        break;
     }
   }
 }
@@ -421,6 +441,27 @@ function printMidi(data) {
   var newItem = document.createElement('li');
   newItem.innerHTML = data;
   dataList.insertBefore(newItem, dataList.firstChild);
+}
+
+function loadDataStore() {
+  var i;
+  var request = indexedDB.open('db1');
+  request.onsuccess = function (event) {
+    var db = request.result;
+    var transaction = db.transaction('store1', 'readwrite');
+    var dbstore = transaction.objectStore('store1');
+    keys = dbstore.getAllKeys();
+    keys.onsuccess = function () {
+      for (i=0; i < 1; i++) {
+        console.log(keys.result[i]);
+        data = dbstore.get(keys.result[i])
+        data.onsuccess = function () {
+          console.log(data.result);
+          processBulkSysex(data.result);
+        }
+      }
+    };
+  };
 }
 
 function voiceSelect(LSB, i) {
@@ -666,6 +707,7 @@ function onloadFunction() {
   buildMidi();
   buildDaw();
   buildLibrarian();
+  loadDataStore();
 }
 
 // call onload function
@@ -694,9 +736,9 @@ window.addEventListener('beforeinstallprompt', (e) => {
     // Wait for the user to respond to the prompt
     deferredPrompt.userChoice.then((choiceResult) => {
       if (choiceResult.outcome === 'accepted') {
-        console.log('User accepted the A2HS prompt');
+        console.log('User Accepted the A2HS Prompt');
       } else {
-        console.log('User dismissed the A2HS prompt');
+        console.log('User Dismissed the A2HS Prompt');
       }
       deferredPrompt = null;
     });

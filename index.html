@@ -1,222 +1,223 @@
 <!doctye html>
-<html class="no-js" lang="">
+  <html class="no-js" lang="">
 
-<head>
-  <!-- Site Info-->
-  <meta charset="utf-8">
-  <title>MOXF Editor</title>
-  <meta name="descrition" content="MOXF Editor">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" type="image/png" href="favicon.png">
+  <head>
+    <!-- Site Info-->
+    <meta charset="utf-8">
+    <title>MOXF Editor</title>
+    <meta name="descrition" content="MOXF Editor">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/png" href="favicon.png">
 
-  <!-- WebAppp -->
-  <link rel="manifest" href="site.json">
-  <link rel="apple-touch-icon" href="icon.png">
-  <meta name="theme-color" content="#fafafa">
+    <!-- WebAppp -->
+    <link rel="manifest" href="site.json">
+    <link rel="apple-touch-icon" href="icon.png">
+    <meta name="theme-color" content="#fafafa">
 
-  <!-- Normalize -->
-  <link rel="stylesheet" href="css/normalize.css">
+    <!-- Normalize -->
+    <link rel="stylesheet" href="css/normalize.css">
 
-  <!-- W3.CSS -->
-  <!-- https://www.w3schools.com/w3css/4/w3.css -->
-  <link rel="stylesheet" href="css/w3.css">
-  <!-- https://www.w3schools.com/lib/w3-theme-blue.css -->
-  <link rel="stylesheet" href="css/w3-theme-blue.css">
+    <!-- W3.CSS -->
+    <!-- https://www.w3schools.com/w3css/4/w3.css -->
+    <link rel="stylesheet" href="css/w3.css">
+    <!-- https://www.w3schools.com/lib/w3-theme-blue.css -->
+    <link rel="stylesheet" href="css/w3-theme-blue.css">
 
-  <!-- Main CSS -->
-  <link rel="stylesheet" href="css/main.css">
-</head>
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="css/main.css">
+  </head>
 
-<body>
-  <!--[if lte IE 9]>
+  <body>
+    <!--[if lte IE 9]>
     <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
   <![endif]-->
 
-  <!-- Add your site or application content here -->
+    <!-- Add your site or application content here -->
 
-  <div class="w3-content w3-theme-l4">
+    <div class="w3-content w3-theme-l4">
 
-    <div class="w3-bar w3-theme">
-      <button class="w3-bar-item w3-button tablink w3-grey" onclick="openMainTab(event, 'DAW')">DAW</button>
-      <button class="w3-bar-item w3-button tablink" onclick="openMainTab(event, 'Librarian')">Librarian</button>
-      <button class="w3-bar-item w3-button tablink" onclick="openMainTab(event, 'MIDI')">MIDI</button>
-      <button class="w3-bar-item w3-button tablink" onclick="openMainTab(event, 'About')">About</button>
-    </div>
-
-    <div id="a2hsPanel" class="w3-padding-16 add-panel w3-display-container  w3-pale-green w3-leftbar w3-border-green">
-      <span onclick="this.parentElement.style.display='none'" class="w3-button w3-display-topright">X</span>
-      <button class="w3-button add-button">Install</button>
-    </div>
-
-    <div id="connectionWarning" class="w3-display-container w3-container w3-pale-yellow w3-leftbar w3-border-yellow">
-      <span onclick="this.parentElement.style.display='none'" class="w3-button w3-display-topright">X</span>
-      <p>Please connect your MOXF</p>
-    </div>
-
-    <div id="DAW" class="mainTabPage">
-      <div class="w3-row-padding">
-        <div class="w3-col">
-          <h2>DAW Editor</h2>
-        </div>
-      </div>
-
-      <div class="w3-row-padding ">
-        <div class="w3-col s12 m4 l4">
-          <input class="w3-input w3-border" type="number" onchange="presetSelected(this)" id="preset" min="1" max="50"
-            placeholder="No" />
-        </div>
-        <div class="w3-col s12 m4 l4">
-          <input class="w3-input w3-border" type="text" onchange="presetNameChange(this)" id="presetName"
-            placeholder="Preset Name" maxlength="13" />
-        </div>
-        <div class="w3-col s12 m4 l4">
-          <select class="w3-select w3-border" id="ccRemote" onchange="changeType()">
-            <option value="cc">CC</option>
-            <option value="remote">Remote</option>
-          </select>
-        </div>
-      </div>
-
-      <div id="ccView" class="w3-row-padding cc">
-        <div class="w3-col">
-          <p>
-            In "CC" mode CC values of 1-127 are transmitted on the selected channels.
-          </p>
-        </div>
-      </div>
-
-      <div id="remoteView" class="w3-row-padding remote">
-        <div class="w3-col">
-          <p>
-            In "Remote" mode the CC channels are static and cannot be changed.
-            They transmit relative CC values, clockwise to increase, anti-clockwise to decreace on the channels below.
-          </p>
-        </div>
-      </div>
-
-      <div class="w3-row-padding w3-padding-16">
-        <div class="w3-col">
-          <button class="w3-button w3-theme" onclick="store()">Store</button>
-        </div>
-      </div>
-
-    </div>
-
-    <div id="MIDI" class="mainTabPage" style="display:none">
-      <div class="w3-container w3-padding-16 w3-theme-l3">
-        <div class="w3-row-padding">
-          <div class="w3-col s12 m4 l4">
-            <label>Midi In</label>
-            <ul class="w3-list" id="midiIn"></ul>
-          </div>
-          <div class="w3-col s12 m4 l4">
-            <label>Midi Out</label>
-            <select class="w3-select w3-border" id="midiOut" onchange="outputSelected()"></select>
-          </div>
-        </div>
-      </div>
-      <div class="w3-row-padding">
-        <div id="midiDataTypes" class="w3-col">
-          <h2>Data Types Enabled</h2>
-        </div>
-      </div>
-      <div class="w3-row-padding">
-        <div class="w3-col">
-          <h2>MIDI Data</h2>
-        </div>
-      </div>
-      <div class="w3-row-padding">
-        <div class="w3-col">
-          <section id="midi-data">
-            <ul style="list-style-type: none; padding: 0" ></ul>
-          </section>
-        </div>
-      </div>
-    </div>
-
-    <div id="Librarian" class="mainTabPage" style="display:none">
       <div class="w3-bar w3-theme">
-        <div class="w3-dropdown-hover">
-          <button class="w3-button w3-theme">Voice</button>
-          <div id="voiceDropdown" class="w3-dropdown-content w3-bar-block w3-card-4"></div>
-        </div>
-        <div class="w3-dropdown-hover">
-          <button class="w3-button">Performance</button>
-          <div id="performanceDropdown" class="w3-dropdown-content w3-bar-block w3-card-4"></div>
-        </div>
-        <button class="w3-bar-item w3-button" onclick="openLibrarianTab('Song')">Song</button>
-        <button class="w3-bar-item w3-button" onclick="openLibrarianTab('Pattern')">Pattern</button>
-        <button class="w3-bar-item w3-button" onclick="openLibrarianTab('Mix')">Mix</button>
-        <button class="w3-bar-item w3-button" onclick="openLibrarianTab('Master')">Master</button>
-        <span id="Librarian-Page-Selected" class="w3-bar-item w3-right">Voice-Pre-1</span>
+        <button class="w3-bar-item w3-button tablink w3-grey" onclick="openMainTab(event, 'DAW')">DAW</button>
+        <button class="w3-bar-item w3-button tablink" onclick="openMainTab(event, 'Librarian')">Librarian</button>
+        <button class="w3-bar-item w3-button tablink" onclick="openMainTab(event, 'MIDI')">MIDI</button>
+        <button class="w3-bar-item w3-button tablink" onclick="openMainTab(event, 'About')">About</button>
       </div>
+
+      <div id="a2hsPanel"
+        class="w3-padding-16 add-panel w3-display-container  w3-pale-green w3-leftbar w3-border-green">
+        <span onclick="this.parentElement.style.display='none'" class="w3-button w3-display-topright">X</span>
+        <button class="w3-button add-button">Install</button>
+      </div>
+
+      <div id="connectionWarning" class="w3-display-container w3-container w3-pale-yellow w3-leftbar w3-border-yellow">
+        <span onclick="this.parentElement.style.display='none'" class="w3-button w3-display-topright">X</span>
+        <p>Please connect your MOXF</p>
+      </div>
+
+      <div id="DAW" class="mainTabPage">
+        <div class="w3-row-padding">
+          <div class="w3-col">
+            <h2>DAW Editor</h2>
+          </div>
+        </div>
+
+        <div class="w3-row-padding ">
+          <div class="w3-col s12 m4 l4">
+            <input class="w3-input w3-border" type="number" onchange="presetSelected(this)" id="preset" min="1" max="50"
+              placeholder="No" />
+          </div>
+          <div class="w3-col s12 m4 l4">
+            <input class="w3-input w3-border" type="text" onchange="presetNameChange(this)" id="presetName"
+              placeholder="Preset Name" maxlength="13" />
+          </div>
+          <div class="w3-col s12 m4 l4">
+            <select class="w3-select w3-border" id="ccRemote" onchange="changeType()">
+              <option value="cc">CC</option>
+              <option value="remote">Remote</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="ccView" class="w3-row-padding cc">
+          <div class="w3-col">
+            <p>
+              In "CC" mode CC values of 1-127 are transmitted on the selected channels.
+            </p>
+          </div>
+        </div>
+
+        <div id="remoteView" class="w3-row-padding remote">
+          <div class="w3-col">
+            <p>
+              In "Remote" mode the CC channels are static and cannot be changed.
+              They transmit relative CC values, clockwise to increase, anti-clockwise to decreace on the channels below.
+            </p>
+          </div>
+        </div>
+
+        <div class="w3-row-padding w3-padding-16">
+          <div class="w3-col">
+            <button class="w3-button w3-theme" onclick="store()">Store</button>
+          </div>
+        </div>
+
+      </div>
+
+      <div id="MIDI" class="mainTabPage" style="display:none">
+        <div class="w3-container w3-padding-16 w3-theme-l3">
+          <div class="w3-row-padding">
+            <div class="w3-col s12 m4 l4">
+              <label>Midi In</label>
+              <ul class="w3-list" id="midiIn"></ul>
+            </div>
+            <div class="w3-col s12 m4 l4">
+              <label>Midi Out</label>
+              <select class="w3-select w3-border" id="midiOut" onchange="outputSelected()"></select>
+            </div>
+          </div>
+        </div>
+        <div class="w3-row-padding">
+          <div id="midiDataTypes" class="w3-col">
+            <h2>Data Types Enabled</h2>
+          </div>
+        </div>
+        <div class="w3-row-padding">
+          <div class="w3-col">
+            <h2>MIDI Data</h2>
+          </div>
+        </div>
+        <div class="w3-row-padding">
+          <div class="w3-col">
+            <section id="midi-data">
+              <ul style="list-style-type: none; padding: 0"></ul>
+            </section>
+          </div>
+        </div>
+      </div>
+
+      <div id="Librarian" class="mainTabPage" style="display:none">
+        <div class="w3-bar w3-theme">
+          <div class="w3-dropdown-hover">
+            <button class="w3-button w3-theme">Voice</button>
+            <div id="voiceDropdown" class="w3-dropdown-content w3-bar-block w3-card-4"></div>
+          </div>
+          <div class="w3-dropdown-hover">
+            <button class="w3-button">Performance</button>
+            <div id="performanceDropdown" class="w3-dropdown-content w3-bar-block w3-card-4"></div>
+          </div>
+          <button class="w3-bar-item w3-button" onclick="openLibrarianTab('Song')">Song</button>
+          <button class="w3-bar-item w3-button" onclick="openLibrarianTab('Pattern')">Pattern</button>
+          <button class="w3-bar-item w3-button" onclick="openLibrarianTab('Mix')">Mix</button>
+          <button class="w3-bar-item w3-button" onclick="openLibrarianTab('Master')">Master</button>
+          <span id="Librarian-Page-Selected" class="w3-bar-item w3-right">Voice-Pre-1</span>
+        </div>
+      </div>
+
+      <div id="About" class="mainTabPage" style="display:none">
+        <div class="w3-row-padding">
+          <div class="w3-col">
+            <h2>About</h2>
+            <p>MOXF Editor</p>
+            <p>Updated: 13-Mar-2019 22:38</p>
+            <p>Joseph Douce 2018</p>
+            <p>Source Code: <a href="https://github.com/josephdouce/moxf-editor">GitHub</a></p>
+          </div>
+        </div>
+      </div>
+
     </div>
 
-    <div id="About" class="mainTabPage" style="display:none">
-      <div class="w3-row-padding">
-        <div class="w3-col">
-          <h2>About</h2>
-          <p>MOXF Editor</p>
-          <p>Updated: 13-Mar-2019 22:38</p>
-          <p>Joseph Douce 2018</p>
-          <p>Source Code: <a href="https://github.com/josephdouce/moxf-editor">GitHub</a></p>
-        </div>
-      </div>
-    </div>
+    <!-- Boilerplate Scripts -->
+    <script src="js/vendor/modernizr-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"
+      integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script>
+      window.jQuery || document.write('<script src="js/vendor/jquery-3.3.1.min.js"><\/script>')
 
-  </div>
+    </script>
+    <script src="js/plugins.js"></script>
 
-  <!-- Boilerplate Scripts -->
-  <script src="js/vendor/modernizr-3.6.0.min.js"></script>
-  <script src="https://code.jquery.com/jquery-3.3.1.min.js"
-    integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
-  <script>
-    window.jQuery || document.write('<script src="js/vendor/jquery-3.3.1.min.js"><\/script>')
+    <!-- User Scripts -->
+    <!-- WebMIDI https://cdn.jsdelivr.net/npm/webmidi-->
+    <script src="js/webmidi.js"></script>
+    <script src="js/main.js"></script>
 
-  </script>
-  <script src="js/plugins.js"></script>
+    <!-- Google Analytics: change UA-XXXXX-Y to be your site's ID. -->
+    <script>
+      window.ga = function () {
+        ga.q.push(arguments)
+      };
+      ga.q = [];
+      ga.l = +new Date;
+      ga('create', 'UA-XXXXX-Y', 'auto');
+      ga('send', 'pageview')
 
-  <!-- User Scripts -->
-  <!-- WebMIDI https://cdn.jsdelivr.net/npm/webmidi-->
-  <script src="js/webmidi.js"></script>
-  <script src="js/main.js"></script>
+    </script>
+    <script src="https://www.google-analytics.com/analytics.js" async defer></script>
 
-  <!-- Google Analytics: change UA-XXXXX-Y to be your site's ID. -->
-  <script>
-    window.ga = function () {
-      ga.q.push(arguments)
-    };
-    ga.q = [];
-    ga.l = +new Date;
-    ga('create', 'UA-XXXXX-Y', 'auto');
-    ga('send', 'pageview')
+    <script>
+      // This is the service worker with the Cache-first network
 
-  </script>
-  <script src="https://www.google-analytics.com/analytics.js" async defer></script>
+      // Add this below content to your HTML page, or add the js file to your page at the very top to register service worker
 
-  <script>
-    // This is the service worker with the Cache-first network
-
-    // Add this below content to your HTML page, or add the js file to your page at the very top to register service worker
-
-    // Check compatibility for the browser we're running this in
-    if ("serviceWorker" in navigator) {
-      if (navigator.serviceWorker.controller) {
-        console.log("[PWA Builder] active service worker found, no need to register");
-      } else {
-        // Register the service worker
-        navigator.serviceWorker
-          .register("pwabuilder-sw.js", {
-            scope: "./"
-          })
-          .then(function (reg) {
-            console.log("[PWA Builder] Service worker has been registered for scope: " + reg.scope);
-          });
+      // Check compatibility for the browser we're running this in
+      if ("serviceWorker" in navigator) {
+        if (navigator.serviceWorker.controller) {
+          console.log("[PWA Builder] active service worker found, no need to register");
+        } else {
+          // Register the service worker
+          navigator.serviceWorker
+            .register("pwabuilder-sw.js", {
+              scope: "./"
+            })
+            .then(function (reg) {
+              console.log("[PWA Builder] Service worker has been registered for scope: " + reg.scope);
+            });
+        }
       }
-    }
 
-  </script>
+    </script>
 
-</body>
+  </body>
 
-</html>
+  </html>
