@@ -336,8 +336,11 @@ function processBulkSysex(bulkSysexArray, store = true) {
     case 0x28:
       console.log("[Main] Drum User: " + (bulkSysexArray[0][10] + 1) + " Processed")
       break;
+    case 0x30:
+      console.log("[Main] Mix Voice: " + (bulkSysexArray[0][10] + 1) + " Processed")
+      break;
     case 0x31:
-      console.log("[Main] Mix: " + (bulkSysexArray[0][10] + 1) + " Processed")
+      console.log("[Main] Mix Part: " + (bulkSysexArray[0][10] + 1) + " Processed")
       break;
     case 0x40:
     case 0x41:
@@ -541,10 +544,6 @@ function masterSelect(i) {
   sysexBulkDumpRequest(0x0E, 0x70, i);
 }
 
-function mixSelect(i) {
-  console.log("[Placeholder] Mix Select " + i);
-}
-
 // build the midi page
 function buildMidi() {
   var i;
@@ -693,7 +692,7 @@ function buildLibrarian() {
     "Voice-Pre-5", "Voice-Pre-6", "Voice-Pre-7", "Voice-Pre-8",
     "Voice-Pre-9", "Voice-User-1", "Voice-User-2", "Voice-User-3",
     "Performance-User-1", "Performance-User-2", "Song",
-    "Pattern", "Mix", "Master"
+    "Pattern", "Master"
   ];
 
   // add tab pages 
@@ -714,7 +713,7 @@ function buildLibrarian() {
     var newElement = document.createElement("a");
     newElement.setAttribute('class', "w3-bar-item w3-button");
     newElement.setAttribute('href', "#")
-    newElement.setAttribute('onclick', "sync1BankVoices("+ i +")")
+    newElement.setAttribute('onclick', "sync1BankVoices(" + i + ")")
     newElement.innerHTML = tabs[i]
     p.appendChild(newElement);
   }
@@ -723,7 +722,7 @@ function buildLibrarian() {
     var newElement = document.createElement("a");
     newElement.setAttribute('class', "w3-bar-item w3-button");
     newElement.setAttribute('href', "#")
-    newElement.setAttribute('onclick', "sync1BankVoices("+ (i+1) +")")
+    newElement.setAttribute('onclick', "sync1BankVoices(" + (i + 1) + ")")
     newElement.innerHTML = tabs[i]
     p.appendChild(newElement);
   }
@@ -732,7 +731,7 @@ function buildLibrarian() {
     var newElement = document.createElement("a");
     newElement.setAttribute('class', "w3-bar-item w3-button");
     newElement.setAttribute('href', "#")
-    newElement.setAttribute('onclick', "sync1BankPerfs("+ (i-11) +")")
+    newElement.setAttribute('onclick', "sync1BankPerfs(" + (i - 11) + ")")
     newElement.innerHTML = tabs[i]
     p.appendChild(newElement);
   }
@@ -794,8 +793,8 @@ function buildLibrarian() {
     }
   }
 
-  // add pattern/song/masters
-  for (i = 0; i < 128; i++) {
+  // add pattern/song
+  for (i = 0; i < 64; i++) {
     var p = document.getElementById("Song");
     var newElement = document.createElement("button");
     newElement.setAttribute('class', "w3-col l15 w3-button w3-theme-l4 w3-border-white");
@@ -811,22 +810,15 @@ function buildLibrarian() {
     newElement.setAttribute('id', "pattern-" + (i + 1))
     newElement.innerHTML = i + 1;
     p.appendChild(newElement);
+  }
 
+  // add masters
+  for (i = 0; i < 128; i++) {
     var p = document.getElementById("Master");
     var newElement = document.createElement("button");
     newElement.setAttribute('class', "w3-col l15 w3-button w3-theme-l4 w3-border-white");
     newElement.setAttribute('onclick', "masterSelect(" + i + ")")
     newElement.setAttribute('id', "master-" + (i + 1))
-    newElement.innerHTML = i + 1;
-    p.appendChild(newElement);
-  }
-
-  // add mixes
-  for (i = 0; i < 16; i++) {
-    var p = document.getElementById("Mix");
-    var newElement = document.createElement("button");
-    newElement.setAttribute('class', "w3-col l15 w3-button w3-theme-l4 w3-border-white");
-    newElement.setAttribute('onclick', "mixSelect(" + i + ")")
     newElement.innerHTML = i + 1;
     p.appendChild(newElement);
   }
