@@ -1,112 +1,26 @@
+/*****************************************************
+main js file
+******************************************************/
+
 if (!('indexedDB' in window)) {
   console.log('This browser doesn\'t support IndexedDB');
 }
 
+
+/*****************************************************
+global variables
+******************************************************/
+
+
 var output;
 var input;
-var bulkFlag = false;
-var bulkSysexArray = [];
+var bulkFlag = false; // set to true when a bulk header is recieved and returned to false when footer is recieved
+var tmpBulkSysexArray = []; // used to temporarily store sysex messages recievced after a bulk header until the whole message is recieved
 
-function sysexDumpSendTest() {
-  // bulk header
-  sysexBulkDumpSend(14, 64, 0);
-  // bulk data 
-  sysexBulkDumpSend(48, 0, 0, [77, 101, 109, 111, 114, 105, 101, 115, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 64, 0, 64, 64, 64, 64, 64, 64, 0, 64, 64, 64, 64, 0, 0, 64, 64, 0, 64, 64, 64, 0, 64, 64, 0, 80, 64, 1, 127, 127, 0, 0, 1, 1, 0, 60, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 32, 0, 15]);
-  // bulk footer
-  sysexBulkDumpSend(15, 64, 0);
-}
 
-function sysexBulkDumpSend(high, mid, low, data = []) {
-  var byteCount1 = 0x00;
-  var byteCount2 = data.length + 4;
-  var checksum = ~[0x00, high, mid, low].concat(data).reduce((a, b) => a + b, 0) + 1 & 0x7F
-  try {
-    output.sendSysex(0x43, [0x00, 0x7F, 0x1C, byteCount1, byteCount2, 0x00, high, mid, low].concat(data).concat(checksum));
-  } catch (err) {
-    console.log(err);
-  }
-}
-
-function sysexParameterSend(high, mid, low, data = []) {
-  try {
-    output.sendSysex(0x43, [0x10, 0x7F, 0x1C, 0x00, high, mid, low].concat(data));
-  } catch (err) {
-    console.log(err);
-  }
-}
-
-function sysexBulkDumpRequest(high, mid, low) {
-  try {
-    output.sendSysex(0x43, [0x20, 0x7F, 0x1C, 0x00, high, mid, low]);
-  } catch (err) {
-    console.log(err);
-  }
-}
-
-function sysexParameterRequest(high, mid, low) {
-  try {
-    output.sendSysex(0x43, [0x30, 0x7F, 0x1C, 0x00, high, mid, low]);
-  } catch (err) {
-    console.log(err);
-  }
-}
-
-//change input and add listeners
-function updateListeners() {
-
-  console.log("[Main] Updating Listeners")
-
-  for (var i in WebMidi.inputs) {
-
-    input = WebMidi.inputs[i];
-
-    input.removeListener();
-
-    var events = ['activesensing', 'channelaftertouch', 'channelmode', 'clock', 'continue', 'controlchange',
-      'keyaftertouch', 'noteoff', 'noteon', 'nrpn', 'pitchbend', 'programchange', 'reset', 'songposition',
-      'songselect', 'start', 'stop', 'sysex', 'timecode', 'tuningrequest', 'unknownsystemmessage'
-    ];
-
-    for (var i in events) {
-      if (document.getElementById(events[i] + "Enabled").checked) {
-        input.addListener(events[i], "all",
-          function (e) {
-            printMidi(e.target.name + ", " + e.type + ", " + toHexString(e.data));
-            switch (e.type) {
-              case 'sysex':
-                sysexEventHandler(e.data);
-            }
-          }
-        );
-      };
-    }
-  }
-}
-
-function outputSelected() {
-  var outputSelected = document.getElementById("midiOut").value;
-  try {
-    console.log("[Main] Output Selected : " + outputSelected);
-    output = WebMidi.getOutputByName(outputSelected);
-  } catch (err) {
-    console.log("[Main] No MIDI Output")
-    console.log(err);
-  }
-}
-
-// funcion for change of cc/remote dropdown
-function changeType() {
-  var type = document.getElementById("ccRemote").value;
-  if (type == "cc") {
-    for (let el of document.querySelectorAll('.remote')) el.style.display = 'none';
-    for (let el of document.querySelectorAll('.cc')) el.style.display = 'block';
-    sysexParameterSend(0x01, 0x00, 0x19, 0x01);
-  } else if (type == "remote") {
-    for (let el of document.querySelectorAll('.cc')) el.style.display = 'none';
-    for (let el of document.querySelectorAll('.remote')) el.style.display = 'block';
-    sysexParameterSend(0x01, 0x00, 0x19, 0x00);
-  }
-}
+/*****************************************************
+midi functions
+******************************************************/
 
 // request enable MIDI in broweser and wait for user response before proceeding
 async function enableMidi() {
@@ -148,6 +62,50 @@ async function enableMidi() {
 
 }
 
+//change input and add listeners
+function updateListeners() {
+
+  console.log("[Main] Updating Listeners")
+
+  for (var i in WebMidi.inputs) {
+
+    input = WebMidi.inputs[i];
+
+    input.removeListener();
+
+    var events = ['activesensing', 'channelaftertouch', 'channelmode', 'clock', 'continue', 'controlchange',
+      'keyaftertouch', 'noteoff', 'noteon', 'nrpn', 'pitchbend', 'programchange', 'reset', 'songposition',
+      'songselect', 'start', 'stop', 'sysex', 'timecode', 'tuningrequest', 'unknownsystemmessage'
+    ];
+
+    for (var i in events) {
+      if (document.getElementById(events[i] + "Enabled").checked) {
+        input.addListener(events[i], "all",
+          function (e) {
+            printMidi(e.target.name + ", " + e.type + ", " + toHexString(e.data));
+            switch (e.type) {
+              case 'sysex':
+                sysexEventHandler(e.data);
+            }
+          }
+        );
+      };
+    }
+  }
+}
+
+// triggered on change of output
+function outputSelected() {
+  var outputSelected = document.getElementById("midiOut").value;
+  try {
+    console.log("[Main] Output Selected : " + outputSelected);
+    output = WebMidi.getOutputByName(outputSelected);
+  } catch (err) {
+    console.log("[Main] No MIDI Output")
+    console.log(err);
+  }
+}
+
 // get available midi devices and populate dropdowns 
 function getMidiDevices() {
   console.log("[Main] Getting MIDI Devices")
@@ -180,6 +138,11 @@ function getMidiDevices() {
 
 }
 
+
+/*****************************************************
+page navigation functions
+******************************************************/
+
 function openMainTab(event, tabName) {
   var i, x, tablinks;
   x = document.getElementsByClassName("mainTabPage");
@@ -204,6 +167,11 @@ function openLibrarianTab(tabName) {
   document.getElementById("Librarian-Page-Selected").innerHTML = tabName;
 }
 
+
+/*****************************************************
+daw functions
+******************************************************/
+
 function presetSelected(data) {
   if (1 > data.value > 50) {
     data.value = 1
@@ -215,6 +183,21 @@ function presetSelected(data) {
   requestDawData();
 }
 
+// funcion for change of cc/remote dropdown
+function changeType() {
+  var type = document.getElementById("ccRemote").value;
+  if (type == "cc") {
+    for (let el of document.querySelectorAll('.remote')) el.style.display = 'none';
+    for (let el of document.querySelectorAll('.cc')) el.style.display = 'block';
+    sysexParameterSend(0x01, 0x00, 0x19, 0x01);
+  } else if (type == "remote") {
+    for (let el of document.querySelectorAll('.cc')) el.style.display = 'none';
+    for (let el of document.querySelectorAll('.remote')) el.style.display = 'block';
+    sysexParameterSend(0x01, 0x00, 0x19, 0x00);
+  }
+}
+
+// update name of preset on change    todo: replace with bulk send
 function presetNameChange(data) {
   // set preset name
   for (i = 0x00; i < 0x0C; i++) {
@@ -233,6 +216,7 @@ function presetNameChange(data) {
   }
 }
 
+// update name of knob on change      todo: replace with bulk send
 function knobNameChange(data) {
   var knobAddress = parseInt(data.id[8]) + 15;
   for (i = 0x09; i < 0x18; i++) {
@@ -244,6 +228,7 @@ function knobNameChange(data) {
   }
 }
 
+// update cc on change                todo: replace with bulk send
 function ccChange(data) {
   if (1 > data.value > 95) {
     data.value = 1;
@@ -256,10 +241,12 @@ function ccChange(data) {
   sysexParameterSend(0x01, knobAddress, 0x18, value);
 }
 
+// store daw data                     todo: replace with bulk send
 function store() {
   sysexParameterSend(0x01, 0x22, 0x00, []);
 }
 
+// get data for selected poreset
 function requestDawData() {
   var presetAddress = document.getElementById('preset').value - 1;
   // get preset data
@@ -267,17 +254,33 @@ function requestDawData() {
   sysexBulkDumpRequest(0x0E, 0x60, presetAddress);
 }
 
+/*****************************************************
+helper functions
+******************************************************/
+
 function toHexString(byteArray) {
   return Array.from(byteArray, function (byte) {
     return ('0' + (byte & 0xFF).toString(16)).slice(-2).toUpperCase();
   }).join(', ')
 }
 
+// display raw midi data on MIDI page
+function printMidi(data) {
+  var dataList = document.querySelector('#midi-data ul')
+  var newItem = document.createElement('li');
+  newItem.innerHTML = data;
+  dataList.insertBefore(newItem, dataList.firstChild);
+}
+
+/*****************************************************
+process data functions
+******************************************************/
+
 // process a bulk sysex array 
-function processBulkSysex(bulkSysexArray, store = true) {
+function processBulkSysex(dataArray, store = true) {
 
   var j;
-  var bulkHeader = toHexString([bulkSysexArray[0][8], bulkSysexArray[0][9], bulkSysexArray[0][10]]);
+  var bulkHeader = toHexString([dataArray[0][8], dataArray[0][9], dataArray[0][10]]);
 
   // add data to db
   if (store == true) {
@@ -291,7 +294,7 @@ function processBulkSysex(bulkSysexArray, store = true) {
       var db = event.target.result;
       var transaction = db.transaction('store1', 'readwrite');
       var dbstore = transaction.objectStore('store1');
-      dbstore.add(bulkSysexArray, bulkHeader);
+      dbstore.add(dataArray, bulkHeader);
       console.log("[IndexedDB] \"" + bulkHeader + "\" Added to DB")
       db.close();
       console.log("[IndexedDB] DB Closed")
@@ -302,7 +305,7 @@ function processBulkSysex(bulkSysexArray, store = true) {
     };
   }
 
-  switch (bulkSysexArray[0][9]) {
+  switch (dataArray[0][9]) {
     case 0x00:
     case 0x01:
     case 0x02:
@@ -312,47 +315,47 @@ function processBulkSysex(bulkSysexArray, store = true) {
     case 0x06:
     case 0x07:
     case 0x08:
-      console.log("[Main] Voice Bank: " + (bulkSysexArray[0][9] + 1) + ", Preset: " + (bulkSysexArray[0][10] + 1) + " Processed")
-      var name = String.fromCharCode.apply(String, bulkSysexArray[1].slice(11, 31));
-      var librarianId = "voice-" + (bulkSysexArray[0][9] + 1) + "-" + (bulkSysexArray[0][10] + 1);
+      console.log("[Main] Voice Bank: " + (dataArray[0][9] + 1) + ", Preset: " + (dataArray[0][10] + 1) + " Processed")
+      var name = String.fromCharCode.apply(String, dataArray[1].slice(11, 31));
+      var librarianId = "voice-" + (dataArray[0][9] + 1) + "-" + (dataArray[0][10] + 1);
       console.log(librarianId, name);
       document.getElementById(librarianId).innerHTML = name;
       break;
     case 0x0A:
     case 0x0B:
     case 0x0C:
-      console.log("[Main] Voice Bank: " + bulkSysexArray[0][9] + ", Preset: " + (bulkSysexArray[0][10] + 1) + " Processed")
-      var name = String.fromCharCode.apply(String, bulkSysexArray[1].slice(11, 31));
-      var librarianId = "voice-" + bulkSysexArray[0][9] + "-" + (bulkSysexArray[0][10] + 1);
+      console.log("[Main] Voice Bank: " + dataArray[0][9] + ", Preset: " + (dataArray[0][10] + 1) + " Processed")
+      var name = String.fromCharCode.apply(String, dataArray[1].slice(11, 31));
+      var librarianId = "voice-" + dataArray[0][9] + "-" + (dataArray[0][10] + 1);
       console.log(librarianId, name);
       document.getElementById(librarianId).innerHTML = name;
       break;
     case 0x20:
-      console.log("[Main] Drum Preset: " + (bulkSysexArray[0][10] + 1) + " Processed")
+      console.log("[Main] Drum Preset: " + (dataArray[0][10] + 1) + " Processed")
       break;
     case 0x21:
-      console.log("[Main] Drum GM: " + (bulkSysexArray[0][10] + 1) + " Processed")
+      console.log("[Main] Drum GM: " + (dataArray[0][10] + 1) + " Processed")
       break;
     case 0x28:
-      console.log("[Main] Drum User: " + (bulkSysexArray[0][10] + 1) + " Processed")
+      console.log("[Main] Drum User: " + (dataArray[0][10] + 1) + " Processed")
       break;
     case 0x30:
-      console.log("[Main] Mix Voice: " + (bulkSysexArray[0][10] + 1) + " Processed")
+      console.log("[Main] Mix Voice: " + (dataArray[0][10] + 1) + " Processed")
       break;
     case 0x31:
-      console.log("[Main] Mix Part: " + (bulkSysexArray[0][10] + 1) + " Processed")
+      console.log("[Main] Mix Part: " + (dataArray[0][10] + 1) + " Processed")
       break;
     case 0x40:
     case 0x41:
-      console.log("[Main] Performance Bank: " + (bulkSysexArray[0][9] - 0x3F) + ", Preset: " + (bulkSysexArray[0][10] + 1) + " Processed")
-      var name = String.fromCharCode.apply(String, bulkSysexArray[1].slice(11, 31));
-      var librarianId = "perf-" + (bulkSysexArray[0][9] - 0x3F) + "-" + (bulkSysexArray[0][10] + 1);
+      console.log("[Main] Performance Bank: " + (dataArray[0][9] - 0x3F) + ", Preset: " + (dataArray[0][10] + 1) + " Processed")
+      var name = String.fromCharCode.apply(String, dataArray[1].slice(11, 31));
+      var librarianId = "perf-" + (dataArray[0][9] - 0x3F) + "-" + (dataArray[0][10] + 1);
       document.getElementById(librarianId).innerHTML = name;
       break;
     case 0x60:
-      console.log("[Main] DAW Preset: " + bulkSysexArray[0][10] + " Processed")
-      for (j = 1; j < bulkSysexArray.length - 1; j++) {
-        messageData = bulkSysexArray[j];
+      console.log("[Main] DAW Preset: " + dataArray[0][10] + " Processed")
+      for (j = 1; j < dataArray.length - 1; j++) {
+        messageData = dataArray[j];
         switch (messageData[8]) { // address mid
           case 0x01: // daw 
             switch (messageData[9]) { // address low
@@ -397,9 +400,9 @@ function processBulkSysex(bulkSysexArray, store = true) {
       }
       break;
     case 0x70:
-      console.log("[Main] Master Preset:" + (bulkSysexArray[0][10] + 1) + " Processed")
-      var name = String.fromCharCode.apply(String, bulkSysexArray[1].slice(11, 31));
-      var librarianId = "master-" + (bulkSysexArray[0][10] + 1);
+      console.log("[Main] Master Preset:" + (dataArray[0][10] + 1) + " Processed")
+      var name = String.fromCharCode.apply(String, dataArray[1].slice(11, 31));
+      var librarianId = "master-" + (dataArray[0][10] + 1);
       document.getElementById(librarianId).innerHTML = name;
       break;
   }
@@ -444,18 +447,18 @@ function sysexEventHandler(messageData) {
         // if no header was recieved process one line bulk message immediatly
         if (bulkFlag != true) {
           console.log("[Sysex] Bulk Message Recieved")
-          processBulkSysex(bulkSysexArray);
+          processBulkSysex(tmpBulkSysexArray);
         }
 
         // if header was recieved add to bulk array until bulk bulk footer is recieved.
         if (bulkFlag == true) {
-          bulkSysexArray.push(messageData);
+          tmpBulkSysexArray.push(messageData);
         }
 
         // if bulk footer is recieved process the block
         if (messageData[8] == 0x0F) {
-          processBulkSysex(bulkSysexArray);
-          bulkSysexArray = [];
+          processBulkSysex(tmpBulkSysexArray);
+          tmpBulkSysexArray = [];
           bulkFlag = false;
         }
         break;
@@ -468,13 +471,10 @@ function sysexEventHandler(messageData) {
   }
 }
 
-// display raw midi data on MIDI page
-function printMidi(data) {
-  var dataList = document.querySelector('#midi-data ul')
-  var newItem = document.createElement('li');
-  newItem.innerHTML = data;
-  dataList.insertBefore(newItem, dataList.firstChild);
-}
+
+/*****************************************************
+indexeddb 
+******************************************************/
 
 function loadDataStore() {
   var i;
@@ -507,322 +507,9 @@ function loadDataStore() {
 
 }
 
-function voiceSelect(LSB, i) {
-  sysexParameterSend(0x0A, 0x00, 0x01, 0)
-  output.sendControlChange(0, 63);
-  output.sendControlChange(32, LSB);
-  output.sendProgramChange(i);
-  if (LSB < 9) {
-    sysexBulkDumpRequest(0x0E, LSB, i);
-  }
-  if (!(LSB < 9) & LSB < 12) {
-    sysexBulkDumpRequest(0x0E, LSB + 1, i);
-  }
-}
-
-function performanceSelect(LSB, i) {
-  sysexParameterSend(0x0A, 0x00, 0x01, 1)
-  output.sendControlChange(0, 63);
-  output.sendControlChange(32, LSB);
-  output.sendProgramChange(i);
-  sysexBulkDumpRequest(0x0E, LSB, i);
-}
-
-function songSelect(i) {
-  sysexParameterSend(0x0A, 0x00, 0x01, 3)
-  output.sendSongSelect(i);
-}
-
-function patternSelect(i) {
-  sysexParameterSend(0x0A, 0x00, 0x01, 2)
-  output.sendSongSelect(i);
-}
-
-function masterSelect(i) {
-  sysexParameterSend(0x0A, 0x00, 0x01, 4)
-  sysexParameterSend(0x0A, 0x00, 0x00, i)
-  sysexBulkDumpRequest(0x0E, 0x70, i);
-}
-
-// build the midi page
-function buildMidi() {
-  var i;
-  dataTypes = [
-    "activesensingEnabled", "channelaftertouchEnabled", "channelmodeEnabled",
-    "clockEnabled", "continueEnabled", "controlchangeEnabled",
-    "keyaftertouchEnabled", "noteonEnabled", "noteoffEnabled",
-    "nrpnEnabled", "pitchbendEnabled", "programchangeEnabled",
-    "resetEnabled", "songpositionEnabled", "songselectEnabled",
-    "startEnabled", "stopEnabled", "sysexEnabled", "timecodeEnabled",
-    "tuningrequestEnabled", "unknownsystemmessageEnabled"
-  ]
-
-  // add all the checkboxes with labels
-  for (i = 0; i < dataTypes.length; i++) {
-    var p = document.getElementById("midiDataTypes");
-    var newElement = document.createElement("div");
-    var newElement2 = document.createElement("label");
-    var newElement3 = document.createElement("input");
-
-    newElement.setAttribute('class', "w3-col l3 m6 s12")
-
-    newElement2.innerHTML = " " + dataTypes[i].slice(0, -7);
-
-    newElement3.setAttribute('class', "w3-check");
-    newElement3.setAttribute('type', "checkbox");
-    newElement3.setAttribute('checked', "checked");
-    newElement3.setAttribute('id', dataTypes[i]);
-    newElement3.setAttribute('onchange', "updateListeners()");
-
-    newElement.appendChild(newElement3);
-    newElement.appendChild(newElement2);
-    p.appendChild(newElement);
-  }
-}
-
-function syncMasters() {
-  var i;
-  for (i = 0; i < 128; i++) {
-    sysexBulkDumpRequest(0x0E, 0x70, i);
-  }
-}
-
-function syncPerfs() {
-  var i;
-  var j;
-  for (j = 0x40; j < 0x42; j++) {
-    for (i = 0; i < 128; i++) {
-      sysexBulkDumpRequest(0x0E, j, i);
-    }
-  }
-}
-
-function sync1BankPerfs(bank) {
-  var i;
-  for (i = 0; i < 128; i++) {
-    sysexBulkDumpRequest(0x0E, bank + 0x3F, i);
-  }
-}
-
-function syncVoices() {
-  var i;
-  var j;
-  for (j = 0; j < 9; j++) {
-    for (i = 0; i < 128; i++) {
-      sysexBulkDumpRequest(0x0E, j, i);
-    }
-  }
-}
-
-function sync1BankVoices(bank) {
-  var i;
-  for (i = 0; i < 128; i++) {
-    sysexBulkDumpRequest(0x0E, bank, i);
-  }
-}
-
-//build the daw page
-function buildDaw() {
-  var i;
-  var remoteNames = ["Cutoff", "Resonance", "FEG Depth", "Portamento",
-    "Attack", "Decay", "Sustain", "Release", "Vol", "Pan", "Assign 1",
-    "Assign 2"
-  ];
-
-  // build the cc view
-  for (i = 0; i < 12; i++) {
-    var p = document.getElementById("ccView");
-    var newElement = document.createElement("div");
-    var newElement2 = document.createElement("input");
-    var newElement3 = document.createElement("input");
-
-    newElement.setAttribute('class', "w3-col l3 m6 s12");
-
-    newElement2.setAttribute('class', "w3-input w3-border w3-col s9")
-    newElement2.setAttribute('type', "text")
-    newElement2.setAttribute('onchange', "knobNameChange(this)")
-    newElement2.setAttribute('placeholder', "DisplayName")
-    newElement2.setAttribute('id', "knobName" + (i + 1))
-    newElement2.setAttribute('maxlength', "15")
-
-    newElement3.setAttribute('class', "w3-input w3-border w3-col s3")
-    newElement3.setAttribute('type', "number")
-    newElement3.setAttribute('onchange', "ccChange(this)")
-    newElement3.setAttribute('id', "cc" + (i + 1))
-    newElement3.setAttribute('min', "1")
-    newElement3.setAttribute('max', "95")
-    newElement3.setAttribute('placeholder', "CC")
-
-    newElement.appendChild(newElement2);
-    newElement.appendChild(newElement3);
-    p.appendChild(newElement);
-  }
-
-  // build the remote view
-  for (i = 0; i < 12; i++) {
-    var p = document.getElementById("remoteView");
-    var newElement = document.createElement("div");
-    var newElement2 = document.createElement("input");
-    var newElement3 = document.createElement("input");
-
-    newElement.setAttribute('class', "w3-col l3 m6 s12");
-
-    newElement2.setAttribute('class', "w3-input w3-border w3-col s9")
-    newElement2.setAttribute('type', "text")
-    newElement2.setAttribute('value', remoteNames[i])
-    newElement2.setAttribute('readonly', 'true')
-
-    newElement3.setAttribute('class', "w3-input w3-border w3-col s3")
-    newElement3.setAttribute('type', "number")
-    newElement3.setAttribute('value', (i + 16))
-    newElement3.setAttribute('readonly', 'true')
-
-    newElement.appendChild(newElement2);
-    newElement.appendChild(newElement3);
-    p.appendChild(newElement);
-  }
-}
-
-//build the librarian page
-function buildLibrarian() {
-  var i;
-  var j;
-  var tabs = [
-    "Voice-Pre-1", "Voice-Pre-2", "Voice-Pre-3", "Voice-Pre-4",
-    "Voice-Pre-5", "Voice-Pre-6", "Voice-Pre-7", "Voice-Pre-8",
-    "Voice-Pre-9", "Voice-User-1", "Voice-User-2", "Voice-User-3",
-    "Performance-User-1", "Performance-User-2", "Song",
-    "Pattern", "Master"
-  ];
-
-  // add tab pages 
-  for (i = 0; i < tabs.length; i++) {
-    var p = document.getElementById("Librarian");
-    var newElement = document.createElement("div");
-    newElement.setAttribute('class', "librarianTabPage");
-    newElement.setAttribute('id', tabs[i])
-    if (i > 0) {
-      newElement.setAttribute('style', "display:none")
-    }
-    p.appendChild(newElement);
-  }
-
-  // add sync dropdown options
-  for (i = 0; i < 9; i++) {
-    var p = document.getElementById("syncDropdown");
-    var newElement = document.createElement("a");
-    newElement.setAttribute('class', "w3-bar-item w3-button");
-    newElement.setAttribute('href', "#")
-    newElement.setAttribute('onclick', "sync1BankVoices(" + i + ")")
-    newElement.innerHTML = tabs[i]
-    p.appendChild(newElement);
-  }
-  for (i = 9; i < 12; i++) {
-    var p = document.getElementById("syncDropdown");
-    var newElement = document.createElement("a");
-    newElement.setAttribute('class', "w3-bar-item w3-button");
-    newElement.setAttribute('href', "#")
-    newElement.setAttribute('onclick', "sync1BankVoices(" + (i + 1) + ")")
-    newElement.innerHTML = tabs[i]
-    p.appendChild(newElement);
-  }
-  for (i = 12; i < 14; i++) {
-    var p = document.getElementById("syncDropdown");
-    var newElement = document.createElement("a");
-    newElement.setAttribute('class', "w3-bar-item w3-button");
-    newElement.setAttribute('href', "#")
-    newElement.setAttribute('onclick', "sync1BankPerfs(" + (i - 11) + ")")
-    newElement.innerHTML = tabs[i]
-    p.appendChild(newElement);
-  }
-  for (i = 17; i < 18; i++) {
-    var p = document.getElementById("syncDropdown");
-    var newElement = document.createElement("a");
-    newElement.setAttribute('class', "w3-bar-item w3-button");
-    newElement.setAttribute('href', "#")
-    newElement.setAttribute('onclick', "syncMasters()")
-    newElement.innerHTML = tabs[i]
-    p.appendChild(newElement);
-  }
-
-  // add voice dropdown options
-  for (i = 0; i < 12; i++) {
-    var p = document.getElementById("voiceDropdown");
-    var newElement = document.createElement("a");
-    newElement.setAttribute('class', "w3-bar-item w3-button");
-    newElement.setAttribute('href', "#")
-    newElement.setAttribute('onclick', "openLibrarianTab('" + tabs[i] + "')")
-    newElement.innerHTML = tabs[i]
-    p.appendChild(newElement);
-  }
-
-  // add performance dropdown options
-  for (i = 12; i < 14; i++) {
-    var p = document.getElementById("performanceDropdown");
-    var newElement = document.createElement("a");
-    newElement.setAttribute('class', "w3-bar-item w3-button");
-    newElement.setAttribute('href', "#")
-    newElement.setAttribute('onclick', "openLibrarianTab('" + tabs[i] + "')")
-    newElement.innerHTML = tabs[i]
-    p.appendChild(newElement);
-  }
-
-  // add voices
-  for (j = 0; j < 12; j++) {
-    for (i = 0; i < 128; i++) {
-      var p = document.getElementById(tabs[j]);
-      var newElement = document.createElement("button");
-      newElement.setAttribute('class', "w3-col l15 w3-button w3-theme-l4 w3-border-white");
-      newElement.setAttribute('onclick', "voiceSelect(" + j + ", " + i + ")")
-      newElement.setAttribute('id', "voice-" + (j + 1) + "-" + (i + 1))
-      newElement.innerHTML = i + 1;
-      p.appendChild(newElement);
-    }
-  }
-
-  // add performances
-  for (j = 12; j < 14; j++) {
-    for (i = 0; i < 128; i++) {
-      var p = document.getElementById(tabs[j]);
-      var newElement = document.createElement("button");
-      newElement.setAttribute('class', "w3-col l15 w3-button w3-theme-l4 w3-border-white");
-      newElement.setAttribute('onclick', "performanceSelect(" + (64 - 12 + j) + ", " + i + ")")
-      newElement.setAttribute('id', "perf-" + (j - 11) + "-" + (i + 1))
-      newElement.innerHTML = i + 1;
-      p.appendChild(newElement);
-    }
-  }
-
-  // add pattern/song
-  for (i = 0; i < 64; i++) {
-    var p = document.getElementById("Song");
-    var newElement = document.createElement("button");
-    newElement.setAttribute('class', "w3-col l15 w3-button w3-theme-l4 w3-border-white");
-    newElement.setAttribute('onclick', "songSelect(" + i + ")")
-    newElement.setAttribute('id', "song-" + (i + 1))
-    newElement.innerHTML = i + 1;
-    p.appendChild(newElement);
-
-    var p = document.getElementById("Pattern");
-    var newElement = document.createElement("button");
-    newElement.setAttribute('class', "w3-col l15 w3-button w3-theme-l4 w3-border-white");
-    newElement.setAttribute('onclick', "patternSelect(" + i + ")")
-    newElement.setAttribute('id', "pattern-" + (i + 1))
-    newElement.innerHTML = i + 1;
-    p.appendChild(newElement);
-  }
-
-  // add masters
-  for (i = 0; i < 128; i++) {
-    var p = document.getElementById("Master");
-    var newElement = document.createElement("button");
-    newElement.setAttribute('class', "w3-col l15 w3-button w3-theme-l4 w3-border-white");
-    newElement.setAttribute('onclick', "masterSelect(" + i + ")")
-    newElement.setAttribute('id', "master-" + (i + 1))
-    newElement.innerHTML = i + 1;
-    p.appendChild(newElement);
-  }
-}
+/*****************************************************
+main app sequence
+******************************************************/
 
 function onloadFunction() {
   enableMidi();
@@ -834,6 +521,10 @@ function onloadFunction() {
 
 // call onload function
 window.onload = onloadFunction();
+
+/*****************************************************
+webapp functions
+******************************************************/
 
 // webapp install
 let deferredPrompt;
