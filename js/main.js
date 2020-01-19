@@ -458,7 +458,7 @@ function sysexEventHandler(messageData) {
         break;
       case 0x10: // single parameter
         // if not bulk message process immediatly
-        console.log("[Sysex] Parameter Recieved" + messageData)
+        console.log("[Sysex] Unknown Parameter Recieved " + messageData)
         processParameterSysex(messageData)
         break;
     }
@@ -495,7 +495,6 @@ function loadDataStore() {
         console.log("[IndexedDB] DB Closed")
       }
     }
-
   };
 
   request.onupgradeneeded = function (event) {
@@ -513,7 +512,7 @@ function voiceSelect(LSB, i) {
   if (LSB < 9) {
     sysexBulkDumpRequest(0x0E, LSB, i);
   }
-  if (9 < LSB < 12) {
+  if (!(LSB < 9) & LSB < 12) {
     sysexBulkDumpRequest(0x0E, LSB + 1, i);
   }
 }
@@ -579,6 +578,47 @@ function buildMidi() {
     newElement.appendChild(newElement3);
     newElement.appendChild(newElement2);
     p.appendChild(newElement);
+  }
+}
+
+function syncMasters() {
+  var i;
+  for (i = 0; i < 128; i++) {
+    sysexBulkDumpRequest(0x0E, 0x70, i);
+  }
+}
+
+function syncPerfs() {
+  var i;
+  var j;
+  for (j = 0x40; j < 0x42; j++) {
+    for (i = 0; i < 128; i++) {
+      sysexBulkDumpRequest(0x0E, j, i);
+    }
+  }
+}
+
+function sync1BankPerfs(bank) {
+  var i;
+  for (i = 0; i < 128; i++) {
+    sysexBulkDumpRequest(0x0E, bank + 0x3F, i);
+  }
+}
+
+function syncVoices() {
+  var i;
+  var j;
+  for (j = 0; j < 9; j++) {
+    for (i = 0; i < 128; i++) {
+      sysexBulkDumpRequest(0x0E, j, i);
+    }
+  }
+}
+
+function sync1BankVoices(bank) {
+  var i;
+  for (i = 0; i < 128; i++) {
+    sysexBulkDumpRequest(0x0E, bank, i);
   }
 }
 
@@ -665,6 +705,44 @@ function buildLibrarian() {
     if (i > 0) {
       newElement.setAttribute('style', "display:none")
     }
+    p.appendChild(newElement);
+  }
+
+  // add sync dropdown options
+  for (i = 0; i < 9; i++) {
+    var p = document.getElementById("syncDropdown");
+    var newElement = document.createElement("a");
+    newElement.setAttribute('class', "w3-bar-item w3-button");
+    newElement.setAttribute('href', "#")
+    newElement.setAttribute('onclick', "sync1BankVoices("+ i +")")
+    newElement.innerHTML = tabs[i]
+    p.appendChild(newElement);
+  }
+  for (i = 9; i < 12; i++) {
+    var p = document.getElementById("syncDropdown");
+    var newElement = document.createElement("a");
+    newElement.setAttribute('class', "w3-bar-item w3-button");
+    newElement.setAttribute('href', "#")
+    newElement.setAttribute('onclick', "sync1BankVoices("+ (i+1) +")")
+    newElement.innerHTML = tabs[i]
+    p.appendChild(newElement);
+  }
+  for (i = 12; i < 14; i++) {
+    var p = document.getElementById("syncDropdown");
+    var newElement = document.createElement("a");
+    newElement.setAttribute('class', "w3-bar-item w3-button");
+    newElement.setAttribute('href', "#")
+    newElement.setAttribute('onclick', "sync1BankPerfs("+ (i-11) +")")
+    newElement.innerHTML = tabs[i]
+    p.appendChild(newElement);
+  }
+  for (i = 17; i < 18; i++) {
+    var p = document.getElementById("syncDropdown");
+    var newElement = document.createElement("a");
+    newElement.setAttribute('class', "w3-bar-item w3-button");
+    newElement.setAttribute('href', "#")
+    newElement.setAttribute('onclick', "syncMasters()")
+    newElement.innerHTML = tabs[i]
     p.appendChild(newElement);
   }
 

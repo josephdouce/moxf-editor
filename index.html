@@ -37,8 +37,9 @@
     <div class="w3-content w3-theme-l4">
 
       <div class="w3-bar w3-theme">
-        <button class="w3-bar-item w3-button tablink w3-grey" onclick="openMainTab(event, 'DAW')">DAW</button>
-        <button class="w3-bar-item w3-button tablink" onclick="openMainTab(event, 'Librarian')">Librarian</button>
+        <button class="w3-bar-item w3-button tablink w3-grey"
+          onclick="openMainTab(event, 'Librarian')">Librarian</button>
+        <button class="w3-bar-item w3-button tablink" onclick="openMainTab(event, 'DAW')">DAW</button>
         <button class="w3-bar-item w3-button tablink" onclick="openMainTab(event, 'MIDI')">MIDI</button>
         <button class="w3-bar-item w3-button tablink" onclick="openMainTab(event, 'About')">About</button>
       </div>
@@ -54,7 +55,7 @@
         <p>Please connect your MOXF</p>
       </div>
 
-      <div id="DAW" class="mainTabPage">
+      <div id="DAW" class="mainTabPage" style="display:none">
         <div class="w3-row-padding">
           <div class="w3-col">
             <h2>DAW Editor</h2>
@@ -135,7 +136,7 @@
         </div>
       </div>
 
-      <div id="Librarian" class="mainTabPage" style="display:none">
+      <div id="Librarian" class="mainTabPage">
         <div class="w3-bar w3-theme">
           <div class="w3-dropdown-hover">
             <button class="w3-button w3-theme">Voice</button>
@@ -149,6 +150,10 @@
           <button class="w3-bar-item w3-button" onclick="openLibrarianTab('Pattern')">Pattern</button>
           <button class="w3-bar-item w3-button" onclick="openLibrarianTab('Mix')">Mix</button>
           <button class="w3-bar-item w3-button" onclick="openLibrarianTab('Master')">Master</button>
+          <div class="w3-dropdown-hover">
+            <button class="w3-button">Sync</button>
+            <div id="syncDropdown" class="w3-dropdown-content w3-bar-block w3-card-4"></div>
+          </div>
           <span id="Librarian-Page-Selected" class="w3-bar-item w3-right">Voice-Pre-1</span>
         </div>
       </div>
