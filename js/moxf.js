@@ -38,7 +38,9 @@ function sysexParameterRequest(high, mid, low) {
   }
 }
 
-// type select commands
+/*****************************************************
+select commands
+******************************************************/
 function voiceSelect(LSB, i) {
   sysexParameterSend(0x0A, 0x00, 0x01, 0)
   output.sendControlChange(0, 63);
@@ -46,9 +48,11 @@ function voiceSelect(LSB, i) {
   output.sendProgramChange(i);
   if (LSB < 9) {
     sysexBulkDumpRequest(0x0E, LSB, i);
+    loadEditor(0x0E, LSB, i);
   }
   if (!(LSB < 9) & LSB < 12) {
     sysexBulkDumpRequest(0x0E, LSB + 1, i);
+    loadEditor(0x0E, LSB + 1, i);
   }
 }
 
@@ -58,6 +62,7 @@ function performanceSelect(LSB, i) {
   output.sendControlChange(32, LSB);
   output.sendProgramChange(i);
   sysexBulkDumpRequest(0x0E, LSB, i);
+  loadEditor(0x0E, LSB, i);
 }
 
 function songSelect(i) {
@@ -74,9 +79,12 @@ function masterSelect(i) {
   sysexParameterSend(0x0A, 0x00, 0x01, 4)
   sysexParameterSend(0x0A, 0x00, 0x00, i)
   sysexBulkDumpRequest(0x0E, 0x70, i);
+  loadEditor(0x0E, 0x70, i);
 }
 
-// sync daya commands
+/*****************************************************
+sync commands
+******************************************************/
 function syncMasters() {
   var i;
   for (i = 0; i < 128; i++) {

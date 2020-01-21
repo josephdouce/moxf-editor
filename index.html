@@ -42,6 +42,7 @@
         <button class="w3-bar-item w3-button tablink" onclick="openMainTab(event, 'DAW')">DAW</button>
         <button class="w3-bar-item w3-button tablink" onclick="openMainTab(event, 'MIDI')">MIDI</button>
         <button class="w3-bar-item w3-button tablink" onclick="openMainTab(event, 'About')">About</button>
+        <button class="w3-bar-item w3-button tablink" onclick="openMainTab(event, 'Edit')">Edit</button>
       </div>
 
       <div id="a2hsPanel"
@@ -168,6 +169,9 @@
           </div>
         </div>
       </div>
+      
+      <div id="Edit" class="mainTabPage" style="display:none">
+      </div>
 
     </div>
 
@@ -184,9 +188,11 @@
     <!-- User Scripts -->
     <!-- WebMIDI https://cdn.jsdelivr.net/npm/webmidi-->
     <script src="js/webmidi.js"></script>
+    <script src="js/moxf.js"></script>
     <script src="js/build-lib.js"></script>
     <script src="js/build-daw.js"></script>
     <script src="js/build-midi.js"></script>
+    <script src="js/build-editor.js"></script>
     <script src="js/main.js"></script>
 
     <!-- Google Analytics: change UA-XXXXX-Y to be your site's ID. -->

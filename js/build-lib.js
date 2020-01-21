@@ -54,7 +54,7 @@ function buildLibrarian() {
     newElement.innerHTML = tabs[i]
     p.appendChild(newElement);
   }
-  for (i = 17; i < 18; i++) {
+  for (i = 16; i < 17; i++) {
     var p = document.getElementById("syncDropdown");
     var newElement = document.createElement("a");
     newElement.setAttribute('class', "w3-bar-item w3-button");

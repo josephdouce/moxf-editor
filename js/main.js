@@ -318,7 +318,6 @@ function processBulkSysex(dataArray, store = true) {
       console.log("[Main] Voice Bank: " + (dataArray[0][9] + 1) + ", Preset: " + (dataArray[0][10] + 1) + " Processed")
       var name = String.fromCharCode.apply(String, dataArray[1].slice(11, 31));
       var librarianId = "voice-" + (dataArray[0][9] + 1) + "-" + (dataArray[0][10] + 1);
-      console.log(librarianId, name);
       document.getElementById(librarianId).innerHTML = name;
       break;
     case 0x0A:
@@ -327,7 +326,6 @@ function processBulkSysex(dataArray, store = true) {
       console.log("[Main] Voice Bank: " + dataArray[0][9] + ", Preset: " + (dataArray[0][10] + 1) + " Processed")
       var name = String.fromCharCode.apply(String, dataArray[1].slice(11, 31));
       var librarianId = "voice-" + dataArray[0][9] + "-" + (dataArray[0][10] + 1);
-      console.log(librarianId, name);
       document.getElementById(librarianId).innerHTML = name;
       break;
     case 0x20:
