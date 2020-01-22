@@ -48,11 +48,11 @@ function voiceSelect(LSB, i) {
   output.sendProgramChange(i);
   if (LSB < 9) {
     sysexBulkDumpRequest(0x0E, LSB, i);
-    loadEditor(0x0E, LSB, i);
+    loadEditorVoice(0x0E, LSB, i);
   }
   if (!(LSB < 9) & LSB < 12) {
     sysexBulkDumpRequest(0x0E, LSB + 1, i);
-    loadEditor(0x0E, LSB + 1, i);
+    loadEditorVoice(0x0E, LSB + 1, i);
   }
 }
 
@@ -62,7 +62,7 @@ function performanceSelect(LSB, i) {
   output.sendControlChange(32, LSB);
   output.sendProgramChange(i);
   sysexBulkDumpRequest(0x0E, LSB, i);
-  loadEditor(0x0E, LSB, i);
+  loadEditorPerf(0x0E, LSB, i);
 }
 
 function songSelect(i) {
@@ -79,7 +79,7 @@ function masterSelect(i) {
   sysexParameterSend(0x0A, 0x00, 0x01, 4)
   sysexParameterSend(0x0A, 0x00, 0x00, i)
   sysexBulkDumpRequest(0x0E, 0x70, i);
-  loadEditor(0x0E, 0x70, i);
+  loadEditorMaster(0x0E, 0x70, i);
 }
 
 /*****************************************************

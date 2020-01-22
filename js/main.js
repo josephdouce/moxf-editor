@@ -167,6 +167,15 @@ function openLibrarianTab(tabName) {
   document.getElementById("Librarian-Page-Selected").innerHTML = tabName;
 }
 
+function openEditTab(tabName) {
+  var i;
+  var x = document.getElementsByClassName("editTabPage");
+  for (i = 0; i < x.length; i++) {
+    x[i].style.display = "none";
+  }
+  document.getElementById(tabName).style.display = "block";
+}
+
 
 /*****************************************************
 daw functions
