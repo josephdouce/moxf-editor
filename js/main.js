@@ -490,6 +490,7 @@ function loadDataStore() {
   request.onerror = function (event) {
     console.log("[IndexedDB] Unable to Open DB");
   };
+
   request.onsuccess = function (event) {
     console.log("[IndexedDB] DB Opened")
     var db = event.target.result;
